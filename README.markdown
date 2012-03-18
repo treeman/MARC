@@ -2,11 +2,13 @@
 
 * Brainfuck
 
-Reply från Olle:
+Reply från Olle:  
 Ni kan få göra BF om
-   1) någon finess tillkommer
-   2) någon tydlig uppgift för datorn. Inte bara köra kod, som någon annan har gjort.
- /Olle
+
+1. någon finess tillkommer
+2. någon tydlig uppgift för datorn. Inte bara köra kod, som någon annan har gjort.
+
+/Olle
 
 ---
 
