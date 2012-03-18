@@ -47,6 +47,7 @@ Todo
 - pdf -> Olle senast fredag 1700
 
 ## v13
+- skriva designskiss (DS)
 - träffa handledaren
 - handledaren godkänner DS
 - pdf -> Olle senast fredag 1700
