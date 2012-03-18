@@ -1,8 +1,9 @@
-﻿# Idéer
+﻿Idéer
+=====
 
 * Brainfuck
 
-Reply från Olle:  
+Reply från Olle:
 Ni kan få göra BF om
 
 1. någon finess tillkommer
@@ -35,4 +36,47 @@ Instruktionsformatet är: OP MEMMODE1 ADR1 MEMMODE2 ADR2. Detta ska få plats i 
 
 Både FukYorBrane & ICWS-88 CoreWars har samma utmaning här; man ska kunna skapa och ta bort trådar. Detta borde lösas med två (fler!?) arrays av PCs, kanske finns någon mer vettig datastuktur som länkad lista.
 Man skulle även vilja ha någon form av grafisk / terminal output av minnet i båda fallen.
+
+Todo
+====
+
+# v12
+- delta i en laboration (2 tillfällen kan behövas!)
+- bestämma projekt
+- skriva en kravspec (KS)
+- Olle godkänner KS
+- pdf -> Olle senast fredag 1700
+
+# v13
+- skriva designskiss (DS)
+- träffa handledaren
+- handledaren godkänner DS
+- pdf -> Olle senast fredag 1700
+- delta i en lab till
+
+# v14-15
+- Påsk + omtentaP
+
+# v16
+- skriva VHDL, 1:a byggveckan
+
+# v17
+- skriva VHDL, 2:a byggveckan
+- ungefär mitt i projektet finns en milstolpe, till vilken hör beslutspunkt 1. Vi kollar om ni har klarat av milstolpen.  
+  fredag 27/4 15-17  
+  måndag 30/4 15-17
+
+# v18
+- skriva VHDL, 3:e byggveckan
+
+# v19
+- skriva VHDL, 4:e byggveckan
+- strax före redovisningen finns beslutspunkt 2, där vi kollar att ert bygge uppfyller kravspecen
+
+# v20
+- Redovisning
+- demonstrera apparaten
+- hålla en muntlig presentation
+- skriva en teknisk rapport
+- lämna tillbaka alla komponenter
 
