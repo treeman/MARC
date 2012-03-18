@@ -41,14 +41,12 @@ Todo
 ====
 
 ## v12
-- delta i en laboration (2 tillfällen kan behövas!)
 - bestämma projekt
 - skriva en kravspec (KS)
 - Olle godkänner KS
 - pdf -> Olle senast fredag 1700
 
 ## v13
-- skriva designskiss (DS)
 - träffa handledaren
 - handledaren godkänner DS
 - pdf -> Olle senast fredag 1700
