@@ -37,6 +37,10 @@ Instruktionsformatet är: OP MEMMODE1 ADR1 MEMMODE2 ADR2. Detta ska få plats i 
 Både FukYorBrane & ICWS-88 CoreWars har samma utmaning här; man ska kunna skapa och ta bort trådar. Detta borde lösas med två (fler!?) arrays av PCs, kanske finns någon mer vettig datastuktur som länkad lista.
 Man skulle även vilja ha någon form av grafisk / terminal output av minnet i båda fallen.
 
+* Pipelinad processor, CISC eller RISC, med en specific beräkningsuppgift
+
+Vi skulle kunna göra en pipelinad processor med målet att göra den väldigt snabb. Kanske.. T.ex. en MAC som beräknar skalärprodukter supersnabbt. Eller beräkna fibonacciserien? Matrismultiplicationer? Implementera newton-rhapson eller runge-kutta's metod för att uppskatta derivatan? En krypterings/dekrypteringsmaskin?!
+
 Todo
 ====
 
