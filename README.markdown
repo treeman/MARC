@@ -17,7 +17,7 @@ FukYorBrane är ett mellanting mellan Brainfuck och CoreWars. Specifikation finn
 Kan bli svårt att hoppa över instuktioner snabbt, instruktionerna [] {} & :; bygger på det.
 Man kan editera minne för att sedan 'commita' det till minnet, man kan även uncommita. Framgår ej exakt hur detta går till (går det bara på en cell i taget, eller finns det en orginal kopia av programmet någon stands?) Kan bli svårt beroende på hur de menar.
 
-Programmen ser trevligt obskyra men ändå vettiga ut, ex: <http://esoteric.voxelperfect.net/files/fyb/src/retired/logicex-1.fyb]>
+Programmen ser trevligt obskyra men ändå vettiga ut, ex: <http://esoteric.voxelperfect.net/files/fyb/src/retired/logicex-1.fyb>
 
 ---
 
