@@ -1,0 +1,59 @@
+﻿Kravspecifikation
+1. Inledning (TODO)
+   
+   
+2. Blockschema (TODO)
+
+
+3. Kravlista (TODO)
+    
+    Ska-krav
+    1. Har möjlighet att koppla till en dator där vi kan mata in kod och visa resultat.
+    2. En reset knappen som kan nollställa hela minnet och PC.
+    3. En XC9572 ska ingå i konstruktionen.
+    4. Man kunna spela(utföra) coreWars i assembly(Redcode) kod med denna.
+    5. ...
+    
+    Bör-krav
+    1. Det bör vara skönt att vissa minnets innehåll med färg på datorn.
+
+Minikurs till Core War (TODO)s
+Core War is a programming game in which two battle programs compete for the control of the "Memory Array Redcode Simulator". At the start eacah battle program is put into the meory array at a random location, after which each battle program can execute one instruction in turn.
+The object of the game is to cause all processes of the opposing programs to terminate.
+In this game, you may imagine yourself as a computer virus with AI, w
+For more informaion, please check: <http://corewars.nihilists.de/redcode-icws-88.pdf> or
+                                   <http://en.wikipedia.org/wiki/Core_War>
+- Game detail    
+    = How to play?
+        Each gamer create their own warriors and place them into the computer, then sit back and watch 
+        them killing each other after game starts. 
+    = Strategy
+        There are three common strategies(replicator, scanner and bomber) also aka paper, scissors and stone.
+        
+        = Bomber=(stone): blindly copies a "bomb" at regular intervals in the core, hoping to hit the enemy.
+          The bomb is often a DAT instruction, multi-instruction etc.
+        = Replicator =(paper): makes repeated copies of itself and executes them in parallel, filling the 
+          entire core of its code. 
+        = Scanner =(scissor): is designed to beat replicators, usually by bombing memory with SPL 0       
+          instructions. This causes the enemy to create a huge number of processes which do nothing but 
+          create more processes. This slows down useful processes. When the enemy becomes so slow that it is 
+          unable to do anything useful, the memory is bombed with DAT instructions.
+        (and lots more, like Dwarfm imp, germini and Juggeraut)
+        
+    = instruction: OP A B
+        > OP: which operation to be performed, wich a-mod should be used. 
+        > Instruction set of ICWS-88 Core War:		
+            DAT A B: remove executing process from process queue
+            MOV A B: move A to B
+            ADD A B: add A to B
+            SUB A B: subtract A from B
+            JMP A B: jump to A
+            JMZ A B: jump to A if B is zero
+            JMN A B: jump to A if B is not zero
+            CMP A B: if A equals B, then skip the next instruction
+            SLT A B: if A is less than B then skip next instruction
+            DJN A B: decrement A; if B is not zero then jump to A
+            SPL A B: place A in the process queue
+    = A-mod: 
+        immediate(#); direct(default); indirect(@) and predecrement-indirect(<) is allowed.
+
