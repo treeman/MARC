@@ -1,48 +1,61 @@
-﻿Kravspecifikation
+﻿# Kravspecifikation
+
 1. Inledning (TODO)
-   
-   
+
+Beskrivning av CoreWars här.
+
 2. Blockschema (TODO)
 
+Kommer bara bli in/out till och från dator till vår låda? Eventuellt reset? Hur noga måste den vara eller räcker det?
+
+Designskissen som är till nästa vecka ska ha ett utförligt blockschema dock.
 
 3. Kravlista (TODO)
-    
-    Ska-krav
-    1. Har möjlighet att koppla till en dator där vi kan mata in kod och visa resultat.
-    2. En reset knappen som kan nollställa hela minnet och PC.
-    3. En XC9572 ska ingå i konstruktionen.
-    4. Man kunna spela(utföra) coreWars i assembly(Redcode) kod med denna.
-    5. ...
-    
-    Bör-krav
-    1. Det bör vara skönt att vissa minnets innehåll med färg på datorn.
 
-Minikurs till Core War (TODO)s
+    Ska-krav
+    1. Spela CoreWars
+    2. Mata in kod från dator
+    3. Dumpa minnesinnehåll och spelstatus till dator
+    4. Resetknapp
+    5. En XC9572 ska ingå i konstruktionen.
+
+    Bör-krav
+    1. Dumpa minnesinehåll förskönat till skärm
+
+Direkt skärmdumpning med grafik är nice-to-have men inte ett skall krav. Om vi hinner klart med allt annat kan vi börja fundera på en lite förskönad minnes/status-dumpning men tills dess tycker jag vi kan köra på externa script som visualiserar hur programmen körs eller visar kod vid olika tidpunkter. Är dump att stirra in sig och lägga till en massa coola funktioner men att sen stressa med att få klart. Då är det bättre att vara återhållsam när man specar.
+
+
+
+# Minikurs till Core Wars
+
+TODO
+Skriv om till egna ord och mer förklarande
+
 Core War is a programming game in which two battle programs compete for the control of the "Memory Array Redcode Simulator". At the start eacah battle program is put into the meory array at a random location, after which each battle program can execute one instruction in turn.
 The object of the game is to cause all processes of the opposing programs to terminate.
 In this game, you may imagine yourself as a computer virus with AI, w
 For more informaion, please check: <http://corewars.nihilists.de/redcode-icws-88.pdf> or
                                    <http://en.wikipedia.org/wiki/Core_War>
-- Game detail    
+- Game detail
     = How to play?
-        Each gamer create their own warriors and place them into the computer, then sit back and watch 
-        them killing each other after game starts. 
+        Each gamer create their own warriors and place them into the computer, then sit back and watch
+        them killing each other after game starts.
     = Strategy
         There are three common strategies(replicator, scanner and bomber) also aka paper, scissors and stone.
-        
+
         = Bomber=(stone): blindly copies a "bomb" at regular intervals in the core, hoping to hit the enemy.
           The bomb is often a DAT instruction, multi-instruction etc.
-        = Replicator =(paper): makes repeated copies of itself and executes them in parallel, filling the 
-          entire core of its code. 
-        = Scanner =(scissor): is designed to beat replicators, usually by bombing memory with SPL 0       
-          instructions. This causes the enemy to create a huge number of processes which do nothing but 
-          create more processes. This slows down useful processes. When the enemy becomes so slow that it is 
+        = Replicator =(paper): makes repeated copies of itself and executes them in parallel, filling the
+          entire core of its code.
+        = Scanner =(scissor): is designed to beat replicators, usually by bombing memory with SPL 0
+          instructions. This causes the enemy to create a huge number of processes which do nothing but
+          create more processes. This slows down useful processes. When the enemy becomes so slow that it is
           unable to do anything useful, the memory is bombed with DAT instructions.
         (and lots more, like Dwarfm imp, germini and Juggeraut)
-        
+
     = instruction: OP A B
-        > OP: which operation to be performed, wich a-mod should be used. 
-        > Instruction set of ICWS-88 Core War:		
+        > OP: which operation to be performed, wich a-mod should be used.
+        > Instruction set of ICWS-88 Core War:
             DAT A B: remove executing process from process queue
             MOV A B: move A to B
             ADD A B: add A to B
@@ -54,6 +67,6 @@ For more informaion, please check: <http://corewars.nihilists.de/redcode-icws-88
             SLT A B: if A is less than B then skip next instruction
             DJN A B: decrement A; if B is not zero then jump to A
             SPL A B: place A in the process queue
-    = A-mod: 
+    = A-mod:
         immediate(#); direct(default); indirect(@) and predecrement-indirect(<) is allowed.
 
