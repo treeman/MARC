@@ -53,7 +53,19 @@ Skriv om till egna ord och mer förklarande
 - (Jonas) Ja och och vi behöver isåfall bestämma hur den skall vara. Och det är bra för oss också att skriva om. Dessutom ska inte allt vara med i kravspecen. Det här är ingen kort och bra intro till Olle, man kan göra en mycket bättre.
 - (21:50 03-20 lee) hmm. Ja, kan väl diskutera vad ska vi ha i vår coreWars. (Kan du va snäll och skriva 
     en sammanfattning/intro till coreWars? Jag är inte så bra på sammanfattning. ;D)
+ - (22:50 03-20 lee kanske sådana?)    
+ 
+ 
+    CoreWars, may also concerned as a prototype of the morden computer virus, is a programming game which require Redcode(assembly-like language) to play. Before the game starts, each player can create their own warriors with different abilities/roles, e.g. bomber -blindly set illegal instructions to the enemy; Replicator -make repeated copies of your program, which makes you harder to be killed, Scanner -attempt to identify enemy programs and then eliminate them, etc. With those warriors, player may interrupt/lure/disturb/terminate the opponent's program and at last terminate all opponents' processes to win the game. 
+    
+    The most basic/original CoreWars are using ICWS-88 redcode. Which contains ten instructions and 4 different kinds a-mod(immediate, direct, indirect and predecrement-indirect). The instruction fields contain OP-code and two operands(OP A B).
 
+
+
+
+--------------------------------------------------------i am split line----------------------------------------------------------------------
+    
+    
 Core War is a programming game in which two battle programs compete for the control of the "Memory Array Redcode Simulator". At the start eacah battle program is put into the meory array at a random location, after which each battle program can execute one instruction in turn.
 The object of the game is to cause all processes of the opposing programs to terminate.
 For more informaion, please check: <http://corewars.nihilists.de/redcode-icws-88.pdf> or
