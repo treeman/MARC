@@ -45,10 +45,11 @@ Skriv om till egna ord och mer förklarande
 - (20:50 03-20 lee) ja, men jag tänkte att vi skulle skriva en egen coreWars som är mycket lättare, så
         vet jag inte vilka specs/regel vi ska ha nu. Dessutom den här är bara en kort intro för Olle.
 - (Jonas) Ja och och vi behöver isåfall bestämma hur den skall vara. Och det är bra för oss också att skriva om. Dessutom ska inte allt vara med i kravspecen. Det här är ingen kort och bra intro till Olle, man kan göra en mycket bättre.
+- (21:50 03-20 lee) hmm. Ja, kan väl diskutera vad ska vi ha i vår coreWars. (Kan du va snäll och skriva 
+    en sammanfattning/intro till coreWars? Jag är inte så bra på sammanfattning. ;D)
 
 Core War is a programming game in which two battle programs compete for the control of the "Memory Array Redcode Simulator". At the start eacah battle program is put into the meory array at a random location, after which each battle program can execute one instruction in turn.
 The object of the game is to cause all processes of the opposing programs to terminate.
-In this game, you may imagine yourself as a computer virus with AI, w
 For more informaion, please check: <http://corewars.nihilists.de/redcode-icws-88.pdf> or
                                    <http://en.wikipedia.org/wiki/Core_War>
 - Game detail
