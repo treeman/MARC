@@ -1,6 +1,8 @@
 ﻿Idéer
 =====
 
+NOTE: COREWAR finns till linux, kolla i er favorit package manager!
+
 * Brainfuck
 
 Reply från Olle:

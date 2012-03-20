@@ -10,14 +10,15 @@ Då detta ej är en simulator dör namnet vara något annat.
 Beskrivning av CoreWars här.
 - (20:50 03-20 lee) Det skulle varar skönt om du skriva den :D, min svenska suger. Och jag tycker att
         vi behöver skriva mer om vad gör vår "låda/uDator" instället för CoreWars.
-- Bah, vi kan skriva en del på Engelska, all coola kids skriver stuffs på Engelska!
+- (Jesper) Bah, vi kan skriva en del på Engelska, all coola kids skriver stuffs på Engelska!
 
 2. Blockschema (TODO)
 
 Kommer bara bli in/out till och från dator till vår låda? Eventuellt reset? Hur noga måste den vara eller räcker det?
 
-Designskissen som är till nästa vecka ska ha ett utförligt blockschema dock. (se datordiagram_1.jpeg) 
+Designskissen som är till nästa vecka ska ha ett utförligt blockschema dock.  
 - (20:50 03-20 lee) ja!
+- (Jesper) se datordiagram_1.jpeg
 
                 ----------          ------------
     Reset --->  | uDator |   <--->  | vår dator |
@@ -31,7 +32,8 @@ Designskissen som är till nästa vecka ska ha ett utförligt blockschema dock. 
 
     Ska-krav
     1. Spela CoreWars enligt '88 standarden; http://corewars.nihilists.de/redcode-icws-88.pdf
-    2. Mata in kod till minnet från dator. (Dumpa över hela minnet från en dator) & Sätta minst en PC per spelare till ett startvärde från värddatorn.
+    2. Mata in kod till minnet från dator och sätta minst en PC per spelare till ett startvärde från värddatorn. 
+          Kan detta skötas via exceptions? Vi behöver endast ett som laddar hela minnet med en ström data från UARTEN.
     3. Dumpa minnesinnehåll och spelstatus till dator.
     4. Resetknapp
 - Varför ska denna finnas då vi har en värddator?
@@ -53,12 +55,17 @@ Skriv om till egna ord och mer förklarande
 - (Jonas) Ja och och vi behöver isåfall bestämma hur den skall vara. Och det är bra för oss också att skriva om. Dessutom ska inte allt vara med i kravspecen. Det här är ingen kort och bra intro till Olle, man kan göra en mycket bättre.
 - (21:50 03-20 lee) hmm. Ja, kan väl diskutera vad ska vi ha i vår coreWars. (Kan du va snäll och skriva 
     en sammanfattning/intro till coreWars? Jag är inte så bra på sammanfattning. ;D)
+
  - (22:50 03-20 lee kanske sådana?)    
  
  
     CoreWars, may also concerned as a prototype of the morden computer virus, is a programming game which require Redcode(assembly-like language) to play. Before the game starts, each player can create their own warriors with different abilities/roles, e.g. bomber -blindly set illegal instructions to the enemy; Replicator -make repeated copies of your program, which makes you harder to be killed, Scanner -attempt to identify enemy programs and then eliminate them, etc. With those warriors, player may interrupt/lure/disturb/terminate the opponent's program and at last terminate all opponents' processes to win the game. 
     
     The most basic/original CoreWars are using ICWS-88 redcode. Which contains ten instructions and 4 different kinds a-mod(immediate, direct, indirect and predecrement-indirect). The instruction fields contain OP-code and two operands(OP A B).
+    
+- (Jesper) Jag anser att vi bör hålla oss till standadren, då kan vi automagiskt exekvera en massa program som redan finns.
+           Vi skulle, om vi får tid över implimentera en del nya instruktioner (och A-mod)
+
 
 
 
