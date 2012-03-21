@@ -2,7 +2,7 @@
 
 0. Ett awesomesauce namn till datorn!
 Datorn i CoreWars heter MARS, vilket står för Memory Array Redcode Simulator.
-Då detta ej är en simulator dör namnet vara något annat.
+Då detta ej är en simulator bör namnet vara något annat.
 
 
 1. Inledning (TODO)
@@ -12,6 +12,7 @@ Beskrivning av CoreWars här.
         vi behöver skriva mer om vad gör vår "låda/uDator" instället för CoreWars.
 - (Jesper) Bah, vi kan skriva en del på Engelska, all coola kids skriver stuffs på Engelska!
 - Isåfall skriver vi allt på engelska, bara fjantigt att blanda. Coola kids bryr sig inte om vad andra gör!
+- (Jesper) Coola kids blandar languages!
 
 2. Blockschema (TODO)
 
@@ -39,6 +40,27 @@ Designskissen som är till nästa vecka ska ha ett utförligt blockschema dock.
           Vi kan inte köra båda PC samtidigt ändå då bussfördröjningen gör att vi inte tjänar nåt på det. Eller missar jag nåt?
           Då vi har t.ex. JMZ behöver vi SR, men koppla direkt till ALU så spelar det ingen roll egentligen.
           Vi behöver ett XR register om vi vill använda indexerad a-mod, vilket vi vill! Koppla den direkt till adressbussen med +1 så blir det bra.
+
+- (Jesper) Kan dock inte skada inkludera båda diagrammen och säga att den ena är WIP.
+        Jag försår inte varför du vill ha direktmappat IO i dumpningssyfte, enda skillnaden är att vi behöver kopiera
+        en del av minnet till en annan (loopa igenom minnet, kopiera till en annan  minnescell)
+        istället för att kopiera den till UARTEN. OBS: Om vi använder detta måste vi ha
+        någon form av memory protection då våra Redcode program ej får komma åt IO delen av minnet.
+
+        Vi har två köer utav PCs (implimenterad via 2 listor, minnet är delat i 2 via MSB som är kopplad till spelarvippan).
+        Notera att endast en process kommer ha tillgång till CPUn i taget, spelarens processes om hans klockcykler.
+
+        Det borde bli lättare och snabbare om vi har 2 st ALUs, speciellt om vi kopplar dessa till minnena (ALU1 -> minne 2,
+        ALU2 -> minne 3), iaf enligt mina tankegångar.
+
+        Då vi ej har ett ALU register (all data ligger i minnet, vi har ej ett akumulatorregister som lagrar vettig data)
+        tror jag ej att ett SR behövs då detta räknas ut on the fly när kan kör en JMZ. (det kanske finns, fast det lagrar
+        inte heller någon vettig data mellan instruktionerna).
+
+        Se ovan; all data ligger i minnet, man har ej ett XR. (Sidenote, jag hittar ej indexerad A-mod i standarden)
+
+        
+
 
 3. Kravlista (TODO)
 
