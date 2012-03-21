@@ -11,6 +11,7 @@ Beskrivning av CoreWars här.
 - (20:50 03-20 lee) Det skulle varar skönt om du skriva den :D, min svenska suger. Och jag tycker att
         vi behöver skriva mer om vad gör vår "låda/uDator" instället för CoreWars.
 - (Jesper) Bah, vi kan skriva en del på Engelska, all coola kids skriver stuffs på Engelska!
+- Isåfall skriver vi allt på engelska, bara fjantigt att blanda. Coola kids bryr sig inte om vad andra gör!
 
 2. Blockschema (TODO)
 
@@ -28,15 +29,31 @@ Designskissen som är till nästa vecka ska ha ett utförligt blockschema dock.
 
     men är den här inte för enkelt? :P
 
+- (Jonas) Apropå datordiagramet.
+          Jag tror att det diagram vi ska göra nu handlar om användingen, inte implementationen.
+          Nästa steg, designskissen, ska vi ha utförligt alla kopplingar dock.
+
+          Sedan kanske vi kan direktmappa IO till memory för dumpning?
+          Har ni funderat på att ha en FIFO, dvs en queue, per spelare? Annars kan man få problemet att den som spammar processer får ett övertag och snor alla platser i PC memory. Dessutom måste vi loopa igenom minnet tills vi hittar en valid PC till player 2 om player 1 har många PC. Om vi istället har två köer kommer båda få samma limit och vi slipper söka nästa PC, det är enkelt att beräkna den.
+          Varför 2x ALU, SIMD?
+          Vi kan inte köra båda PC samtidigt ändå då bussfördröjningen gör att vi inte tjänar nåt på det. Eller missar jag nåt?
+          Då vi har t.ex. JMZ behöver vi SR, men koppla direkt till ALU så spelar det ingen roll egentligen.
+          Vi behöver ett XR register om vi vill använda indexerad a-mod, vilket vi vill! Koppla den direkt till adressbussen med +1 så blir det bra.
+
 3. Kravlista (TODO)
 
     Ska-krav
     1. Spela CoreWars enligt '88 standarden; http://corewars.nihilists.de/redcode-icws-88.pdf
     2. Mata in kod till minnet från dator och sätta minst en PC per spelare till ett startvärde från värddatorn. 
           Kan detta skötas via exceptions? Vi behöver endast ett som laddar hela minnet med en ström data från UARTEN.
+        - Man skulle lika väl kunna ha DMA så att datorn kan skriva direkt till minnet?
+          Sen tillkommer problemet hur ska vi starta spelet?
+          Lättast kanske vore att ha en av tryckknapparna vara start? Kanske en stop?
     3. Dumpa minnesinnehåll och spelstatus till dator.
     4. Resetknapp
 - Varför ska denna finnas då vi har en värddator?
+- Ska vi då ha reset från datorn? Och vi behöver nåt sätt att starta spelet också. Stop?
+  Då är det lättaste kanske att ha de knappar som jag tror finns på kortet direktmappade som start/stop och eventuellt reset?
     5. En XC9572 ska ingå i konstruktionen.
 
     Bör-krav
@@ -65,6 +82,7 @@ Skriv om till egna ord och mer förklarande
     
 - (Jesper) Jag anser att vi bör hålla oss till standadren, då kan vi automagiskt exekvera en massa program som redan finns.
            Vi skulle, om vi får tid över implimentera en del nya instruktioner (och A-mod)
+- (Jonas) Jag tycker vi håller oss till standarden. Den verkar bra och vettig.
 
 
 
