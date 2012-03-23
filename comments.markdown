@@ -72,3 +72,12 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
 
         Storlekerna ser i övrigt bra ut. Jag har ingen aning hur mycket minne och så vi får tillgång till dock?
 
+- (Jesper)
+		Man styr ALUs via µKod som vanligt. Det är en instruktion per rad, inklusive operander. 
+		EX: MOV 0, 1 (IMP-koden).
+		Jag skulle lösa detta via att ha 3 parallella minnen med dessa innehåll:
+		[ OP+ADDRModes: 8 bitar ] [ OPERAND1: 13-16 bitar ] [ OPERAND2: 13-16 bitar ]
+		
+		Det kan tillkomma 2 bitar till för ägande 'spelare' (visuellt)
+		
+		Jag hoppas att vi får tillgång till några hyfsat moderna minnen, alternativt att det finns minne på kortet.
