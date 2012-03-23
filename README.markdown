@@ -8,6 +8,7 @@ Todo
 - skriva en kravspec (KS)
   DONE
 - Olle godkänner KS
+  DONE
 - pdf -> Olle senast fredag 1700
   DONE
 
