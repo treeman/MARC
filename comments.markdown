@@ -96,8 +96,26 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
         eller
 
         [ instr + ADDR Modes ]
-        [     OP 16 bit      ]
+        [     OP1 16 bit     ]
+        [     OP2 16 bit     ]
 
         Vilket verkar vettigare.
         Jag antar att Redcode specen menade att man inte får bryta upp en instruktion på flera rader men att operanderna får komma efter.
+
+
+        Det svåra här är väl egentligen att vi behöver:
+        instr, a-mod, 2st operander
+
+        där operanderna var och en behöver vara stora nog att adressera hela minnet!!
+
+        Lite beroende på om vi kan acceptera att en instruktion med operander kan gå över flera rader, det skulle vara en lösning.
+        Men om vi inte kan det så har vi lite problem. Antingen kan vi, som du sa, ta 3 st minnen eller ett brett och lösa det på det sättet.
+
+        Problemet med att ha 3 parallella är väl att det blir mycket mer komplext med uppdateringar och läsningar.
+        Problemet med det breda är väl att det blir väldigt brett och vi kanske inte kan ha ett sånt minne?
+
+        Oavsett vad om vi har allting verkligen på en rad så kommer vi behöva otroligt mycket minne!
+
+        Om vi har en minnesstorlek på 8192 adresser behöver båda operanderna 13 bits.
+        Totalt 34 bitars bred... Låter lite ohållbart faktiskt.
 
