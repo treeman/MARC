@@ -119,3 +119,42 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
         Om vi har en minnesstorlek på 8192 adresser behöver båda operanderna 13 bits.
         Totalt 34 bitars bred... Låter lite ohållbart faktiskt.
 
+
+
+- (Jesper) (Kommenterar din gammla comment)
+        Det är själva iden, Single Instruction Multiple Data. Jag misstänker på att vi sitter och säger samma sak, det
+        blir nog mycket mer tydligt när schemat kommer in.
+
+        Redcode anser att hela instruktionen, inklusive operanderna är på samma minnesadress.
+
+        Notera att vi vill kunna adressera hela minnet, såvida vi inte vill spela enligt ett speciellt regelsätt för stora KoTH
+        serverar (aka; man har en range of influence där man kan influera), operanderna måste därmed vara 13-16 bitar.
+        Vi har även 2 operander. Om vi stackar detta i minnet ser det ut som:
+        
+        [ instr + ADDR Modes 8 bits ]
+        [     OP 16 bit             ]
+        [     OP 16 bit             ]
+        
+        det mest vettiga är att dela in minnet i grupper om 5 (eller 3 fast då kastar vi bort minne, dock kan vi behöva
+        några av dessa bitar). Dvs:
+        
+        8 bitar per rad:
+        [ OP + ADR MODES ]
+        [ OPERAND1 del 1 ]
+        [ OPERAND1 del 2 ]
+        [ OPERAND2 del 1 ]
+        [ OPERAND2 del 2 ]
+        
+        eller med 16 bitar per rad:        
+        [ OP + ADR (+ junk bits) ]
+        [ OPERAND1 ]
+        [ OPERAND2 ]
+        
+        Problemet med detta system är att vi ej kan kasta bort några sista bitar och automagiskt få ett minne med 1 instruktion per 'rad'.
+        Vi skulle behöva multiplicera vår adress med 5 eller 3 innan vi kan använda den (då vi absolut ej kan lita på
+        programmeraren, som är spelaren!). AKA; shit is creepy as fuck. ;_;
+        
+        Ett långt minne är ej trovärdigt då det förmodligen ej finns. Varför anser du att 3 st parallela minnen är orealistiskt?
+        2 st minnen används inom Harvardarkitekturen. Vi borde eventuellt kunna få en trevlig presandabonus om vi kan dumpa över
+        OP-kod och operander samtidigt (då alla instruktioner har exakt 2 operander). Vi borde kunna tänka oss att alla minnena
+        är av exakt samma typ och vi läser / skriver till dem samtidigt.
