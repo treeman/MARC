@@ -1,4 +1,3 @@
-
 NOTE: COREWAR finns till linux, kolla i er favorit package manager!
       Dock använder man inte package managers! :p
 
@@ -59,3 +58,7 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
 
         Sant vi hade inte indexerad!
 
+- (Jesper) Jag tänkte att vi har 2 direktkanaler mellan minnena och ALUna. Vi får skissa lite på det och räkna klockcykler emot hårdvara.
+        Har funderat lite på storkelen för minnena och kommit fram till följande:
+ * Instruktionen måste minnst vara 8 bitar, 4 bitar för OP code och 2*2 bitar för adresseringsmoderna.
+ * Antalet platser i minnet är vanligtvis 8000, 8192, eller 55440. Dessa behöver antingen 13 eller 16 bitar för att adresseras.
