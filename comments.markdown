@@ -1,5 +1,6 @@
 NOTE: COREWAR finns till linux, kolla i er favorit package manager!
       Dock använder man inte package managers! :p
+      Get it @ http://www.koth.org/pmars/
 
 # Ett awesomesauce namn till datorn!
 
@@ -153,6 +154,8 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
         Problemet med detta system är att vi ej kan kasta bort några sista bitar och automagiskt få ett minne med 1 instruktion per 'rad'.
         Vi skulle behöva multiplicera vår adress med 5 eller 3 innan vi kan använda den (då vi absolut ej kan lita på
         programmeraren, som är spelaren!). AKA; shit is creepy as fuck. ;_;
+        
+        => Lagra ej instruktioner på dessa sätt!
         
         Ett långt minne är ej trovärdigt då det förmodligen ej finns. Varför anser du att 3 st parallela minnen är orealistiskt?
         2 st minnen används inom Harvardarkitekturen. Vi borde eventuellt kunna få en trevlig presandabonus om vi kan dumpa över
