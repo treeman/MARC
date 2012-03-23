@@ -3,13 +3,14 @@ Todo
 ====
 
 ## v12
-- bestämma projekt
-  DONE
-- skriva en kravspec (KS)
-  DONE
-- Olle godkänner KS
-- pdf -> Olle senast fredag 1700
-  DONE
+- bestämma projekt  
+    DONE
+- skriva en kravspec (KS)  
+    DONE
+- Olle godkänner KS  
+    DONE
+- pdf -> Olle senast fredag 1700  
+    DONE
 
 ## v13
 - skriva designskiss (DS)

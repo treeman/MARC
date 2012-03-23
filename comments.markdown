@@ -60,5 +60,15 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
 
 - (Jesper) Jag tänkte att vi har 2 direktkanaler mellan minnena och ALUna. Vi får skissa lite på det och räkna klockcykler emot hårdvara.
         Har funderat lite på storkelen för minnena och kommit fram till följande:
- * Instruktionen måste minnst vara 8 bitar, 4 bitar för OP code och 2*2 bitar för adresseringsmoderna.
+ * Instruktionen måste minnst vara 8 bitar, 4 bitar för OP code och `2*2` bitar för adresseringsmoderna.
  * Antalet platser i minnet är vanligtvis 8000, 8192, eller 55440. Dessa behöver antingen 13 eller 16 bitar för att adresseras.
+
+- (Jonas)
+        Och hur skulle man bestämma vad varje ALU skulle göra? Men ja känns som att man borde skissa på det.
+
+        Jag undrade lite på hur vi ska lagra adresseringsoperanden till de olika a-moderna?
+        Stod i Redcode specen att varje instruktion endast upptog en rad, men det inkluderar väl knappast operanden som
+        borde följas direkt efter instruktionen? Eller tänker jag helt helt fel? xD
+
+        Storlekerna ser i övrigt bra ut. Jag har ingen aning hur mycket minne och så vi får tillgång till dock?
+
