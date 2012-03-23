@@ -73,11 +73,31 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
         Storlekerna ser i övrigt bra ut. Jag har ingen aning hur mycket minne och så vi får tillgång till dock?
 
 - (Jesper)
-		Man styr ALUs via µKod som vanligt. Det är en instruktion per rad, inklusive operander. 
-		EX: MOV 0, 1 (IMP-koden).
-		Jag skulle lösa detta via att ha 3 parallella minnen med dessa innehåll:
-		[ OP+ADDRModes: 8 bitar ] [ OPERAND1: 13-16 bitar ] [ OPERAND2: 13-16 bitar ]
-		
-		Det kan tillkomma 2 bitar till för ägande 'spelare' (visuellt)
-		
-		Jag hoppas att vi får tillgång till några hyfsat moderna minnen, alternativt att det finns minne på kortet.
+        Man styr ALUs via µKod som vanligt. Det är en instruktion per rad, inklusive operander.
+        EX: MOV 0, 1 (IMP-koden).
+        Jag skulle lösa detta via att ha 3 parallella minnen med dessa innehåll:
+        [ OP+ADDRModes: 8 bitar ] [ OPERAND1: 13-16 bitar ] [ OPERAND2: 13-16 bitar ]
+
+        Det kan tillkomma 2 bitar till för ägande 'spelare' (visuellt)
+
+        Jag hoppas att vi får tillgång till några hyfsat moderna minnen, alternativt att det finns minne på kortet.
+
+- (Jonas)
+        Det jag menar är att vi kommer inte kunna köra parallella mikroprogram, och då har vi inte heller någon nytta av parallella ALU:s.
+
+        Om vi har en instruktion inklusive operander per rad så kan vi antingen ha breda minnen (8 + 13-16 + 13-16 = 34-40) vilket
+        inte direkt är verklighetstroget. Men 3 parallella minnen är inte heller verklighetstroget, ännu mindre skulle jag säga!
+        Då har vi alla problem och inga fördelar jämfört med ett enda brett minne!
+
+        Enda alternativet som jag ser är att vi sätter operanden efter i minnet, dvs om minnet är 16 bit brett:
+
+        [ OP + ADDR Modes + 8 bit operand = 16 bit ]
+
+        eller
+
+        [ instr + ADDR Modes ]
+        [     OP 16 bit      ]
+
+        Vilket verkar vettigare.
+        Jag antar att Redcode specen menade att man inte får bryta upp en instruktion på flera rader men att operanderna får komma efter.
+
