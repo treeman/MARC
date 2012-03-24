@@ -190,3 +190,33 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
             Det kan nog ta länge att dumpa ut hela minnet till IO, så vi kanske gör det en gång och sen dumpar ut förändringar?
             Direktmappad IO eller avbrott?
 
+- (Jesper)
+        Ideen är att dela upp minnena i:
+        1:a minnet: OP kod + Address mode, behöver endast bli kopplat till µPC, sig själv (för kopiering) & IO. 8 Bitar
+        2:a minnet, 1:a Operanden. 13-16 bitar.
+        3:e minnet, 2:a Operanden. 13-16 bitar.
+
+        Uppdelning av minnet skulle ej bli enklare av anledningarna jag anget ovan; vi behöver multiplicera adressen.
+        
+        Exempel scenario av dubbla ALUs:
+        Vi ska köra ADD 0,1 vilket borde addera vad som finns på 0 (dvs. denna instruktion) med vad som finns efter den.
+        
+        Antag att det ser ut enligt följande:
+        
+        
+        ADD 0,1   ; Cell no. 8000
+        DAT 2,3
+        
+        µProgrammet borde då lägga in de effektiva adresserna (8000 & 8001) i 2 adressregister i µ PC delen (finns i 1:a
+        blockschemat). 8001 muxas ut till båda minnena och ALUna laddas med datan som finns där.
+        Vi har nu 2 & 3 i våra ALUs.
+        Adress 8000 muxas in till båda minnena och inehållet i minnet adderas till ALUna. Vi har nu 2 & 4 i våra ALUs
+        vilket förs tillbaka in i minnena.
+        
+                Om vi ej skulle ha dubbla ALUs skulle vi behöva göra ungefär dubbelt så mycket, eventuellt mer då vi måste skyffla mer saker på bussen.
+        
+        Om vi är awesome skulle vi även kolla om det är samma adresseringsmod på båda operanderna och i så fall räkna ut dem parallellt (eller så löser vi det via nanokod, fast nu blir det löljigt!). Iaf, vi kan använda en ALU (ex ALU 1) till att addera PC osv, finns ingenting som hindrar det.
+        
+        
+        * Vi får se vilka minne vi får tag i, som sagt tidigare, borde finnas något på kortet.
+        * Då varje instruktion högs påverkar en minnecell borde vi i slutet av µkoden ha en kodsnutt som skickar adressen som påverkats & vad som hänt med den + lite data om PCs. AKA; ej direktmappad IO i detta fallet.
