@@ -131,33 +131,62 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
         Notera att vi vill kunna adressera hela minnet, såvida vi inte vill spela enligt ett speciellt regelsätt för stora KoTH
         serverar (aka; man har en range of influence där man kan influera), operanderna måste därmed vara 13-16 bitar.
         Vi har även 2 operander. Om vi stackar detta i minnet ser det ut som:
-        
+
         [ instr + ADDR Modes 8 bits ]
         [     OP 16 bit             ]
         [     OP 16 bit             ]
-        
+
         det mest vettiga är att dela in minnet i grupper om 5 (eller 3 fast då kastar vi bort minne, dock kan vi behöva
         några av dessa bitar). Dvs:
-        
+
         8 bitar per rad:
         [ OP + ADR MODES ]
         [ OPERAND1 del 1 ]
         [ OPERAND1 del 2 ]
         [ OPERAND2 del 1 ]
         [ OPERAND2 del 2 ]
-        
-        eller med 16 bitar per rad:        
+
+        eller med 16 bitar per rad:
         [ OP + ADR (+ junk bits) ]
         [ OPERAND1 ]
         [ OPERAND2 ]
-        
+
         Problemet med detta system är att vi ej kan kasta bort några sista bitar och automagiskt få ett minne med 1 instruktion per 'rad'.
         Vi skulle behöva multiplicera vår adress med 5 eller 3 innan vi kan använda den (då vi absolut ej kan lita på
         programmeraren, som är spelaren!). AKA; shit is creepy as fuck. ;_;
-        
+
         => Lagra ej instruktioner på dessa sätt!
-        
+
         Ett långt minne är ej trovärdigt då det förmodligen ej finns. Varför anser du att 3 st parallela minnen är orealistiskt?
         2 st minnen används inom Harvardarkitekturen. Vi borde eventuellt kunna få en trevlig presandabonus om vi kan dumpa över
         OP-kod och operander samtidigt (då alla instruktioner har exakt 2 operander). Vi borde kunna tänka oss att alla minnena
         är av exakt samma typ och vi läser / skriver till dem samtidigt.
+
+- (Jonas)
+        Hmm verkar lite som att vi säger samma sak ja.
+
+        3 parallella minnen känns bara som extra jobb jämfört med ett enda brett. Dock finns det nog inga tillräckligt breda så det
+        de skulle göra är bara att emulera ett enda brett. Problemet blir väl att då måste vi ha en väldigt bred/flera parallella kanaler
+        in och ut från minnet? Ju mer jag tänker på det ju bättre låter det dock!
+
+        Om man skulle dela upp minnet i grupper om 3, eller 5, skulle själva hårdvaran bli lite enklare tror jag. Men breda/parallella
+        skulle nog vara lite snabbare.
+
+        Kanske ska vi köra på 3 parallella ändå?
+
+        Vi måste ha nåt bra sätt att hantera datan på dock. Ska allt finnas i ett av minnena? Vilket? Eller ska vi slå ihop?
+
+        # Apropå diagramet
+
+        Det verkar vettigt för det mesta. Men när kommer man använda båda ALU? Jag ser ingen skillnad med att bara ha en ALU?
+        Vi kommer alltid få tag på A och B operanderna till ALU:n som vi sen kör in i ena ALU:n? Två ALU känns onödigt?
+
+        Mikrokoden kommer dock behöva addera PC + operand vid hopp t.ex.
+
+        Lite övriga funderingar:
+
+        * Asynkron buss antar jag?
+        * Hur ska vi fixa med IO?
+            Det kan nog ta länge att dumpa ut hela minnet till IO, så vi kanske gör det en gång och sen dumpar ut förändringar?
+            Direktmappad IO eller avbrott?
+
