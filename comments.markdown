@@ -224,3 +224,28 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
 - (Jonas)
         Hmmm verkar som att jag har helt missförstått hur ADD A B fungerar! Det är definitivt bra med 2 ALU!
 
+- (Jonas) 2012-03-27
+        Möte imorgon, onsdag, kl 2!
+
+        Jag har skissat för hand på en skiss över vårt bygge. För det mesta är det som Jespers skiss, har lagt till lite mer kablar, en buss och storlek på register och liknande.
+        Lite funderingar:
+
+        * Ett statusregister med status för båda spelares processer, game over? Vems tur? Och vi kan lagra Z flaggan där.
+
+        * La till en FIFO som en cirkulär kö. Full när write flyttas till read och tom när read flyttas till write. Enkelt faktiskt.
+
+        * Vi måste ha 2 st omgångar av a-modsarbete för A resp. B operanderna?
+            Inte helt på det klara hur mikrokoden kommer hantera olika typer av A moder dock, kan bli lite konstigt då den ska göra olika saker beroende på vilken a-mod det är.
+
+        * 2 korskopplade ALU går visserligen snabbare, men det kommer bli sjukt mycket mer komplext och tjänar vi så mycket på dem?
+            Vi kommer dock skriva VHDL som gör det sjukt mycket lättare...
+
+        * Hur många processer ska man kunna ha? Dvs hur lång ska FIFO vara?
+
+        * Bredd och längd på mikrominne är inget vi kan bestämma förrän alla styrsignaler är klara...
+
+        * Compare i ALU:n eller något på sidan?
+
+        * Behöver vi data register och adressregister före och efter minnet? Varför inte bara köra in trådar direkt från muxen/bussen/etc?
+            Blir det inte bara extra väntetid om man har dem?
+
