@@ -236,15 +236,12 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
 
         * Vi måste ha 2 st omgångar av a-modsarbete för A resp. B operanderna?
             Inte helt på det klara hur mikrokoden kommer hantera olika typer av A moder dock, kan bli lite konstigt då den ska göra olika saker beroende på vilken a-mod det är.
-
-        * 2 korskopplade ALU går visserligen snabbare, men det kommer bli sjukt mycket mer komplext och tjänar vi så mycket på dem?
-            Vi kommer dock skriva VHDL som gör det sjukt mycket lättare...
+            Finns klart och tydligt specat i specen i vilken ordning då det kan vara lite complext med indirect predecrement.
+            Vi får fundera mer på den när vi ska skriva mikrokoden.
 
         * Hur många processer ska man kunna ha? Dvs hur lång ska FIFO vara?
 
         * Bredd och längd på mikrominne är inget vi kan bestämma förrän alla styrsignaler är klara...
-
-        * Compare i ALU:n eller något på sidan?
 
         * Behöver vi data register och adressregister före och efter minnet? Varför inte bara köra in trådar direkt från muxen/bussen/etc?
             Blir det inte bara extra väntetid om man har dem?

@@ -1,0 +1,49 @@
+
+We will implement CoreWars as specified in the redcode '88 standard.
+
+
+# Instruction format
+
+OP A B
+
+OP is an instruction and A and B are operands.
+A and B must be able to adress the whole memory (13-16 bits each if we're shooting on 8192-55440 lines)
+The instruction must be on a single line.
+
+
+# Adressing modes
+
+10 a-mods
+
+* Direct
+    Operand is a relative offset pointing to a memory location
+
+* Immediate
+    The operand is the data value
+
+* Indirect
+    Operand is a relative offset pointing to a memory location.
+    That location's B address is then used as a memory offset from that memory position.
+
+* Predecrement-indirect
+    Operand is a relative offset pointing to a memory location.
+    The B operand of that memory is fetched, decremented, and restored.
+    It is then used as an offset from that memory position to a new memory adress.
+
+
+# Instruction set
+
+11 instructions
+
+DAT A B, remove executing process from process queue
+MOV A B, move A to B
+ADD A B, add A to B
+SUB A B, subtract A from B
+JMP A B, jump to A
+JMZ A B, jump to A if B is zero
+JMN A B, jump to A if B is not zero
+CMP A B, if A equals B then skip next instruction
+SLT A B, if A is less than B then skip next instruction
+DJN A B, decrement A; if B is not zero then jump to A
+SPL A B, place A in the process queue
+
