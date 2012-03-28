@@ -246,3 +246,5 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
         * Behöver vi data register och adressregister före och efter minnet? Varför inte bara köra in trådar direkt från muxen/bussen/etc?
             Blir det inte bara extra väntetid om man har dem?
 
+        * Synkroniserad I/O med UART (inkl väntetid) eller avbrott?
+
