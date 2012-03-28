@@ -242,6 +242,7 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
         * Hur många processer ska man kunna ha? Dvs hur lång ska FIFO vara?
 
         * Bredd och längd på mikrominne är inget vi kan bestämma förrän alla styrsignaler är klara...
+            I min skiss, som inte ens är fulländad ännu, har vi närmare 40 trådar vi måste styra! Borde kunna förenkla?
 
         * Behöver vi data register och adressregister före och efter minnet? Varför inte bara köra in trådar direkt från muxen/bussen/etc?
             Blir det inte bara extra väntetid om man har dem?
