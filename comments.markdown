@@ -248,4 +248,5 @@ Den fick heta MARC, skjut mig om det inte är awesome nog!
             Blir det inte bara extra väntetid om man har dem?
 
         * Synkroniserad I/O med UART (inkl väntetid) eller avbrott?
-
+- (Jesper)
+        * Laggt dit minnesskiss, det borde på plats (minst) 3 st av dem i en FPGA och bli över minne till FIFO, µkod, etc.
