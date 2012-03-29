@@ -1,0 +1,8 @@
+
+Are buffer registers before/after memory necessary?
+Do we then need buffers before/after FIFO as well?!?
+We have too many signals... We might not be able to use our 2nd ALU.
+
+Först hade jag inmuxad buss och PC och även databuss till adresserna till minnet, men det blir lite mycket.
+Inte inritat är kopplingar mellan ALU:n tillbaks till data registren, men de ska vara tillbaks också.
+Tror nästan att vi måste kapa vår 2:a ALU då styrsignalerna inte verkar räcka till. Tror vi kommer upp i en 40-50 st nu?

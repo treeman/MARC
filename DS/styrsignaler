@@ -1,0 +1,72 @@
+
+Styrsignaler:
+
+3x minne
+    read/write
+
+graphic
+    set color
+
+buss
+    pc in/out
+    mem in/out A
+    mem in/out B
+    mem in/out OP
+    ALU A in/out
+    ALU B in/out
+    IR out
+    OP adr out
+    A adr out
+    B adr out
+    FIFO in/out
+
+uPC
+    OP avk
+    adr A avk
+    adr B avk
+    = 0
+    + 1
+    load from uMem
+
+PC
+    +1
+
+ALU
+    (same?)
+    -1
+    +1
+    load
+    add
+    sub
+    cmp
+
+    (different signals)
+    from A mem
+    from B mem
+    to A mem (not in schema)
+    to B mem (not in schema)
+
+FIFO
+    read/write
+
+    incr p1 read
+    zero p1 read
+    incr p1 write
+    zero p1 write
+
+    incr p2 read
+    zero p2 read
+    incr p2 write
+    zero p2 write
+
+    change player
+
+(not in schema, necessary for speed! Otherwise 2 ALU are useless)
+from ALU A result to mem B
+from ALU B result to mem A
+
+(maybe? not in schema)
+PC -> A adr
+PC -> B adr
+PC -> OP adr
+
