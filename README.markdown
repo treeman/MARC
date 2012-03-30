@@ -2,6 +2,25 @@
 Todo
 ====
 
+* Dela upp schemat i block och definiera in- och utsignaler.
+    Förslagsvis:
+    * Fifo
+    * Primärminnet
+    * Minneshantering runt om primärminnet
+    * ALU
+    * Mikrominnesdelen
+    * I/O med FBART
+    * Grafikdel
+
+* Hur ska vi hantera reset/start?
+
+* Skriva ut en fyrkant genom VGA
+
+* Hämta någon input genom UART
+
+Schema
+------
+
 ## v12
 - bestämma projekt  
     DONE
@@ -13,11 +32,15 @@ Todo
     DONE
 
 ## v13
-- skriva designskiss (DS)
-- träffa handledaren
+- skriva designskiss (DS)  
+    DONE
+- träffa handledaren  
+    DONE
 - handledaren godkänner DS
-- pdf -> Olle senast fredag 1700
-- delta i en lab till
+- pdf -> Olle senast fredag 1700  
+    DONE
+- delta i en lab till  
+    DONE
 
 ## v14-15
 - Påsk + omtentaP
