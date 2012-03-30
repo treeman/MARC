@@ -1,7 +1,7 @@
 %!PS-Adobe-3.0 EPSF-3.0
 %%Title: skiss1.ps
 %%Creator: XCircuit v3.7 rev13
-%%CreationDate: Fri Mar 30 14:55:34 2012
+%%CreationDate: Fri Mar 30 16:19:53 2012
 %%Pages: 1
 %%BoundingBox: 68 68 1106 877
 %%DocumentNeededResources: font Helvetica HelveticaISO 
@@ -218,14 +218,12 @@ endgate
 1 1.000 -32 368 -32 336 -96 336 -96 208 4 polygon
 1 1.000 128 368 128 320 -64 320 -64 320 -64 320 -64 208 6 polygon
 1 1.000 -32 208 -32 256 2 polygon
-(0) {/Helvetica cf} 2 16 0 1.000 -48 272 label
-1 1.000 16 256 16 208 2 polygon
-(+1) {/Helvetica cf} 2 16 0 1.000 0 272 label
+1 1.000 0 256 0 208 2 polygon
 1.000 90 -128 224 generic::tap
 1.000 90 -96 224 generic::tap
 1.000 90 -64 224 generic::tap
 1.000 90 -32 224 generic::tap
-1.000 90 16 224 generic::tap
+1.000 90 0 224 generic::tap
 1.000 90 128 464 generic::tap
 1.000 90 -32 464 generic::tap
 1.000 90 -192 464 generic::tap
@@ -242,7 +240,7 @@ endgate
 (uMinne) {/Helvetica cf} 2 16 0 1.000 -112 -112 label
 1 1.000 144 176 64 176 2 polygon
 1.000 180 64 176 generic::tap
-1 1.000 176 176 144 176 2 polygon
+1 1.000 336 176 144 176 2 polygon
 1 1.000 128 192 112 160 2 polygon
 1 1.000 48 208 48 256 256 256 256 -128 96 -128 128 -128 6 polygon
 1.000 90 48 224 generic::tap
@@ -253,16 +251,16 @@ endgate
 1.000 90 -48 -368 generic::tap
 (styrsignaler) {/Helvetica cf} 2 16 0 1.000 -144 -416 label
 (13 bit buss) {/Helvetica cf} 2 16 0 1.000 -544 1168 label
-0 1.000 560 160 560 224 288 224 288 160 4 polygon
-(Z) {/Helvetica cf} 2 16 0 1.000 304 176 label
-(P1) {/Helvetica cf} 2 16 0 1.000 368 176 label
-(P2) {/Helvetica cf} 2 16 0 1.000 432 176 label
-(T) {/Helvetica cf} 2 16 0 1.000 656 176 label
-(SR) {/Helvetica cf} 2 16 0 1.000 352 240 label
-1 1.000 496 224 496 160 2 polygon
-1 1.000 416 224 416 160 2 polygon
-1 1.000 352 224 352 160 2 polygon
-(6bit) {/Helvetica cf} 2 16 0 1.000 448 240 label
+0 1.000 480 -400 480 -336 208 -336 208 -400 4 polygon
+(Z) {/Helvetica cf} 2 16 0 1.000 224 -384 label
+(P1) {/Helvetica cf} 2 16 0 1.000 288 -384 label
+(P2) {/Helvetica cf} 2 16 0 1.000 352 -384 label
+(T) {/Helvetica cf} 2 16 0 1.000 576 -384 label
+(SR) {/Helvetica cf} 2 16 0 1.000 272 -320 label
+1 1.000 416 -336 416 -400 2 polygon
+1 1.000 336 -336 336 -400 2 polygon
+1 1.000 272 -336 272 -400 2 polygon
+(6bit) {/Helvetica cf} 2 16 0 1.000 368 -320 label
 0 1.000 -608 896 -608 960 -864 960 -864 896 4 polygon
 (PC) {/Helvetica cf} 2 16 0 1.000 -768 912 label
 (13) {/Helvetica cf} 2 16 0 1.000 -544 960 label
@@ -409,10 +407,10 @@ label
 (set to 1 when FIFO empty, when write = read) {/Helvetica cf} 2 16 0 1.000 240 
 496 label
 (after write +1) {/Helvetica cf} 2 16 0 1.000 240 448 label
-(F1) {/Helvetica cf} 2 16 0 1.000 512 176 label
-(F2) {/Helvetica cf} 2 16 0 1.000 576 176 label
-1 1.000 560 160 640 160 640 224 560 224 4 polygon
-1 1.000 640 224 704 224 704 160 640 160 4 polygon
+(F1) {/Helvetica cf} 2 16 0 1.000 432 -384 label
+(F2) {/Helvetica cf} 2 16 0 1.000 496 -384 label
+1 1.000 480 -400 560 -400 560 -336 480 -336 4 polygon
+1 1.000 560 -336 624 -336 624 -400 560 -400 4 polygon
 (Fx set means FIFO full for Player x) {/Helvetica cf} 2 16 0 1.000 240 368 
 label
 (set to 1 when read = write after read +1) {/Helvetica cf} 2 16 0 1.000 240 320 
@@ -750,6 +748,47 @@ label
 (16 bit) {/Helvetica cf} 2 16 0 0.800 -864 272 label
 (13 bit) {/Helvetica cf} 2 16 0 0.800 -912 336 label
 (13 bit) {/Helvetica cf} 2 16 0 0.800 -1152 336 label
+(0) {/Helvetica cf} 2 16 0 0.800 -48 272 label
+(+1) {/Helvetica cf} 2 16 0 0.800 -16 272 label
+0 1.000 336 208 336 128 416 128 416 208 4 polygon
+(K2) {/Helvetica cf} 2 16 0 0.800 352 160 label
+1 1.000 96 -192 384 -192 2 polygon
+1 1.000 384 128 384 -192 2 polygon
+1.000 270 384 112 generic::tap
+1 1.000 288 -176 304 -208 2 polygon
+(2) {/Helvetica cf} 2 16 0 0.800 320 -224 label
+(mikrohopp kontroller) {/Helvetica cf} 2 16 0 0.800 288 224 label
+0 1.000 800 48 800 0 944 0 944 48 4 polygon
+0 1.000 800 -48 800 -96 944 -96 944 -48 4 polygon
+1 1.000 800 32 704 32 2 polygon
+1 1.000 800 -64 752 -64 752 -16 704 -16 4 polygon
+(read) {/Helvetica cf} 2 16 0 1.000 832 16 label
+(write) {/Helvetica cf} 2 16 0 1.000 832 -80 label
+1 1.000 800 48 816 24 800 0 3 polygon
+1 1.000 801 -47 817 -71 801 -95 3 polygon
+0 1.000 576 -32 576 48 496 48 496 -32 4 polygon
+(K1) {/Helvetica cf} 2 16 0 0.800 512 0 label
+1 1.000 512 48 512 128 2 polygon
+(+1 read) {/Helvetica cf} 2 16 0 0.800 496 144 label
+1 1.000 544 48 544 96 576 96 3 polygon
+(+1 write) {/Helvetica cf} 2 16 0 0.800 592 96 label
+1.000 180 720 32 generic::tap
+1.000 180 720 -16 generic::tap
+1.000 90 544 64 generic::tap
+0 1.000 624 48 624 -32 704 -32 704 48 4 polygon
+(cmp) {/Helvetica cf} 2 16 0 0.800 640 0 label
+1.000 180 592 0 generic::tap
+1 1.000 624 0 576 0 2 polygon
+1.000 90 512 64 generic::tap
+(Player x) {/Helvetica cf} 2 16 0 0.800 768 144 label
+1 1.000 512 -32 512 -96 2 polygon
+(Px) {/Helvetica cf} 2 16 0 0.800 496 -144 label
+1 1.000 560 -32 560 -96 2 polygon
+(Fx) {/Helvetica cf} 2 16 0 0.800 544 -144 label
+1.000 90 560 -80 generic::tap
+1.000 90 512 -80 generic::tap
+3 1.000 464 -208 464 192 608 192 608 288 224 288 224 592 1072 592 1072 -208 464 
+-208 9 polygon
 pgsave restore showpage
 
 %%Trailer
