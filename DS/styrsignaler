@@ -2,71 +2,161 @@
 Styrsignaler:
 
 3x minne
-    read/write
+    2bit
+        read
+        write
+        nothing
 
 graphic
-    set color
+    1bit
+        set color
+        nothing
 
-buss
-    pc in/out
-    mem in/out A
-    mem in/out B
-    mem in/out OP
-    ALU A in/out
-    ALU B in/out
-    IR out
-    OP adr out
-    A adr out
-    B adr out
-    FIFO in/out
+buss in
+    4bit
+        PC
+        M1
+        M2
+        OP
+        AR A
+        AR B
+        FIFO
+        I/O
+
+buss out
+    4bit
+        PC
+        M1
+        M2
+        OP
+        ALU A
+        ALU B
+        IR
+        ADR
+        FIFO
+        I/O
+        nothing
 
 uPC
-    OP avk
-    adr A avk
-    adr B avk
-    = 0
-    + 1
-    load from uMem
+    3 bit function
+        OP avk
+        adr A avk
+        adr B avk
+        = 0
+        + 1
+        load from uMem
 
 PC
-    +1
+    1bit
+        +1
+        nothing
 
-ALU
-    (same?)
-    -1
-    +1
-    load
-    add
-    sub
-    cmp
+ADR
+    3 bit select from
+        M1
+        M2
+        AR A
+        AR B
+        PC
+        buss
+        nothing
 
-    (different signals)
-    from A mem
-    from B mem
-    to A mem (not in schema)
-    to B mem (not in schema)
+ALU (both)
+    3bit control function
+        -1
+        +1
+        load
+        add
+        sub
+        cmp
+        nothing
+
+ALU A
+    2 bit select input
+        M1
+        M2
+        PC
+        buss
+
+ALU B
+    2 bit select input
+        M1
+        M2
+        PC
+        buss
 
 FIFO
-    read/write
+    2bit
+        read
+        write
+        nothing
 
-    incr p1 read
-    zero p1 read
-    incr p1 write
-    zero p1 write
+    3 bit P1 function
+        incr read
+        zero read
+        incr write
+        zero write
+        nothing
 
-    incr p2 read
-    zero p2 read
-    incr p2 write
-    zero p2 write
+    3 bit P2 function
+        incr read
+        zero read
+        incr write
+        zero write
+        nothing
 
-    change player
+    1bit
+        change player
+        nothing
 
-(not in schema, necessary for speed! Otherwise 2 ALU are useless)
-from ALU A result to mem B
-from ALU B result to mem A
+M1
+    3 bit choose in
+        AR A
+        AR B
+        M2
+        buss
+        nothing
 
-(maybe? not in schema)
-PC -> A adr
-PC -> B adr
-PC -> OP adr
+M2
+    3 bit choose in
+        AR A
+        AR B
+        M1
+        buss
+        nothing
+
+hopp i mikrominnet
+    256 rader?
+    8 bit hoppaddress
+
+    2bit hoppinstr
+        ovillkorligt hopp
+        hoppa på Z?
+        inget hopp
+        ?
+
+Totalt
+    2 rw OP mem
+    2 rw op1 mem
+    2 rw op1 mem
+    1 graphic set color
+    4 buss in
+    4 buss out
+    3 uPC
+    1 PC
+    3 ADR
+    3 ALU (both)
+    2 ALU A input
+    2 ALU B input
+    7 FIFO
+    3 M1
+    3 M2
+
+    42 styrsignaler
+
+    256 rader?
+    8 bit till som hoppaddress
+    2 bit hoppinstruktioner?
+
+    52 bit
 
