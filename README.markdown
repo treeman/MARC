@@ -16,20 +16,61 @@ Rest
     * Ingen output till fbart
     * Uppdelad 8bit -> 16 bit input
     * Saknad mikrohopp styrsignal
+    * Insignal färg (skriva från vad?) till grafikminnet
 
 * Dela upp schemat i block och definiera in- och utsignaler. Dessa kan vi sedan göra var för sig.
     Förslagsvis:
     * Fifo
+        In:  
+            * Set 13 bit
+            * Who's turn? 1 bit (T ->)
+            * Read 1 bit
+            * Write 1 bit
+            * Reset (clear both queues) 1 bit
+        Ut:  
+            * Read 13 bit
+            * Game over player 1, 1 bit (-> P1)
+            * Game over player 2, 1 bit (-> P2)
+            * Queue full player 1, 1 bit (-> F1)
+            * Queue full player 2, 1 bit (-> F2)
+
     * Primärminnet
+        In:  
+            * Adress 13 bit
+            * Graphic adress 13 bit
+            * Read graphics 1 bit
+            * Write graphics 1 bit
+            * Graphics color in 8 bit
+            * Read 1 bit
+            * Write 1 bit
+        Ut:  
+            * Graphics color 8 bit
+        In/Ut:  
+            * OP 8 bit
+            * Mem1 13 bit
+            * Mem2 13 bit
+
     * Minneshantering runt om primärminnet
     * ALU
     * Mikrominnesdelen
-    * I/O med FBART
+    * I/O med FBART  
         Vi behöver endast input
     * Grafikdel
-    * Bussen
-        Massa till/från
-        Aktivera buss
+        In:  
+            * Graphics clock 1 bit
+            * Output color 8 bit (eller så många vi behöver)
+        Ut:  
+            * Color adress 13 bit
+            * hsync 1 bit
+            * vsync 1 bit
+            * red 3 bit
+            * green 3 bit
+            * blue 2 bit
+
+    * Bussen  
+        In:  
+            * Active 1 bit
+        Massa till/från...  
 
 * Hur ska vi hantera reset/start?
     Vi borde kunna detektera reset knappen från FPGA:n. Därefter kan vi i början av mikrokoden kolla om vi har reset och sen hoppa till en uppstartskodsnutt som ska göra:
