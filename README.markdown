@@ -2,7 +2,22 @@
 Todo
 ====
 
-* Dela upp schemat i block och definiera in- och utsignaler.
+Prio 1
+-----
+
+* Skriva ut en fyrkant genom VGA
+* Hämta någon input genom UART
+
+Rest
+----
+
+* Uppdatera blockschemat med
+    * Räknare till mikropragrammet för att styra snabbheten
+    * Ingen output till fbart
+    * Uppdelad 8bit -> 16 bit input
+    * Saknad mikrohopp styrsignal
+
+* Dela upp schemat i block och definiera in- och utsignaler. Dessa kan vi sedan göra var för sig.
     Förslagsvis:
     * Fifo
     * Primärminnet
@@ -10,13 +25,26 @@ Todo
     * ALU
     * Mikrominnesdelen
     * I/O med FBART
+        Vi behöver endast input
     * Grafikdel
+    * Bussen
+        Massa till/från
+        Aktivera buss
 
 * Hur ska vi hantera reset/start?
+    Vi borde kunna detektera reset knappen från FPGA:n. Därefter kan vi i början av mikrokoden kolla om vi har reset och sen hoppa till en uppstartskodsnutt som ska göra:
 
-* Skriva ut en fyrkant genom VGA
+    1. Fyll minnet med DAT instruktioner
+    2. Rensa PC köerna
+    3. Hämta och lägg in PC player 1
+    4. Fyll i player 1 program
+    5. Hämta och lägg in PC player 2
+    6. Fyll i player 2 program
+    7. Reset status (Game over etc)
 
-* Hämta någon input genom UART
+    Borde fungera ganska bra?
+
+* Hur allokerar vi det fysiska minnet i FPGA:n med kod i VHDL?
 
 Schema
 ------
@@ -36,14 +64,16 @@ Schema
     DONE
 - träffa handledaren  
     DONE
-- handledaren godkänner DS
+- handledaren godkänner DS  
+    DONE
 - pdf -> Olle senast fredag 1700  
     DONE
 - delta i en lab till  
     DONE
 
 ## v14-15
-- Påsk + omtentaP
+- Påsk + omtentaP  
+    DONE
 
 ## v16
 - skriva VHDL, 1:a byggveckan
