@@ -16,11 +16,15 @@ Rest
     * Ingen output till fbart
     * Uppdelad 8bit -> 16 bit input
     * Saknad mikrohopp styrsignal
-    * Insignal färg (skriva från vad?) till grafikminnet
+    * Insignal färg (skriva från vad?) till grafikminnet.  
+        Ett nät med indata:  
+        * T (vems tur) 1 bit
+        * OP kod 8 bit
+        * Reset mode 1 bit
 
-* Dela upp schemat i block och definiera in- och utsignaler. Dessa kan vi sedan göra var för sig.
+* Dela upp schemat i block och definiera in- och utsignaler. Dessa kan vi sedan göra var för sig.  
     Förslagsvis:
-    * Fifo
+    * Fifo  
         In:  
             * Set 13 bit
             * Who's turn? 1 bit (T ->)
@@ -34,7 +38,7 @@ Rest
             * Queue full player 1, 1 bit (-> F1)
             * Queue full player 2, 1 bit (-> F2)
 
-    * Primärminnet
+    * Primärminnet  
         In:  
             * Adress 13 bit
             * Graphic adress 13 bit
@@ -55,7 +59,7 @@ Rest
     * Mikrominnesdelen
     * I/O med FBART  
         Vi behöver endast input
-    * Grafikdel
+    * Grafikdel  
         In:  
             * Graphics clock 1 bit
             * Output color 8 bit (eller så många vi behöver)
