@@ -11,17 +11,6 @@ Prio 1
 Rest
 ----
 
-* Uppdatera blockschemat med
-    * Räknare till mikropragrammet för att styra snabbheten
-    * Ingen output till fbart
-    * Uppdelad 8bit -> 16 bit input
-    * Saknad mikrohopp styrsignal
-    * Insignal färg (skriva från vad?) till grafikminnet.  
-        Ett nät med indata:  
-        * T (vems tur) 1 bit
-        * OP kod 8 bit
-        * Reset mode 1 bit
-
 * Dela upp schemat i block och definiera in- och utsignaler. Dessa kan vi sedan göra var för sig.  
     Förslagsvis:
     * Fifo  
@@ -44,10 +33,10 @@ Rest
         * Adress 13 bit
         * Graphic adress 13 bit
         * Read graphics 1 bit
-        * Write graphics 1 bit
+        * Write graphics 1 bit (ev samma som read?)
         * Graphics color in 8 bit
         * Read 1 bit
-        * Write 1 bit
+        * Write 1 bit (ev fler?)
 
         Ut:  
         * Graphics color 8 bit

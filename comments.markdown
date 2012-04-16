@@ -8,3 +8,16 @@ NOTE: COREWAR, Get it @ http://www.koth.org/pmars/
     * Ja. Enklast vore att bara ha ett tvådelat register mellan input och bussen där vi fyller ena sidan, sen den andra och sen skickar ut på bussen. Kan skötas av mikrokod ganska simpelt?
     * Ja.
 
+- (Jonas)
+    * Har uppdaterat blockschemat. Har delat ut lite in/ut signaler till vissa saker.
+
+      Jag tycker att det här ska vi klara av denna vecka:
+
+      * Hämta ut vår FPGA
+      * Rita ut en fyrkant med VGA
+      * Hämta en 13 bit input genom uart
+      * Dela upp ansvarsområden att implementera (tycker VGA + uart görs genemsamt, iaf VGA:n)
+        Dela upp ut/in signaler i våra block.
+
+      Eller vad sägs?
+

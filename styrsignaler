@@ -1,0 +1,160 @@
+
+Styrsignaler:
+
+3x minne
+    2bit
+        read
+        write
+        nothing
+
+graphic
+    1 bit (0 bit?)
+        reset (sätt neutral färg när vi rensar minnet, kanske kan ledas till `not (P1 or P2)` om vi ej rensar status före)
+
+buss in
+    4bit
+        PC
+        M1
+        M2
+        OP
+        AR A
+        AR B
+        FIFO
+        I/O
+
+buss out
+    4bit
+        PC
+        M1
+        M2
+        OP
+        ALU A
+        ALU B
+        IR
+        ADR
+        FIFO
+        I/O
+        nothing
+
+uPC
+    3 bit function
+        OP avk
+        adr A avk
+        adr B avk
+        = 0
+        + 1
+        jmp
+        jmpz
+
+    hopp i mikrominnet
+        256 rader?
+        8 bit hoppaddress
+
+uCount
+    2 bit
+        0
+        +1
+        update Z
+
+PC
+    1bit
+        +1
+        nothing
+
+ADR
+    3 bit select from
+        M1
+        M2
+        AR A
+        AR B
+        PC
+        buss
+        nothing
+
+ALU (both)
+    3bit control function
+        -1
+        +1
+        load
+        add
+        sub
+        cmp
+        nothing
+
+ALU A
+    2 bit select input
+        M1
+        M2
+        PC
+        buss
+
+ALU B
+    2 bit select input
+        M1
+        M2
+        PC
+        buss
+
+FIFO
+    2bit
+        read
+        write
+        nothing
+
+    3 bit P1 function
+        incr read
+        zero read
+        incr write
+        zero write
+        nothing
+
+    3 bit P2 function
+        incr read
+        zero read
+        incr write
+        zero write
+        nothing
+
+    1bit
+        change player
+        nothing
+
+M1
+    3 bit choose in
+        AR A
+        AR B
+        M2
+        buss
+        nothing
+
+M2
+    3 bit choose in
+        AR A
+        AR B
+        M1
+        buss
+        nothing
+
+Totalt
+    2 rw OP mem
+    2 rw op1 mem
+    2 rw op1 mem
+    4 buss in
+    4 buss out
+    3 uPC
+    2 uCount
+    1 PC
+    3 ADR
+    3 ALU (both)
+    2 ALU A input
+    2 ALU B input
+    7 FIFO
+    3 M1
+    3 M2
+
+    43 styrsignaler
+
+    + 8 bit hoppaddress
+
+    51 bit
+
