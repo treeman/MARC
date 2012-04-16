@@ -11,36 +11,36 @@ end bench;
 architecture behavior of bench is
 
     -- Component declaration
-    component test
+    component Microcontroller
         Port(
             clk : in std_logic;
 
-            a : in std_logic;
-            b : in std_logic;
+            op : in std_logic_vector(7 downto 0);
+            test : in std_logic_vector(2 downto 0);
 
-            res : out std_logic
+            PC_code : out std_logic
         );
     end component;
 
     -- Inputs
     signal clk : std_logic := '0';
-    signal a : std_logic := '0';
-    signal b : std_logic := '0';
+    signal op : std_logic_vector(7 downto 0) := "00000000";
+    signal test : std_logic_vector(2 downto 0) := "000";
 
     -- Outputs
-    signal res : std_logic;
+    signal PC_code : std_logic;
 
     -- Clock period definitions
-    constant clk_period : time := 1ms;
+    constant clk_period : time := 1 us;
 
 begin
 
     -- Component instantiation
-    uut: test port map (
+    uut: Microcontroller port map (
         clk => clk,
-        a => a,
-        b => b,
-        res => res
+        op => op,
+        test => test,
+        PC_code => PC_code
     );
 
     -- Our clock
@@ -59,8 +59,9 @@ begin
 
         -- Add user defined stimulus here;
 
-        a <= '0', '1' after 1 ms, '0' after 2 ms;
-        b <= '1', '0' after 2 ms, '1' after 3 ms;
+        op <= "11111111", "01010101" after 1 us;
+
+        test <= "000", "001" after 4 us, "010" after 8 us, "011" after 12 us, "100" after 16 us;
 
         -- Wait forever, yay!
         wait;

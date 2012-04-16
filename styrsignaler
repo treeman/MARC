@@ -1,6 +1,19 @@
 
 Styrsignaler:
 
+uPC
+    000     +1
+    001     op addr
+    010     A a-mod addr
+    011     B a-mod addr
+    100     jmp
+    101     jmp on Z
+    111     0
+
+PC
+    0       PC (nothing)
+    1       +1
+
 3x minne
     2bit
         read
@@ -36,30 +49,12 @@ buss out
         I/O
         nothing
 
-uPC
-    3 bit function
-        OP avk
-        adr A avk
-        adr B avk
-        = 0
-        + 1
-        jmp
-        jmpz
-
-    hopp i mikrominnet
-        256 rader?
-        8 bit hoppaddress
 
 uCount
     2 bit
         0
         +1
         update Z
-
-PC
-    1bit
-        +1
-        nothing
 
 ADR
     3 bit select from
