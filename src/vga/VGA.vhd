@@ -83,28 +83,34 @@ begin
             end if;
 
             -- Reset horisontal counter
-            if (h_cnt = 799) then
+            if (h_cnt = 799) then	-- 799*clk = h_timing
                 h_cnt <= "0000000000";
             else
                 h_cnt <= h_cnt + 1;
             end if;
 
             -- Generate horizontal sync
-            if (h_cnt <= 755) and (h_cnt >= 699) then
+            if (h_cnt <= 755) and (h_cnt >= 699) then 
+				-- disable sync during blaking time 
                 h_sync <= '0';
             else
+				-- within display time
                 h_sync <= '1';
             end if;
 
             -- Reset vertical counter
             if (v_cnt >= 524) and (h_cnt >= 699) then
+				-- reset the vertical counter when at max vertical timing (524*clk)
+				-- and horizontal orientation is out of display time part.
                 v_cnt <= "0000000000";
             elsif (h_cnt = 699) then
+				-- increase vertical count after each horizontal display (within display time) is done.
                 v_cnt <= v_cnt + 1;
             end if;
 
             -- Generate vertical sync
             if (v_cnt <= 494) and (v_cnt >= 493) then
+				-- same with horizontal sync.
                 v_sync <= '0';
             else
                 v_sync <= '1';
@@ -112,6 +118,7 @@ begin
 
             -- Generate horizontal data
             if (h_cnt <= 639) then
+				-- 640 data
                 horisontal_en <= '1';
                 column <= h_cnt;
             else
@@ -120,6 +127,7 @@ begin
 
             -- Generate vertical data
             if (v_cnt <= 479) then
+				-- 480 data
                 vertical_en <= '1';
                 row <= v_cnt;
             else
