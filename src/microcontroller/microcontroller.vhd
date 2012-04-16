@@ -59,17 +59,26 @@ architecture Behavioral of Microcontroller is
 
     signal Z : std_logic := '0';
 
-    type Memory is array (255 downto 0) of std_logic_vector(2 downto 0);
+    type Data is array (255 downto 0) of std_logic_vector(2 downto 0);
 
-    signal Mem : Memory;
+    signal mem : Data;
+
+    signal signals : std_logic_vector(2 downto 0);
 begin
-    Mem(0) <= "000";
+    -- Initialization of microcode
+    mem(0) <= "001";
+    mem(1) <= "000";
+    mem(2) <= "000";
 
-    uPC_code <= test;
+    PC_code <= signals(0);
 
     process (clk)
     begin
         if rising_edge(clk) then
+
+            -- FIXME
+            -- convert logic_vector to integer for indexing
+            signals <= mem(to_integer(uPC));
 
             -- uPC +1
             if uPC_code = "000" then
@@ -116,8 +125,6 @@ begin
         B_addr <= "00000011" when "00",
                   "00000100" when "01",
                   "00000101" when others;
-
-    PC_code <= '1';
 
 end Behavioral;
 

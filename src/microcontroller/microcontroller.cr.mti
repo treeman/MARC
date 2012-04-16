@@ -1,12 +1,1 @@
-E:/vhdl/microcontroller/bench.vhd {2 {vcom -work work -2002 -explicit E:/vhdl/microcontroller/bench.vhd
-Model Technology ModelSim PE Student Edition vcom 10.1a Compiler 2012.02 Feb 22 2012
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package std_logic_arith
--- Loading package STD_LOGIC_UNSIGNED
--- Compiling entity bench
--- Compiling architecture behavior of bench
-** Warning: [4] E:/vhdl/microcontroller/bench.vhd(58): (vcom-1207) An abstract literal and an identifier must have a separator between them.
 
-} {} {}}
