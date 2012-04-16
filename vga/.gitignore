@@ -1,0 +1,11 @@
+*.html
+_xmsgs
+*.fdo
+*.udo
+*.prj
+transcript
+*.ise
+*.restore
+*_xdb
+work
+*.wlf
