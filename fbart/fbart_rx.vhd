@@ -1,10 +1,10 @@
 -- FBART - Fixed Bitrate Asynchronous Receiver Transmitter
 --
--- Anders Nilsson		andersn@isy.liu.se
+-- Anders Nilsson       andersn@isy.liu.se
 -- $Rev: 9806 $
 -- 29-MAR-2009
 --
---	Receiver module
+--  Receiver module
 -- 1 byte buffer, RTS flow control
 -- Protocol 8N1
 -- System clock must be 16 times that of desired bitrate
@@ -15,27 +15,27 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity fbart_rx is
-  port(clk				: in std_logic;		-- System clock input
-       reset				: in std_logic;		-- System reset input
-       rxd				: in std_logic;		-- Receiver data input
-       rxrdy				: out std_logic;		-- Receiver ready output
-       rd				: in std_logic;		-- Read received data input
-       rts				: out std_logic;		-- Request To Send output
-       d				: out std_logic_vector(7 downto 0));	-- Data bus
+  port(clk              : in std_logic;     -- System clock input
+       reset                : in std_logic;     -- System reset input
+       rxd              : in std_logic;     -- Receiver data input
+       rxrdy                : out std_logic;        -- Receiver ready output
+       rd               : in std_logic;     -- Read received data input
+       rts              : out std_logic;        -- Request To Send output
+       d                : out std_logic_vector(7 downto 0));    -- Data bus
 end fbart_rx;
 
 architecture Behavioral of fbart_rx is
-  signal rbg				: std_logic_vector(3 downto 0); -- Receive Bitrate Generator
-  signal rbs				: std_logic_vector(1 downto 0); -- Receive Bit State
-  signal rbc				: std_logic_vector(2 downto 0); -- Receive Bit Counter
-  signal rsr				: std_logic_vector(7 downto 0); -- Receive Shift Register
-  signal rdr				: std_logic_vector(7 downto 0); -- Receive Data Register
-  signal load_rdr			: std_logic; -- Load Receive Data Register
+  signal rbg                : std_logic_vector(3 downto 0); -- Receive Bitrate Generator
+  signal rbs                : std_logic_vector(1 downto 0); -- Receive Bit State
+  signal rbc                : std_logic_vector(2 downto 0); -- Receive Bit Counter
+  signal rsr                : std_logic_vector(7 downto 0); -- Receive Shift Register
+  signal rdr                : std_logic_vector(7 downto 0); -- Receive Data Register
+  signal load_rdr           : std_logic; -- Load Receive Data Register
 
   type rrs_state is (W_RSR,W_RDL,W_RDH,RDRR);
-  signal rrs				: rrs_state; -- Receive Read State
-  
-  signal rts_i			: std_logic;	-- RTS internal
+  signal rrs                : rrs_state; -- Receive Read State
+
+  signal rts_i          : std_logic;    -- RTS internal
 
 begin
 
@@ -46,19 +46,19 @@ begin
       rrs <= W_RSR;
     elsif rising_edge(clk) then
       case rrs is
-        when W_RSR => 				-- Wait until all bits shifted into RSR
+        when W_RSR =>               -- Wait until all bits shifted into RSR
           if (rbs="11" and rbc="000") then
             rrs <= W_RDL;
           end if;
-        when W_RDL =>				-- Wait for read request (rd=0)
+        when W_RDL =>               -- Wait for read request (rd=0)
           if (rd='0') then
             rrs <= W_RDH;
           end if;
-        when W_RDH =>				-- Wait for read request (rd=1)
+        when W_RDH =>               -- Wait for read request (rd=1)
           if (rd='1') then
             rrs <= RDRR;
           end if;
-        when RDRR =>				-- RDR has been read
+        when RDRR =>                -- RDR has been read
           rrs <= W_RSR;
         when others =>
           rrs <= W_RSR;
@@ -72,7 +72,7 @@ begin
   -- Request To Send (rts), active low
   rts_i <= '1' when (rbs="11" and rrs/=W_RSR) else '0';
   rts <= rts_i;
-  
+
   -- Set data out to RDR at read request (rd='0'), else 'Z'
   d <= rdr when (rrs=W_RDL) and (rd='0') else (others => 'Z');
 
