@@ -8,5 +8,5 @@
     (or this can be fixed by adding a input delay for each pixel like what we did in vga-block)
 6.  we need to have 5 outputs to the VGA connector. 
 7.  The perfect clock input for 640*480 resolution is 25,175
-8.  
+8.  make a vga clock which has 25HMz (done)
     
