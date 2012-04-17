@@ -93,29 +93,24 @@ begin
 
             signals <= mem(conv_integer(uPC));
 
-            -- uPC +1
+            -- Update uPC
             if uPC_code = "000" then
                 uPC <= uPC + 1;
-            -- uPC to OP code
             elsif uPC_code = "001" then
                 uPC <= op_addr;
-            -- uPC to op A a-mod
             elsif uPC_code = "010" then
                 uPC <= A_addr;
-            -- uPC to op B a-mod
             elsif uPC_code = "011" then
                 uPC <= B_addr;
-            -- jmp
             elsif uPC_code = "100" then
                 uPC <= uPC_addr;
-            -- jmpz
             elsif uPC_code = "101" and Z = '1' then
                 uPC <= uPC_addr;
-            -- uPC = 0
             elsif uPC_code = "111" then
                 uPC <= "00000000";
             end if;
 
+            -- Update uCounter
             if uCount_code = "00" then
                 uCounter <= uCounter + 1;
             elsif uCount_code = "01" then

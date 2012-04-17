@@ -1,0 +1,83 @@
+m255
+K3
+13
+cModel Technology
+Z0 dE:\vhdl\microcontroller
+Ebench
+Z1 w1334644848
+Z2 DPx4 ieee 18 std_logic_unsigned 0 22 RYmj;=TK`k=k>D@Cz`zoB3
+Z3 DPx4 ieee 15 std_logic_arith 0 22 4`Y?g_lkdn;7UL9IiJck01
+Z4 DPx3 std 6 textio 0 22 5>J:;AW>W0[[dW0I6EN1Q0
+Z5 DPx4 ieee 14 std_logic_1164 0 22 5=aWaoGZSMWIcH0i^f`XF1
+Z6 dE:\vhdl\microcontroller
+Z7 8E:/vhdl/microcontroller/bench.vhd
+Z8 FE:/vhdl/microcontroller/bench.vhd
+l0
+L8
+ViSTnQI<9DgGTdgmGe?l^f0
+Z9 OP;C;10.1a;51
+32
+Z10 !s108 1334646484.464000
+Z11 !s90 -reportprogress|300|-work|work|-2002|-explicit|E:/vhdl/microcontroller/bench.vhd|
+Z12 !s107 E:/vhdl/microcontroller/bench.vhd|
+Z13 o-work work -2002 -explicit -O0
+Z14 tExplicit 1
+!s100 >C6J7f^BFCX>YR>XLeY2;2
+!i10b 1
+Abehavior
+R2
+R3
+R4
+R5
+DEx4 work 5 bench 0 22 iSTnQI<9DgGTdgmGe?l^f0
+l36
+L11
+VR:LRGRbK4n<ea?h2OMX<P3
+R9
+32
+R10
+R11
+R12
+R13
+R14
+!s100 1LH0?4`4oT_:4N:D<e]iS1
+!i10b 1
+Emicrocontroller
+Z15 w1334646940
+R2
+R3
+R4
+R5
+R6
+Z16 8E:/vhdl/microcontroller/microcontroller.vhd
+Z17 FE:/vhdl/microcontroller/microcontroller.vhd
+l0
+L29
+V0RA5f7C83Mg=ViYZQT4V32
+!s100 YCFSh4;ggOF][=Acb5J070
+R9
+32
+!i10b 1
+Z18 !s108 1334646943.605000
+Z19 !s90 -reportprogress|300|-work|work|-2002|-explicit|E:/vhdl/microcontroller/microcontroller.vhd|
+Z20 !s107 E:/vhdl/microcontroller/microcontroller.vhd|
+R13
+R14
+Abehavioral
+R2
+R3
+R4
+R5
+Z21 DEx4 work 15 microcontroller 0 22 0RA5f7C83Mg=ViYZQT4V32
+l84
+L45
+VTNIaiY@AGS`J=3g6ZCJBB1
+!s100 E>S@fm6dzcdLWcG3dKcd12
+R9
+32
+!i10b 1
+R18
+R19
+R20
+R13
+R14
