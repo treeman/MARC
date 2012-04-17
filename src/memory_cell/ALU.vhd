@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:  LIU
+-- Engineer: Jesper Tingvall
 -- 
 -- Create Date:    11:56:42 04/17/2012 
 -- Design Name: 
