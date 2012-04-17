@@ -21,7 +21,6 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-
 ---- Uncomment the following library declaration if instantiating
 ---- any Xilinx primitives in this code.
 --library UNISIM;
@@ -33,7 +32,7 @@ entity Microcontroller is
         clk : in std_logic;
 
         -- Buss input
-        op : in std_logic_vector(7 downto 0);
+        buss_in : in std_logic_vector(7 downto 0);
 
         -- Test to control shit
         test : in std_logic_vector(2 downto 0);
@@ -45,9 +44,33 @@ end Microcontroller;
 
 architecture Behavioral of Microcontroller is
 
+    -- Microcode lives here
+    subtype DataLine is std_logic_vector(13 downto 0);
+    type Data is array (0 to 255) of DataLine;
+
+    -- uCount PC uPC  uPC adr
+    -- |00   |0 |000|00000000|
+    signal mem : Data := (
+        "00000000000000", -- nothing
+        "00100011110000", -- +1 PC
+        "01000000001111", -- set Z if uCounter >= limit
+        "00010100000110", -- jmpz to line 6
+        "11000000000000", -- reset uCounter
+        "00011100000000", -- Never gonna happen
+        "00011111111111", -- line 6, reset uPC
+        others => (others => '0')
+    );
+
+    -- Current microcode line to process
+    signal signals : DataLine;
+
     -- Controll the behavior of next uPC value
     signal uPC_code : std_logic_vector(2 downto 0) := "000";
     signal uPC_addr : std_logic_vector(7 downto 0) := "XXXXXXXX";
+
+    signal uCounter : std_logic_vector(7 downto 0) := "00000000";
+    signal uCount_limit : std_logic_vector(7 downto 0) := "00000010";
+    signal uCount_code : std_logic_vector(1 downto 0) := "00";
 
     signal IR : std_logic_vector(7 downto 0) := "11110011";
     signal uPC : std_logic_vector(7 downto 0) := "00000000";
@@ -58,27 +81,17 @@ architecture Behavioral of Microcontroller is
     signal B_addr : std_logic_vector(7 downto 0);
 
     signal Z : std_logic := '0';
-
-    type Data is array (255 downto 0) of std_logic_vector(2 downto 0);
-
-    signal mem : Data;
-
-    signal signals : std_logic_vector(2 downto 0);
 begin
-    -- Initialization of microcode
-    mem(0) <= "001";
-    mem(1) <= "000";
-    mem(2) <= "000";
-
-    PC_code <= signals(0);
+    uPC_addr <= signals(7 downto 0);
+    uPC_code <= signals(10 downto 8);
+    PC_code <= signals(11);
+    uCount_code <= signals(13 downto 12);
 
     process (clk)
     begin
         if rising_edge(clk) then
 
-            -- FIXME
-            -- convert logic_vector to integer for indexing
-            signals <= mem(to_integer(uPC));
+            signals <= mem(conv_integer(uPC));
 
             -- uPC +1
             if uPC_code = "000" then
@@ -101,6 +114,18 @@ begin
             -- uPC = 0
             elsif uPC_code = "111" then
                 uPC <= "00000000";
+            end if;
+
+            if uCount_code = "00" then
+                uCounter <= uCounter + 1;
+            elsif uCount_code = "01" then
+                if uCount_limit <= uCounter then
+                    Z <= '1';
+                else
+                    Z <= '0';
+                end if;
+            elsif uCount_code = "11" then
+                uCounter <= "00000000";
             end if;
 
         end if;

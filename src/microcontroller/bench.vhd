@@ -15,7 +15,7 @@ architecture behavior of bench is
         Port(
             clk : in std_logic;
 
-            op : in std_logic_vector(7 downto 0);
+            buss_in : in std_logic_vector(7 downto 0);
             test : in std_logic_vector(2 downto 0);
 
             PC_code : out std_logic
@@ -24,7 +24,7 @@ architecture behavior of bench is
 
     -- Inputs
     signal clk : std_logic := '0';
-    signal op : std_logic_vector(7 downto 0) := "00000000";
+    signal buss_in : std_logic_vector(7 downto 0) := "00000000";
     signal test : std_logic_vector(2 downto 0) := "000";
 
     -- Outputs
@@ -38,7 +38,7 @@ begin
     -- Component instantiation
     uut: Microcontroller port map (
         clk => clk,
-        op => op,
+        buss_in => buss_in,
         test => test,
         PC_code => PC_code
     );
@@ -59,7 +59,7 @@ begin
 
         -- Add user defined stimulus here;
 
-        op <= "11111111", "01010101" after 1 us;
+        buss_in <= "11111111", "01010101" after 1 us;
 
         test <= "000", "001" after 4 us, "010" after 8 us, "011" after 12 us, "100" after 16 us;
 

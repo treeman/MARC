@@ -14,6 +14,11 @@ PC
     0       PC (nothing)
     1       +1
 
+uCount
+    00      uCounter + 1
+    01      Z = uCounter >= limit
+    11      uCounter = 0
+
 3x minne
     2bit
         read
@@ -49,12 +54,6 @@ buss out
         I/O
         nothing
 
-
-uCount
-    2 bit
-        0
-        +1
-        update Z
 
 ADR
     3 bit select from
