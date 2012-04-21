@@ -2,10 +2,10 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   16:20:49 04/21/2012
+-- Create Date:   23:27:19 04/21/2012
 -- Design Name:   
--- Module Name:   /edu/liji050/vga_controller_800x600/TBench_800x600_vga_controller.vhd
--- Project Name:  vga_controller_800x600
+-- Module Name:   C:/Users/Ingram/Documents/TSEA43/gpu/tsb.vhd
+-- Project Name:  gpu
 -- Target Device:  
 -- Tool versions:  
 -- Description:   
@@ -27,15 +27,13 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE ieee.std_logic_unsigned.all;
+USE ieee.numeric_std.ALL;
  
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---USE ieee.numeric_std.ALL;
+ENTITY tsb IS
+END tsb;
  
-ENTITY TBench_800x600_vga_controller IS
-END TBench_800x600_vga_controller;
- 
-ARCHITECTURE behavior OF TBench_800x600_vga_controller IS 
+ARCHITECTURE behavior OF tsb IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
@@ -43,15 +41,14 @@ ARCHITECTURE behavior OF TBench_800x600_vga_controller IS
     PORT(
          colorpix : IN  std_logic_vector(7 downto 0);
          rst : IN  std_logic;
-         vhdl_clk : IN  std_logic;
+         pixel_clk : IN  std_logic;
          HS : OUT  std_logic;
          VS : OUT  std_logic;
-         hcount : OUT  std_logic;
-         vcount : OUT  std_logic;
-         blank : OUT  std_logic;
          red : OUT  std_logic_vector(2 downto 0);
          grn : OUT  std_logic_vector(2 downto 0);
-         blu : OUT  std_logic_vector(1 downto 0)
+         blu : OUT  std_logic_vector(1 downto 0);
+         row : OUT  std_logic_vector(9 downto 0);
+         column : OUT  std_logic_vector(9 downto 0)
         );
     END COMPONENT;
     
@@ -59,20 +56,19 @@ ARCHITECTURE behavior OF TBench_800x600_vga_controller IS
    --Inputs
    signal colorpix : std_logic_vector(7 downto 0) := (others => '0');
    signal rst : std_logic := '0';
-   signal vhdl_clk : std_logic := '0';
+   signal pixel_clk : std_logic := '0';
 
  	--Outputs
    signal HS : std_logic;
    signal VS : std_logic;
-   signal hcount : std_logic;
-   signal vcount : std_logic;
-   signal blank : std_logic;
    signal red : std_logic_vector(2 downto 0);
    signal grn : std_logic_vector(2 downto 0);
    signal blu : std_logic_vector(1 downto 0);
+   signal row : std_logic_vector(9 downto 0);
+   signal column : std_logic_vector(9 downto 0);
 
-   -- Clock period definitions
-   constant vhdl_clk_period : time := 10 ns;
+   -- Clock period definitions (25 MHz)
+   constant pixel_clk_period : time := 10 ns;
  
 BEGIN
  
@@ -80,37 +76,35 @@ BEGIN
    uut: vga_controller PORT MAP (
           colorpix => colorpix,
           rst => rst,
-          vhdl_clk => vhdl_clk,
+          pixel_clk => pixel_clk,
           HS => HS,
           VS => VS,
-          hcount => hcount,
-          vcount => vcount,
-          blank => blank,
           red => red,
           grn => grn,
-          blu => blu
+          blu => blu,
+          row => row,
+          column => column
         );
 
    -- Clock process definitions
-   vhdl_clk_process :process
+   pixel_clk_process :process
    begin
-		vhdl_clk <= '0';
-		wait for vhdl_clk_period/2;
-		vhdl_clk <= '1';
-		wait for vhdl_clk_period/2;
+		pixel_clk <= '0';
+		wait for pixel_clk_period/2;
+		pixel_clk <= '1';
+		wait for pixel_clk_period/2;
    end process;
  
 
    -- Stimulus process
    stim_proc: process
    begin		
-      -- hold reset state for 100 ns.
-      wait for 100 ns;	
-
-      wait for vhdl_clk_period*10;
+      -- hold reset state for 100ns.
+      wait for 100 ns;
 
       -- insert stimulus here 
-
+		rst <= '1' after 10 ns, '0' after 20 ns;
+		colorpix <= "10101010" after 10 ns, "01010101" after 8000 ns;
       wait;
    end process;
 
