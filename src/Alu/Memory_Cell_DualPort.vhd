@@ -35,7 +35,7 @@ entity Memory_Cell_DualPort is
            write 				: in  STD_LOGIC;
 			  active_player	: in STD_LOGIC_VECTOR(1 downto 0);
            address 			: in  STD_LOGIC_VECTOR (12 downto 0);
-           data 				: buffer  STD_LOGIC_VECTOR (7 downto 0);
+           data 				: inout  STD_LOGIC_VECTOR (7 downto 0);
            address_gpu 		: in  STD_LOGIC_VECTOR (12 downto 0);
            data_gpu 			: out  STD_LOGIC_VECTOR (7 downto 0);
            read_gpu 			: in  STD_LOGIC);

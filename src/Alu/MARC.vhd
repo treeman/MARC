@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:        LIU
+-- Engineer:       Jesper Tingvall
 -- 
 -- Create Date:    21:47:06 04/21/2012 
 -- Design Name: 
@@ -31,8 +31,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity MARC is
 	Port (clk 				: in std_logic;
-			tmp_gpy_adr		: in STD_LOGIC_VECTOR(12 downto 0);
-			tmp_gpu_data	:out STD_LOGIC_VECTOR(12 downto 0));
+			tmp_gpu_adr		: in STD_LOGIC_VECTOR(12 downto 0);
+			tmp_gpu_data	: out STD_LOGIC_VECTOR(7 downto 0);
+			buss_controll : in STD_LOGIC_VECTOR(2 downto 0);
+			tmp_buss			: in STD_LOGIC_VECTOR(12 downto 0);
+			
+			memory1_source	: in STD_LOGIC_VECTOR(1 downto 0);
+			memory2_source	: in STD_LOGIC_VECTOR(1 downto 0);
+			memory3_source	: in STD_LOGIC_VECTOR(1 downto 0);
+			
+			alu_buss_controll : in STD_LOGIC_VECTOR(2 downto 0));
 end MARC;
 
 architecture Behavioral of MARC is
@@ -76,37 +84,61 @@ architecture Behavioral of MARC is
 	
 	signal main_buss	: STD_LOGIC_VECTOR (12 downto 0);
 	
-	signal buss_controll : STD_LOGIC_VECTOR(2 downto 0);
+	
 	
 	signal alu_buss_out : STD_LOGIC_VECTOR (12 downto 0);
 	
-	signal tmp_gpy_adr_sync	: STD_LOGIC_VECTOR(12 downto 0);
-	signal tmp_gpu_data		: STD_LOGIC_VECTOR(12 downto 0);
+	signal tmp_gpu_adr_sync	: STD_LOGIC_VECTOR(12 downto 0);
+	signal tmp_gpu_data_sync		: STD_LOGIC_VECTOR(7 downto 0);
+	
+	 signal	alu1_zeroFlag	: STD_LOGIC;
 begin
 
 
 
-alu1: ALU
+	alu1: ALU
 		port map(clk=>clk,
 					main_buss_in 			=> main_buss,
 					main_buss_out 			=> alu_buss_out,
-					memory1_address_gpu_sync	=> tmp_gpy_adr,
-					memory1_data_gpu_sync 		=> tmp_gpy_data,
 					
+					memory1_address_gpu	=> tmp_gpu_adr_sync,
+					memory1_data_gpu		=> tmp_gpu_data_sync,
+					memory1_read_gpu		=>	'1',
+					
+					memory1_read			=>	'1',
+					memory2_read			=>	'0',
+					memory3_read			=>	'0',
+					
+					memory1_write			=>	'1',
+					memory2_write			=>	'1',
+					memory3_write			=>	'1',
+					
+					memory1_source			=>	memory1_source,
+					memory2_source			=>	memory2_source,
+					memory3_source			=>	memory3_source,
+					
+					alu_operation			=>	"01",
+					alu1_source				=>	"010",
+					alu2_source				=>	"001",
+					
+					buss_output				=>	alu_buss_controll,
+					
+					active_player			=>	"10",
+					alu1_zeroFlag			=> alu1_zeroFlag
 		);
 
 	process(clk)
 	begin
 		if rising_edge(clk) then
 			-- Temporary GPU emulator
-			memory1_address_gpu_sync <= memory1_address_gpu;
-			memory1_data_gpu_sync <= memory1_data_gpu;
+			tmp_gpu_adr_sync <= tmp_gpu_adr;
+			tmp_gpu_data  		<= tmp_gpu_data_sync;
 			
 			-- Here be a big multiplexer for the main buss!
 			if buss_controll = "001" then
 				main_buss <= alu_buss_out;
 			else
-				main_buss <= main_buss;
+				main_buss <= tmp_buss;
 			end if;
 		end if;
 	end process;

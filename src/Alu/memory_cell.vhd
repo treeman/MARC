@@ -34,7 +34,7 @@ entity Memory_Cell is
 				read : in STD_LOGIC;
 				write : in  STD_LOGIC;
 				address : in  STD_LOGIC_VECTOR (12 downto 0);
-				data : buffer  STD_LOGIC_VECTOR (12 downto 0));
+				data : inout  STD_LOGIC_VECTOR (12 downto 0));
 				--dataOut : out  STD_LOGIC_VECTOR (12 downto 0));
 end Memory_Cell;
 
