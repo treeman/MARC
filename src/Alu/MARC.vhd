@@ -36,9 +36,20 @@ entity MARC is
 			buss_controll : in STD_LOGIC_VECTOR(2 downto 0);
 			tmp_buss			: in STD_LOGIC_VECTOR(12 downto 0);
 			
-			memory1_source	: in STD_LOGIC_VECTOR(1 downto 0);
-			memory2_source	: in STD_LOGIC_VECTOR(1 downto 0);
-			memory3_source	: in STD_LOGIC_VECTOR(1 downto 0);
+			memory1_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+			memory2_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+			memory3_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+			
+			memory1_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+			memory2_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+			memory3_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+			
+			
+			alu_operation	: in STD_LOGIC_VECTOR(1 downto 0);
+			alu1_source		: in STD_LOGIC_VECTOR(2 downto 0);
+			alu2_source		: in STD_LOGIC_VECTOR(2 downto 0);
+				
+			active_player	: in STD_LOGIC_VECTOR(1 downto 0);
 			
 			alu_buss_controll : in STD_LOGIC_VECTOR(2 downto 0));
 end MARC;
@@ -65,17 +76,24 @@ architecture Behavioral of MARC is
 				
 				
 				
-				memory1_source	: in STD_LOGIC_VECTOR(1 downto 0);
-				memory2_source	: in STD_LOGIC_VECTOR(1 downto 0);
-				memory3_source	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory1_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory2_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory3_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
 				
+				memory1_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory2_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory3_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+				
+				alu1_source	: in STD_LOGIC_VECTOR(2 downto 0);
+				alu2_source	: in STD_LOGIC_VECTOR(2 downto 0);
+				
+
+				alu_operation	: in STD_LOGIC_VECTOR(1 downto 0);
 			--	alu1_source		: in alu_source_type;
 				
 				
-				alu_operation	: in STD_LOGIC_VECTOR(1 downto 0);
 				alu1_zeroFlag	: out STD_LOGIC;
-				alu1_source		: in STD_LOGIC_VECTOR(2 downto 0);
-				alu2_source		: in STD_LOGIC_VECTOR(2 downto 0);
+		
 				
 				buss_output		: in STD_LOGIC_VECTOR(2 downto 0);
 				
@@ -106,24 +124,28 @@ begin
 					memory1_read_gpu		=>	'1',
 					
 					memory1_read			=>	'1',
-					memory2_read			=>	'0',
-					memory3_read			=>	'0',
+					memory2_read			=>	'1',
+					memory3_read			=>	'1',
 					
 					memory1_write			=>	'1',
 					memory2_write			=>	'1',
 					memory3_write			=>	'1',
 					
-					memory1_source			=>	memory1_source,
-					memory2_source			=>	memory2_source,
-					memory3_source			=>	memory3_source,
+					memory1_source_data			=>	memory1_source_data,
+					memory2_source_data			=>	memory2_source_data,
+					memory3_source_data			=>	memory3_source_data,
 					
-					alu_operation			=>	"01",
-					alu1_source				=>	"010",
-					alu2_source				=>	"001",
+					memory1_source_address			=>	memory1_source_address,
+					memory2_source_address			=>	memory2_source_address,
+					memory3_source_address			=>	memory3_source_address,
+					
+					alu_operation			=> alu_operation,
+					alu1_source				=>	alu1_source,
+					alu2_source				=>	alu2_source,
 					
 					buss_output				=>	alu_buss_controll,
 					
-					active_player			=>	"10",
+					active_player			=>	active_player,
 					alu1_zeroFlag			=> alu1_zeroFlag
 		);
 

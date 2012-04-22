@@ -50,9 +50,13 @@ entity ALU is
 				
 				
 				
-				memory1_source	: in STD_LOGIC_VECTOR(1 downto 0);
-				memory2_source	: in STD_LOGIC_VECTOR(1 downto 0);
-				memory3_source	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory1_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory2_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory3_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+				
+				memory1_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory2_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+				memory3_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
 				
 			--	alu1_source		: in alu_source_type;
 				
@@ -75,8 +79,10 @@ architecture Behavioral of ALU is
 		Port (	clk 		: in std_logic;
 					read 		: in STD_LOGIC;
 					write 	: in  STD_LOGIC;
-					address 	: in  STD_LOGIC_VECTOR (12 downto 0);
-					data		: inout  STD_LOGIC_VECTOR (12 downto 0));
+					address_in 	: in  STD_LOGIC_VECTOR (12 downto 0);
+					address_out 	:out  STD_LOGIC_VECTOR (12 downto 0);
+					data_in 	: in  STD_LOGIC_VECTOR (12 downto 0);
+					data_out : out  STD_LOGIC_VECTOR (12 downto 0));
 	end component;
 	
 	
@@ -85,25 +91,35 @@ architecture Behavioral of ALU is
            read 				: in  STD_LOGIC;
            write 				: in  STD_LOGIC;
 			  active_player	: in STD_LOGIC_VECTOR(1 downto 0);
-           address 			: in  STD_LOGIC_VECTOR (12 downto 0);
-           data 				: inout  STD_LOGIC_VECTOR (7 downto 0);
+           address_in 	: in  STD_LOGIC_VECTOR (12 downto 0);
+			  address_out 	: out  STD_LOGIC_VECTOR (12 downto 0);
+           data_in 			: in  STD_LOGIC_VECTOR (7 downto 0);
+			  data_out 			: out  STD_LOGIC_VECTOR (7 downto 0);
            address_gpu 		: in  STD_LOGIC_VECTOR (12 downto 0);
            data_gpu 			: out  STD_LOGIC_VECTOR (7 downto 0);
            read_gpu 			: in  STD_LOGIC);
 	end component;
 	
-	signal memory1_data 		: STD_LOGIC_VECTOR (7 downto 0);
+	signal memory1_data_in	: STD_LOGIC_VECTOR (7 downto 0);
 	-- signal memory1_data_gpu	: STD_LOGIC_VECTOR (12 downto 0);
-	signal memory2_data	 	: STD_LOGIC_VECTOR (12 downto 0);
-	signal memory3_data	 	: STD_LOGIC_VECTOR (12 downto 0);
+	signal memory2_data_in	: STD_LOGIC_VECTOR (12 downto 0);
+	signal memory3_data_in	: STD_LOGIC_VECTOR (12 downto 0);
+	
+	signal memory1_data_out	: STD_LOGIC_VECTOR (7 downto 0);
+	signal memory2_data_out : STD_LOGIC_VECTOR (12 downto 0);
+	signal memory3_data_out : STD_LOGIC_VECTOR (12 downto 0);
 	
 	signal alu1_register		: STD_LOGIC_VECTOR (12 downto 0);
 	signal alu2_register		: STD_LOGIC_VECTOR (12 downto 0);
 	
 
-	signal memory1_address	: STD_LOGIC_VECTOR (12 downto 0);
-	signal memory2_address 	: STD_LOGIC_VECTOR (12 downto 0);
-	signal memory3_address 	: STD_LOGIC_VECTOR (12 downto 0);
+	signal memory1_address_in	: STD_LOGIC_VECTOR (12 downto 0);
+	signal memory2_address_in	: STD_LOGIC_VECTOR (12 downto 0);
+	signal memory3_address_in	: STD_LOGIC_VECTOR (12 downto 0);
+	
+	signal memory1_address_out	: STD_LOGIC_VECTOR (12 downto 0);
+	signal memory2_address_out	: STD_LOGIC_VECTOR (12 downto 0);
+	signal memory3_address_out	: STD_LOGIC_VECTOR (12 downto 0);
 	
 	signal alu1_operand		: STD_LOGIC_VECTOR (12 downto 0);
 	signal alu2_operand		: STD_LOGIC_VECTOR (12 downto 0);
@@ -112,38 +128,50 @@ architecture Behavioral of ALU is
 
 begin
 
-	alu1_operand <=	memory2_data when alu1_source = "001" else
+	alu1_operand <=	memory2_data_out when alu1_source = "001" else
 							main_buss_in when alu1_source = "010" else
-							memory3_data;
+							memory3_data_out;
 							-- Insert constants here!
 							
-	alu2_operand <=	memory2_data when alu2_source = "001" else
+	alu2_operand <=	memory2_data_out when alu2_source = "001" else
 							main_buss_in when alu2_source = "010" else
-							memory3_data;
+							memory3_data_out;
 							-- Insert constants here!
 							
 	main_buss_out <=	alu1_register when 	buss_output = "001" else
 							alu2_register when 	buss_output = "010" else
 							-- memory1_data & "00000" when 	buss_output = "011" else
-							memory2_data when 	buss_output = "100" else
-							memory3_data when 	buss_output = "101" else
+							memory2_data_out when 	buss_output = "100" else
+							memory3_data_out when 	buss_output = "101" else
 							main_buss_in;
 							
-	memory1_address<= main_buss_in when memory1_source = "01" else
-							memory1_address;
+	memory1_address_in<= main_buss_in 		when memory1_source_address = "01" else
+							memory2_data_out 	when memory1_source_address = "10" else
+							memory1_address_out;
 	-- memory1_address_gpu <= main_buss_in;
 	
 	
-	memory2_address<=	main_buss_in when 	memory2_source = "00" else
-							alu1_register when 	memory2_source = "01" else
-							memory2_address;
+	memory2_address_in<=	main_buss_in 		when memory2_source_address = "00" else
+							alu1_register 		when memory2_source_address = "01" else
+							memory2_data_out 	when memory2_source_address = "10" else
+							memory2_address_out;
 					--		alu2_register when 	memory2_source = "10" else
 					--		main_buss_in;
 							
-	memory3_address<=	main_buss_in when 	memory3_source = "01" else
-							alu1_register when 	memory3_source = "10" else
-							alu2_register when 	memory3_source = "11" else
-							memory3_address;
+	memory3_address_in<=	main_buss_in when 	memory3_source_address = "01" else
+							alu1_register when 	memory3_source_address = "10" else
+							alu2_register when 	memory3_source_address = "11" else
+							memory3_address_out;
+							
+							
+	memory1_data_in<=	main_buss_in(7 downto 0) when memory1_source_data = "01" else
+							memory1_data_out;
+							
+	memory2_data_in<=	main_buss_in when memory2_source_data = "01" else
+							memory2_data_out;
+	
+	memory3_data_in<=	main_buss_in when memory3_source_data = "01" else
+							memory3_data_out;
 
 	process(clk)
 		variable z: std_logic := '0';
@@ -179,9 +207,11 @@ begin
 	memory1: Memory_Cell_DualPort
 		port map (	clk=>clk,
 						read=>memory1_read,
-						address=>memory1_address,
+						address_in=>memory1_address_in,
+						address_out=>memory1_address_out,
 						write=>memory1_write,
-						data=>memory1_data,
+						data_in=>memory1_data_in,
+						data_out=>memory1_data_out,
 						data_gpu=>memory1_data_gpu,
 						read_gpu=>memory1_read_gpu,
 						address_gpu=>memory1_address_gpu,
@@ -190,15 +220,19 @@ begin
 	memory2: Memory_Cell
 		port map (	clk=>clk,
 						read=>memory2_read,
-						address=>memory2_address,
+						address_in=>memory2_address_in,
+						address_out=>memory2_address_out,
 						write=>memory2_write,
-						data=>memory2_data);
+						data_in=>memory2_data_in,
+						data_out=>memory2_data_out);
 						
 	memory3: Memory_Cell
 		port map (	clk=>clk,
 						read=>memory3_read,
-						address=>memory3_address,
+						address_in=>memory3_address_in,
+						address_out=>memory3_address_out,
 						write=>memory3_write,
-						data=>memory3_data);
+						data_in=>memory3_data_in,
+						data_out=>memory3_data_out);
 end Behavioral;
 

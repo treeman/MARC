@@ -34,8 +34,10 @@ entity Memory_Cell_DualPort is
            read 				: in  STD_LOGIC;
            write 				: in  STD_LOGIC;
 			  active_player	: in STD_LOGIC_VECTOR(1 downto 0);
-           address 			: in  STD_LOGIC_VECTOR (12 downto 0);
-           data 				: inout  STD_LOGIC_VECTOR (7 downto 0);
+           address_in 	: in  STD_LOGIC_VECTOR (12 downto 0);
+			  address_out 	: out  STD_LOGIC_VECTOR (12 downto 0);
+			  data_in 			: in  STD_LOGIC_VECTOR (7 downto 0);
+			  data_out 			: out  STD_LOGIC_VECTOR (7 downto 0);
            address_gpu 		: in  STD_LOGIC_VECTOR (12 downto 0);
            data_gpu 			: out  STD_LOGIC_VECTOR (7 downto 0);
            read_gpu 			: in  STD_LOGIC);
@@ -43,6 +45,7 @@ end Memory_Cell_DualPort;
 
 architecture Behavioral of Memory_Cell_DualPort is
 	signal address_sync 		: STD_LOGIC_VECTOR (12 downto 0);
+	signal data_sync 			: STD_LOGIC_VECTOR (7 downto 0);
 	-- signal address_gpu_sync : STD_LOGIC_VECTOR (12 downto 0);
 	
 	signal calculated_color	: STD_LOGIC_VECTOR (7 downto 0);
@@ -59,103 +62,134 @@ architecture Behavioral of Memory_Cell_DualPort is
 	signal ram_block_7 : ram_block_type := (others => (others => '0'));
 begin
 
+	address_out <= address_sync;
+	data_out <= data_sync;
+	
 	-- This determines the color depending on what player put what there and what kind of OP code it is (data / non data)
 	calculated_color <= 	"00000000" when active_player = "00" else												-- Black when no player
-								"11000000" when active_player = "10" and data(7 downto 4) = "0000" else		-- Weak red when player 1 and data
-								"00001000" when active_player = "01" and data(7 downto 4) = "0000" else		-- Weak blue when player 2 and data
+								"11000000" when active_player = "10" and data_sync(7 downto 4) = "0000" else		-- Weak red when player 1 and data
+								"00001000" when active_player = "01" and data_sync(7 downto 4) = "0000" else		-- Weak blue when player 2 and data
 								"11100000" when active_player = "10" else												-- Red when player 1 and code
 								"00011000";																						-- Blue when player 2 and code
 
 	PROCESS(clk) begin
 		if(rising_edge(clk)) then
 		
-			address_sync <= address;
+			address_sync <= address_in;
+			data_sync <= data_in;
 			-- address_gpu_sync <= address_gpu;
 			
 			if (address_sync(12 downto 10) = "000") then
 				if(write='1') then
-					ram_block_0(to_integer(unsigned( address_sync(9 downto 0) ))) <= data & calculated_color;
+					ram_block_0(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color;
 				end if;
 				if (read='1') then
-					data <= ram_block_0(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
+					data_sync <= ram_block_0(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
 				end if;
-				if (read_gpu='1') then
-					data_gpu <= ram_block_0(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);
-				end if;
+
 		
 			elsif (address_sync(12 downto 10) = "001") then
 				if(write='1') then
-					ram_block_1(to_integer(unsigned( address_sync(9 downto 0) )))(15 downto 8) <= data;
+					ram_block_1(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color;
 				end if;
 				if (read='1') then
-					data <= ram_block_1(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
+					data_sync <= ram_block_1(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
 				end if;
+
+				
+			elsif (address_sync(12 downto 10) = "010") then
+				if(write='1') then
+					ram_block_2(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color;
+				end if;
+				if (read='1') then
+					data_sync <= ram_block_2(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
+				end if;
+
+				
+			elsif (address_sync(12 downto 10) = "011") then
+				if(write='1') then
+					ram_block_3(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color;
+				end if;
+				if (read='1') then
+					data_sync <= ram_block_3(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
+				end if;
+
+				
+			elsif (address_sync(12 downto 10) = "100") then
+				if(write='1') then
+					ram_block_4(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color;
+				end if;
+				if (read='1') then
+					data_sync <= ram_block_4(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
+				end if;
+
+				
+			elsif (address_sync(12 downto 10) = "101") then
+				if(write='1') then
+					ram_block_5(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color;
+				end if;
+				if (read='1') then
+					data_sync <= ram_block_5(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
+				end if;
+
+				
+			elsif (address_sync(12 downto 10) = "110") then
+				if(write='1') then
+					ram_block_6(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color;
+				end if;
+				if (read='1') then
+					data_sync <= ram_block_6(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
+				end if;
+
+				
+			else
+				if(write='1') then
+					ram_block_7(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color;
+				end if;
+				if (read='1') then
+					data_sync <= ram_block_7(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
+				end if;
+
+			end if;
+			
+			
+			-- GPU ADDRESS
+			if (address_gpu(12 downto 10) = "000") then
+				if (read_gpu='1') then
+					data_gpu <= ram_block_0(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);
+				end if;
+				
+			elsif (address_gpu(12 downto 10) = "001") then
 				if (read_gpu='1') then
 					data_gpu <= ram_block_1(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);
 				end if;
 				
-			elsif (address_sync(12 downto 10) = "010") then
-				if(write='1') then
-					ram_block_2(to_integer(unsigned( address_sync(9 downto 0) )))(15 downto 8) <= data;
-				end if;
-				if (read='1') then
-					data <= ram_block_2(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
-				end if;
+			elsif (address_gpu(12 downto 10) = "010") then
 				if (read_gpu='1') then
 					data_gpu <= ram_block_2(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);
 				end if;
 				
-			elsif (address_sync(12 downto 10) = "011") then
-				if(write='1') then
-					ram_block_3(to_integer(unsigned( address_sync(9 downto 0) )))(15 downto 8) <= data;
-				end if;
-				if (read='1') then
-					data <= ram_block_3(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
-				end if;
+			elsif (address_gpu(12 downto 10) = "011") then
 				if (read_gpu='1') then
 					data_gpu <= ram_block_3(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);
 				end if;
 				
-			elsif (address_sync(12 downto 10) = "100") then
-				if(write='1') then
-					ram_block_4(to_integer(unsigned( address_sync(9 downto 0) )))(15 downto 8) <= data;
-				end if;
-				if (read='1') then
-					data <= ram_block_4(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
-				end if;
+			elsif (address_gpu(12 downto 10) = "100") then
 				if (read_gpu='1') then
 					data_gpu <= ram_block_4(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);
 				end if;
 				
-			elsif (address_sync(12 downto 10) = "101") then
-				if(write='1') then
-					ram_block_5(to_integer(unsigned( address_sync(9 downto 0) )))(15 downto 8) <= data;
-				end if;
-				if (read='1') then
-					data <= ram_block_5(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
-				end if;
+			elsif (address_gpu(12 downto 10) = "101") then
 				if (read_gpu='1') then
 					data_gpu <= ram_block_5(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);
 				end if;
 				
-			elsif (address_sync(12 downto 10) = "110") then
-				if(write='1') then
-					ram_block_6(to_integer(unsigned( address_sync(9 downto 0) )))(15 downto 8) <= data;
-				end if;
-				if (read='1') then
-					data <= ram_block_6(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
-				end if;
+			elsif (address_gpu(12 downto 10) = "110") then
 				if (read_gpu='1') then
 					data_gpu <= ram_block_6(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);
 				end if;
 				
 			else
-				if(write='1') then
-					ram_block_7(to_integer(unsigned( address_sync(9 downto 0) )))(15 downto 8) <= data;
-				end if;
-				if (read='1') then
-					data <= ram_block_7(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
-				end if;
 				if (read_gpu='1') then
 					data_gpu <= ram_block_7(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);
 				end if;
