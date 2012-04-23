@@ -44,10 +44,18 @@ entity MARC is
 			memory2_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
 			memory3_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
 			
+			memory1_read 	: in STD_LOGIC;
+				memory2_read 	: in STD_LOGIC;
+				memory3_read 	: in STD_LOGIC;
+				
+				memory1_write	: in STD_LOGIC;
+				memory2_write	: in STD_LOGIC;
+				memory3_write	: in STD_LOGIC;
+			
 			
 			alu_operation	: in STD_LOGIC_VECTOR(1 downto 0);
-			alu1_source		: in STD_LOGIC_VECTOR(2 downto 0);
-			alu2_source		: in STD_LOGIC_VECTOR(2 downto 0);
+			alu1_source		: in STD_LOGIC_VECTOR(1 downto 0);
+			alu2_source		: in STD_LOGIC_VECTOR(1 downto 0);
 				
 			active_player	: in STD_LOGIC_VECTOR(1 downto 0);
 			
@@ -84,8 +92,8 @@ architecture Behavioral of MARC is
 				memory2_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
 				memory3_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
 				
-				alu1_source	: in STD_LOGIC_VECTOR(2 downto 0);
-				alu2_source	: in STD_LOGIC_VECTOR(2 downto 0);
+				alu1_source	: in STD_LOGIC_VECTOR(1 downto 0);
+				alu2_source	: in STD_LOGIC_VECTOR(1 downto 0);
 				
 
 				alu_operation	: in STD_LOGIC_VECTOR(1 downto 0);
@@ -123,13 +131,13 @@ begin
 					memory1_data_gpu		=> tmp_gpu_data_sync,
 					memory1_read_gpu		=>	'1',
 					
-					memory1_read			=>	'1',
-					memory2_read			=>	'1',
-					memory3_read			=>	'1',
+					memory1_read			=>	memory1_read,
+					memory2_read			=>	memory2_read,
+					memory3_read			=>	memory3_read,
 					
-					memory1_write			=>	'1',
-					memory2_write			=>	'1',
-					memory3_write			=>	'1',
+					memory1_write			=>	memory1_write,
+					memory2_write			=>	memory2_write,
+					memory3_write			=>	memory3_write,
 					
 					memory1_source_data			=>	memory1_source_data,
 					memory2_source_data			=>	memory2_source_data,

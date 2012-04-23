@@ -36,10 +36,12 @@ entity ALU is
 				main_buss_in	: in  STD_LOGIC_VECTOR (12 downto 0);
 				main_buss_out	: out  STD_LOGIC_VECTOR (12 downto 0);
 				
+				-- Connect these to the GPU:
 				memory1_address_gpu : in STD_LOGIC_VECTOR (12 downto 0);		-- Unsynced!
 				memory1_data_gpu : out  STD_LOGIC_VECTOR (7 downto 0);		-- Unsynced!
 				memory1_read_gpu: in STD_LOGIC;										
 				
+				-- Memory control
 				memory1_read 	: in STD_LOGIC;
 				memory2_read 	: in STD_LOGIC;
 				memory3_read 	: in STD_LOGIC;
@@ -49,23 +51,59 @@ entity ALU is
 				memory3_write	: in STD_LOGIC;
 				
 				
-				
+				-- Memory Data source control MUX
 				memory1_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+					-- 01 main buss
+					-- xx hold
+					
 				memory2_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+					-- 01 main buss
+					-- xx hold
+				
 				memory3_source_data	: in STD_LOGIC_VECTOR(1 downto 0);
+					-- 01 main buss
+					-- xx hold
 				
+				-- Memory Address source control MUX
 				memory1_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+					-- 01 Main buss
+					-- 10 Memory 2 data
+					-- 11 
+					-- XX hold
+					
 				memory2_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+					-- 00 main buss
+					-- 01 alu1 register
+					-- 10 memory 2
+					-- xx hold
+					
 				memory3_source_address	: in STD_LOGIC_VECTOR(1 downto 0);
+					-- 00
+					-- 01 main buss
+					-- 10 alu1 register
+					-- XX hold
 				
-			--	alu1_source		: in alu_source_type;
 				
-				
+				-- ALU Control
 				alu_operation	: in STD_LOGIC_VECTOR(1 downto 0);
+					-- 00 hold
+					-- 01 load main buss
+					-- 10 +
+					-- xx -
 				alu1_zeroFlag	: out STD_LOGIC;
-				alu1_source		: in STD_LOGIC_VECTOR(2 downto 0);
-				alu2_source		: in STD_LOGIC_VECTOR(2 downto 0);
 				
+				-- ALU Control mux
+				alu1_source		: in STD_LOGIC_VECTOR(1 downto 0);
+					-- 001 memory 2 
+					-- 010 main buss
+					-- xxx memory 3
+					
+				alu2_source		: in STD_LOGIC_VECTOR(1 downto 0);
+					-- 001 memory 2
+					-- 010 main buss
+					-- xxx memory 3
+				
+				-- Buss output mux (remove this and use global mux controll?)
 				buss_output		: in STD_LOGIC_VECTOR(2 downto 0);
 				
 				active_player	: in STD_LOGIC_VECTOR(1 downto 0));
@@ -128,13 +166,13 @@ architecture Behavioral of ALU is
 
 begin
 
-	alu1_operand <=	memory2_data_out when alu1_source = "001" else
-							main_buss_in when alu1_source = "010" else
+	alu1_operand <=	memory2_data_out when alu1_source = "10" else
+							main_buss_in when alu1_source = "01" else
 							memory3_data_out;
 							-- Insert constants here!
 							
-	alu2_operand <=	memory2_data_out when alu2_source = "001" else
-							main_buss_in when alu2_source = "010" else
+	alu2_operand <=	memory2_data_out when alu2_source = "10" else
+							main_buss_in when alu2_source = "01" else
 							memory3_data_out;
 							-- Insert constants here!
 							
@@ -151,9 +189,9 @@ begin
 	-- memory1_address_gpu <= main_buss_in;
 	
 	
-	memory2_address_in<=	main_buss_in 		when memory2_source_address = "00" else
+	memory2_address_in<=	main_buss_in 		when memory2_source_address = "01" else
 							alu1_register 		when memory2_source_address = "01" else
-							memory2_data_out 	when memory2_source_address = "10" else
+							memory2_data_out 	when memory2_source_address = "11" else
 							memory2_address_out;
 					--		alu2_register when 	memory2_source = "10" else
 					--		main_buss_in;
@@ -181,14 +219,16 @@ begin
 			if alu_operation="00" then
 				alu1_register <= alu1_register;						-- ALU1 = ALU1
 			elsif alu_operation="01" then
-				alu1_register <= alu1_register+alu1_operand;		-- ALU1 += OP1
+				alu1_register <= alu1_operand;						-- ALU1 = OP1
 			elsif alu_operation="10" then
+				alu1_register <= alu1_register+alu1_operand;		-- ALU1 += OP1
+			else
 				alu1_register <= alu1_register-alu1_operand;		-- ALU1 -= OP1
 
-				for i in 12 downto 0 loop
-					z := z or alu1_register(i);
-				end loop;
-				alu1_zeroFlag <= z;										-- Set zero flag (invert this?)
+				--for i in 12 downto 0 loop
+				--	z := z or alu1_register(i);
+				--end loop;
+				--alu1_zeroFlag <= z;										-- Set zero flag (invert this?)
 
 			end if;
 			
@@ -196,8 +236,10 @@ begin
 			if alu_operation="00" then
 				alu2_register <= alu2_register;						-- ALU2 = ALU2
 			elsif alu_operation="01" then
-				alu2_register <= alu2_register+alu2_operand;		-- ALU2 += OP2
+				alu2_register <= alu2_operand;						-- ALU1 = OP1
 			elsif alu_operation="10" then
+				alu2_register <= alu2_register+alu2_operand;		-- ALU2 += OP2
+			else
 				alu2_register <= alu2_register-alu2_operand;		-- ALU2 -= OP2
 			end if;
 			
