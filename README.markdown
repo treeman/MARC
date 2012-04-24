@@ -2,18 +2,12 @@
 Todo
 ====
 
-Prio 1
------
-
-* Skriva ut en fyrkant genom VGA
-* Hämta någon input genom UART
-
-Rest
-----
+* Uppdatera blockschema
+    * Ta bort PC till ALU, gå via bussen istället
 
 * Dela upp schemat i block och definiera in- och utsignaler. Dessa kan vi sedan göra var för sig.  
     Förslagsvis:
-    * Fifo  
+    * Fifo (Jonas)  
         In:  
         * Set 13 bit
         * Who's turn? 1 bit (T ->)
@@ -28,7 +22,7 @@ Rest
         * Queue full player 1, 1 bit (-> F1)
         * Queue full player 2, 1 bit (-> F2)
 
-    * Primärminnet  
+    * Primärminnet (Jesper)  
         In:  
         * Adress 13 bit
         * Graphic adress 13 bit
@@ -46,12 +40,12 @@ Rest
         * Mem1 13 bit
         * Mem2 13 bit
 
-    * Minneshantering runt om primärminnet
-    * ALU
-    * Mikrominnesdelen
-    * I/O med FBART  
+    * Minneshantering runt om primärminnet (Jonas?)
+    * ALU (Jesper)
+    * Mikrominnesdelen (Jonas)
+    * I/O med FBART (?)  
         Vi behöver endast input
-    * Grafikdel  
+    * Grafikdel (Li)  
         In:  
         * Graphics clock 1 bit
         * Output color 8 bit (eller så många vi behöver)
@@ -64,7 +58,7 @@ Rest
         * green 3 bit
         * blue 2 bit
 
-    * Bussen  
+    * Bussen (Jonas)  
         In:  
         * Active 1 bit
 

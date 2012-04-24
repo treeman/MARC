@@ -19,40 +19,49 @@ uCount
     01      Z = uCounter >= limit
     11      uCounter = 0
 
-3x minne
-    2bit
-        read
-        write
-        nothing
+mem1
+    00      nothing
+    01      read
+    10      write
+
+mem2
+    00      nothing
+    01      read
+    10      write
+
+mem3
+    00      nothing
+    01      read
+    10      write
 
 graphic
     1 bit (0 bit?)
         reset (sätt neutral färg när vi rensar minnet, kanske kan ledas till `not (P1 or P2)` om vi ej rensar status före)
 
-buss in
-    4bit
-        PC
-        M1
-        M2
-        OP
-        AR A
-        AR B
-        FIFO
-        I/O
 
-buss out
-    4bit
-        PC
-        M1
-        M2
-        OP
-        ALU A
-        ALU B
-        IR
-        ADR
-        FIFO
-        I/O
-        nothing
+buss_in
+    PC
+    OP (-> IR)
+    AR B (+ PC)
+    FIFO
+    I/O
+    3 bit
+
+buss_out
+    nothing
+    PC
+    M1
+    M2
+    OP
+    ALU B (-> PC)
+    IR
+    FIFO
+    4 bit
+
+
+FIXME!
+Kontrollera signalerna under
+FIXME!
 
 
 ADR
