@@ -2,8 +2,6 @@
 Todo
 ====
 
-* Två extra register på bussen?
-
 * Dela upp schemat i block och definiera in- och utsignaler. Dessa kan vi sedan göra var för sig.  
     Förslagsvis:
     * Fifo (Jonas)  
@@ -38,7 +36,7 @@ Todo
         * Mem1 13 bit
         * Mem2 13 bit
 
-    * Minneshantering runt om primärminnet (Jonas?)
+    * Minneshantering runt om primärminnet (Jesper)
     * ALU (Jesper)
     * Mikrominnesdelen (Jonas)
     * I/O med FBART (?)  
@@ -56,7 +54,7 @@ Todo
         * green 3 bit
         * blue 2 bit
 
-    * Bussen (Jonas)  
+    * Bussen (Jonas & Jesper)  
         In:  
         * Active 1 bit
 
@@ -74,8 +72,6 @@ Todo
     7. Reset status (Game over etc)
 
     Borde fungera ganska bra?
-
-* Hur allokerar vi det fysiska minnet i FPGA:n med kod i VHDL?
 
 Schema
 ------
@@ -108,6 +104,7 @@ Schema
 
 ## v16
 - skriva VHDL, 1:a byggveckan
+    DONE
 
 ## v17
 - skriva VHDL, 2:a byggveckan

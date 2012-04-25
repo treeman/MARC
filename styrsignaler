@@ -11,8 +11,13 @@ uPC
     111     0
 
 PC
-    0       PC (nothing)
-    1       +1
+    00      PC (nothing)
+    01      load from buss
+    10      +1
+
+IR
+    0       hold
+    1       load from OP (or buss)
 
 uCount
     00      uCounter + 1
@@ -34,35 +39,60 @@ mem3
     01      read
     10      write
 
-graphic
-    1 bit (0 bit?)
-        reset (sätt neutral färg när vi rensar minnet, kanske kan ledas till `not (P1 or P2)` om vi ej rensar status före)
-
-
 buss_in
-    PC
-    OP (-> IR)
-    AR B (+ PC)
-    FIFO
-    I/O
-    3 bit
+    000     PC
+    001     OP
+    010     AR 1
+    011     FIFO
+    100     I/O
 
-buss_out FIXME! (ta bort och lägg in "från buss" signaler till alla register) FIXME!
-    nothing
-    PC
-    M1
-    M2
-    OP
-    ALU B (-> PC)
-    IR
-    FIFO
-    4 bit
+ALU
+    000     nothing (hold AR and don't update Z)
+    001     load
+    010     add
+    011     sub
+    100     +1
+    101     -1
 
+    (ALU module only have 2 last bits)
+
+ALU1 src
+    00      M1
+    01      buss
+    10      M2
+
+ALU2 src
+    0       M1
+    1       M2
+
+OP
+    0       hold
+    1       buss
+
+M1
+    00      hold
+    01      buss
+    10      AR 1
+    11      AR 2
+
+M2
+    00      hold
+    01      buss
+    10      AR 1
+    11      AR 2
 
 FIXME!
 Kontrollera signalerna under
 FIXME!
 
+dessa läser från buss
+    PC
+    M1
+    M2
+    OP
+    ALU B (-> PC)
+    IR (kan nog läsa direkt från OP)
+    FIFO
 
 ADR
     3 bit select from
@@ -73,30 +103,6 @@ ADR
         PC
         buss
         nothing
-
-ALU (both)
-    3bit control function
-        -1
-        +1
-        load
-        add
-        sub
-        cmp
-        nothing
-
-ALU A
-    2 bit select input
-        M1
-        M2
-        PC
-        buss
-
-ALU B
-    2 bit select input
-        M1
-        M2
-        PC
-        buss
 
 FIFO
     2bit
@@ -120,22 +126,6 @@ FIFO
 
     1bit
         change player
-        nothing
-
-M1
-    3 bit choose in
-        AR A
-        AR B
-        M2
-        buss
-        nothing
-
-M2
-    3 bit choose in
-        AR A
-        AR B
-        M1
-        buss
         nothing
 
 Totalt

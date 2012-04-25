@@ -38,26 +38,26 @@ entity Microcontroller is
         test : in std_logic_vector(2 downto 0);
 
         -- Control codes
-        PC_code : out std_logic
+        PC_code : out std_logic_vector(1 downto 0)
     );
 end Microcontroller;
 
 architecture Behavioral of Microcontroller is
 
     -- Microcode lives here
-    subtype DataLine is std_logic_vector(13 downto 0);
+    subtype DataLine is std_logic_vector(14 downto 0);
     type Data is array (0 to 255) of DataLine;
 
     -- uCount PC uPC  uPC adr
-    -- |00   |0 |000|00000000|
+    -- |00   |00|000|00000000|
     signal mem : Data := (
-        "00000000000000", -- nothing
-        "00100011110000", -- +1 PC
-        "01000000001111", -- set Z if uCounter >= limit
-        "00010100000110", -- jmpz to line 6
-        "11000000000000", -- reset uCounter
-        "00011100000000", -- Never gonna happen
-        "00011111111111", -- line 6, reset uPC
+        "000000000000000", -- nothing
+        "000100011110000", -- +1 PC
+        "010000000001111", -- set Z if uCounter >= limit
+        "000010100000110", -- jmpz to line 6
+        "110000000000000", -- reset uCounter
+        "000011100000000", -- Never gonna happen
+        "000011111111111", -- line 6, reset uPC
         others => (others => '0')
     );
 
@@ -80,12 +80,13 @@ architecture Behavioral of Microcontroller is
     signal A_addr : std_logic_vector(7 downto 0);
     signal B_addr : std_logic_vector(7 downto 0);
 
+    -- TODO Z should not lieve here!
     signal Z : std_logic := '0';
 begin
     uPC_addr <= signals(7 downto 0);
     uPC_code <= signals(10 downto 8);
-    PC_code <= signals(11);
-    uCount_code <= signals(13 downto 12);
+    PC_code <= signals(12 downto 11);
+    uCount_code <= signals(14 downto 13);
 
     process (clk)
     begin
@@ -145,6 +146,8 @@ begin
         B_addr <= "00000011" when "00",
                   "00000100" when "01",
                   "00000101" when others;
+
+    PC_code <= "00";
 
 end Behavioral;
 

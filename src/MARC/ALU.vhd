@@ -69,11 +69,11 @@ architecture Behavioral of ALU is
 begin
 
     alu1_operand <= "0000000000000" when alu1_source = "10" else
-    main_buss_in;
+                    main_buss_in;
     -- Insert constants here!
 
     alu2_operand <= "0000000000000" when alu2_source = "10" else
-    main_buss_in;
+                    main_buss_in;
     -- Insert constants here!
 
 
