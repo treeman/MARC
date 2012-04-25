@@ -134,7 +134,5 @@ begin
         end if;
     END PROCESS;
 
-
-
 end Behavioral;
 
