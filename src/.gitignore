@@ -9,3 +9,8 @@ vsim.wlf
 *.prw
 *.psm
 wlfty965rf
+*.cr.mti
+*.mpf
+work
+*~
+*.mpf

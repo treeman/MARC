@@ -39,7 +39,7 @@ mem3
     01      read
     10      write
 
-buss_in
+to buss
     000     PC
     001     OP
     010     AR 1
@@ -81,28 +81,37 @@ M2
     10      AR 1
     11      AR 2
 
+mem address
+    000   hold
+    001   buss
+    010   AR 1
+    011   AR 2
+    100   ADR 1
+    101   ADR 2
+    110   PC
+
+ADR1
+    00     hold
+    01     buss
+    10     M1
+    11     AR 1
+
+ADR2
+    00     hold
+    01     buss
+    10     M2
+    11     AR 2
+
+Totalt
+
+    35
+    + 8 bit hoppaddress
+
+    = 43 signaler uMinnet
+
 FIXME!
 Kontrollera signalerna under
 FIXME!
-
-dessa läser från buss
-    PC
-    M1
-    M2
-    OP
-    ALU B (-> PC)
-    IR (kan nog läsa direkt från OP)
-    FIFO
-
-ADR
-    3 bit select from
-        M1
-        M2
-        AR A
-        AR B
-        PC
-        buss
-        nothing
 
 FIFO
     2bit
@@ -127,27 +136,4 @@ FIFO
     1bit
         change player
         nothing
-
-Totalt
-    2 rw OP mem
-    2 rw op1 mem
-    2 rw op1 mem
-    4 buss in
-    4 buss out
-    3 uPC
-    2 uCount
-    1 PC
-    3 ADR
-    3 ALU (both)
-    2 ALU A input
-    2 ALU B input
-    7 FIFO
-    3 M1
-    3 M2
-
-    43 styrsignaler
-
-    + 8 bit hoppaddress
-
-    51 bit
 

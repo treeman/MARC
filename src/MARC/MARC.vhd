@@ -11,9 +11,13 @@ entity MARC is
     );
 end MARC;
 
+
 architecture Behavioral of MARC is
 
-    -- Include all components
+    -------------------------------------------------------------------------
+    -- COMPONENTS
+    -------------------------------------------------------------------------
+
     component Microcontroller
         Port (  clk : in std_logic;
                 buss_in : in std_logic_vector(7 downto 0);
@@ -27,8 +31,8 @@ architecture Behavioral of MARC is
                 main_buss_in : in std_logic_vector(12 downto 0);    -- TODO need dual input, one for each ALU
                 alu_operation : in std_logic_vector(1 downto 0);
                 alu1_zeroFlag : out std_logic;
-                alu1_source : in std_logic_vector(1 downto 0);      -- TODO only 1 bit. Update/don't update
-                alu2_source : in std_logic_vector(1 downto 0);      -- TODO only 1 bit. Update/don't update
+                alu1_source : in std_logic_vector(1 downto 0);
+                alu2_source : in std_logic_vector(1 downto 0);
                 alu1_out : out std_logic_vector(12 downto 0);
                 alu2_out : out std_logic_vector(12 downto 0)
         );
@@ -39,19 +43,19 @@ architecture Behavioral of MARC is
                 read : in std_logic;
                 write : in std_logic;
                 address_in : in std_logic_vector(12 downto 0);
-                address_out : out std_logic_vector(12 downto 0);    -- What does this do?
+                address_out : out std_logic_vector(12 downto 0);
                 data_in : in std_logic_vector(12 downto 0);
                 data_out : out std_logic_vector(12 downto 0)
         );
     end component;
 
-    component Memory_Cell_DualPort  -- How to write gpu data?
+    component Memory_Cell_DualPort
         Port (  clk : in std_logic;
                 read : in std_logic;
                 write : in std_logic;
                 active_player : in std_logic_vector(1 downto 0);
                 address_in : in std_logic_vector(12 downto 0);
-                address_out : out std_logic_vector (12 downto 0);   -- What does this do?
+                address_out : out std_logic_vector (12 downto 0);
                 data_in : in std_logic_vector(7 downto 0);
                 data_out : out std_logic_vector(7 downto 0);
                 address_gpu : in std_logic_vector(12 downto 0);
@@ -61,6 +65,10 @@ architecture Behavioral of MARC is
     end component;
 
 
+    -------------------------------------------------------------------------
+    -- DATA SIGNALS
+    -------------------------------------------------------------------------
+
     -- Module data signals
     signal microcontroller_in : std_logic_vector(7 downto 0);
 
@@ -68,7 +76,7 @@ architecture Behavioral of MARC is
     signal ALU1_out : std_logic_vector(12 downto 0);
     signal ALU2_out : std_logic_vector(12 downto 0);
 
-    signal ALU_src : std_logic_vector(1 downto 0);      -- TODO should only need 1 bit
+    signal ALU_src : std_logic_vector(1 downto 0);
     signal ALU_operation : std_logic_vector(1 downto 0);
 
     signal memory1_data_in : std_logic_vector(7 downto 0);
@@ -79,54 +87,48 @@ architecture Behavioral of MARC is
     signal memory2_data_out : std_logic_vector(12 downto 0);
     signal memory3_data_out : std_logic_vector(12 downto 0);
 
-    signal memory1_address_in : std_logic_vector(12 downto 0);
-    signal memory2_address_in : std_logic_vector(12 downto 0);
-    signal memory3_address_in : std_logic_vector(12 downto 0);
+    -- Combined to one for now
+    signal memory_address_in : std_logic_vector(12 downto 0);
 
-    -- What do these do? Shouldn't we simply set memory address nad data in and do write? Address shouldn't come out, or..?
-    -- or are we treating it as a register? How do we know when we want to update the register?
+    -- Need to reroute back if we want to keep the value
     signal memory1_address_out : std_logic_vector(12 downto 0);
-    signal memory2_address_out : std_logic_vector(12 downto 0);
-    signal memory3_address_out : std_logic_vector(12 downto 0);
+    signal memory2_address_out : std_logic_vector(12 downto 0); -- Not used as of now?! Will everything implode?
+    signal memory3_address_out : std_logic_vector(12 downto 0); -- Not used as of now?!
 
-    -- TODO need a way to write gpu data
     signal memory1_address_gpu : std_logic_vector(12 downto 0); -- Unsynced!
     signal memory1_data_gpu : std_logic_vector(7 downto 0); -- Unsynced!
 
     signal memory1_read_gpu : std_logic;
 
+
+    -------------------------------------------------------------------------
+    -- FLOW CONTROL
+    -------------------------------------------------------------------------
+
     -- Flow control signals
-    signal buss : std_logic_vector(7 downto 0);
+    signal main_buss : std_logic_vector(12 downto 0);
 
     -- Registers
     signal PC : std_logic_vector(12 downto 0);
+    signal ADR1 : std_logic_vector(12 downto 0);
+    signal ADR2 : std_logic_vector(12 downto 0);
 
-    -- ADR for mem 1,2,3?
-    -- data registers? Or are they inside the memories?
 
-    -- Control signals from microcontroller
+    -------------------------------------------------------------------------
+    -- CONTROL SIGNALS
+    -------------------------------------------------------------------------
+
     signal PC_code : std_logic_vector(1 downto 0);
     signal IR_code : std_logic;
+
+    signal buss_code : std_logic_vector(2 downto 0);
 
     signal ALU_code : std_logic_vector(2 downto 0);
     signal ALU1_src_code : std_logic_vector(1 downto 0);
     signal ALU2_src_code : std_logic;
 
-    signal memory1_code : std_logic_vector(1 downto 0);
-    signal memory2_code : std_logic_vector(1 downto 0);
-    signal memory3_code : std_logic_vector(1 downto 0);
+    signal memory_address_code : std_logic_vector(2 downto 0);
 
-    signal OP_code : std_logic;
-    signal M1_code : std_logic_vector(1 downto 0);
-    signal M2_code : std_logic_vector(1 downto 0);
-
-    -- Status signals
-    signal Z : std_logic := '0';
-
-    -- Other stuff
-    signal reset : std_logic := '0';
-
-    -- Temporary/Undecided
     signal memory1_write : std_logic;
     signal memory2_write : std_logic;
     signal memory3_write : std_logic;
@@ -135,9 +137,33 @@ architecture Behavioral of MARC is
     signal memory2_read : std_logic;
     signal memory3_read : std_logic;
 
+    signal OP_code : std_logic;
+    signal M1_code : std_logic_vector(1 downto 0);
+    signal M2_code : std_logic_vector(1 downto 0);
+
+    signal ADR1_code : std_logic_vector(1 downto 0);
+    signal ADR2_code : std_logic_vector(1 downto 0);
+
+    -------------------------------------------------------------------------
+    -- MISC JUNK
+    -------------------------------------------------------------------------
+
+    -- Status signals
+    signal Z : std_logic := '0';
     signal active_player : std_logic_vector(1 downto 0);
 
+    -- Other stuff
+    signal reset : std_logic := '0';
+
+    -- TODO connect these modules later
+    signal fifo_out : std_logic_vector(12 downto 0) := "0010XXXXXXXXX";
+    signal IN_out : std_logic_vector(12 downto 0) := "0001XXXXXXXXX";
+
 begin
+
+    -------------------------------------------------------------------------
+    -- COMPONENT INITIATION
+    -------------------------------------------------------------------------
 
     micro: Microcontroller
         port map (  clk => clk,
@@ -160,7 +186,7 @@ begin
     memory1: Memory_Cell_DualPort
         port map (  clk => clk,
                     read => memory1_read,
-                    address_in => memory1_address_in,
+                    address_in => memory_address_in,
                     address_out => memory1_address_out,
                     write => memory1_write,
                     data_in => memory1_data_in,
@@ -174,7 +200,7 @@ begin
     memory2: Memory_Cell
         port map (  clk => clk,
                     read => memory2_read,
-                    address_in => memory2_address_in,
+                    address_in => memory_address_in,
                     address_out => memory2_address_out,
                     write => memory2_write,
                     data_in => memory2_data_in,
@@ -184,16 +210,16 @@ begin
     memory3: Memory_Cell
         port map (  clk => clk,
                     read => memory3_read,
-                    address_in => memory3_address_in,
+                    address_in => memory_address_in,
                     address_out => memory3_address_out,
                     write => memory3_write,
                     data_in => memory3_data_in,
                     data_out => memory3_data_out
         );
 
-    -- TODO
-    -- Handle +1 and -1 differently! Needs fixing :<
-    ALU_operation <= ALU_code(1 downto 0);
+    -------------------------------------------------------------------------
+    -- CLOCK EVENT
+    -------------------------------------------------------------------------
 
     process(clk)
     begin
@@ -219,55 +245,59 @@ begin
     -- MEMORY MULTIPLEXERS
     -------------------------------------------------------------------------
 
-    --memory1_address_in<= main_buss when memory1_source_address = "01" else
-                                            --memory2_data_out when memory1_source_address = "10" else
-                                            --memory1_address_out;
-    ---- memory1_address_gpu <= main_buss_in;
+    memory_address_in <= main_buss when memory_address_code = "001" else
+                         ALU1_out when memory_address_code = "010" else
+                         ALU2_out when memory_address_code = "011" else
+                         ADR1 when memory_address_code = "100" else
+                         ADR2 when memory_address_code = "101" else
+                         PC when memory_address_code = "110" else
+                         memory1_address_out;
+
+    memory1_data_in <= main_buss(7 downto 0) when OP_code = '1' else
+                       memory1_data_out;
+
+    memory2_data_in <= main_buss when M1_code = "01" else
+                       ALU1_out when M1_code = "10" else
+                       ALU2_out when M1_code = "10" else
+                       memory2_data_out;
+
+    memory3_data_in <= main_buss when M2_code = "01" else
+                       ALU1_out when M1_code = "10" else
+                       ALU2_out when M1_code = "10" else
+                       memory3_data_out;
+
+    -------------------------------------------------------------------------
+    -- REGISTRY MULTIPLEXERS
+    -------------------------------------------------------------------------
+
+    PC <= main_buss when PC_code = "01" else
+          PC + 1 when PC_code = "10" else
+          PC;
+
+    ADR1 <= main_buss when ADR1_code = "01" else
+            memory2_data_out when ADR1_code = "10" else
+            ALU1_out when ADR1_code = "11" else
+            ADR1;
+
+    ADR2 <= main_buss when ADR2_code = "01" else
+            memory3_data_out when ADR2_code = "10" else
+            ALU2_out when ADR2_code = "11" else
+            ADR2;
 
 
-    --memory2_address_in<= main_buss when memory2_source_address = "01" else
-                                            ----alu1_register when memory2_source_address = "01" else
-                                            --memory2_data_out when memory2_source_address = "11" else
-                                            --memory2_address_out;
-                                        ---- alu2_register when memory2_source = "10" else
-                                        ---- main_buss_in;
+    -------------------------------------------------------------------------
+    -- BUSS MEGA-MULTIPLEXER
+    -------------------------------------------------------------------------
 
-    --memory3_address_in<= main_buss when memory3_source_address = "01" else
-                                        ----alu1_register when memory3_source_address = "10" else
-                                        ----alu2_register when memory3_source_address = "11" else
-                                        --memory3_address_out;
+    main_buss <= PC when buss_code = "000" else
+                 "00000" & memory1_data_out when buss_code = "001" else
+                 ALU1_out when buss_code = "010" else
+                 fifo_out when buss_code = "011" else
+                 IN_out when buss_code = "100";
 
-
-    --memory1_data_in<= main_buss(7 downto 0) when memory1_source_data = "01" else -- Change this to the OP part of main_buss!
-                                                --memory1_data_out;
-
-    --memory2_data_in<= main_buss when memory2_source_data = "01" else
-                                                --memory2_data_out;
-
-    --memory3_data_in<= main_buss when memory3_source_data = "01" else
-                                                --memory3_data_out;
-
-    --main_buss <=    tmp_buss when buss_controll = "000" else
-                    --memory1_data_out & "00000" when buss_controll = "001" else
-                    --memory2_data_out when buss_controll = "010" else
-                    --memory3_data_out when buss_controll = "011" else
-                    --alu1_out when buss_controll = "100" else
-                    --alu2_out when buss_controll = "101" else
-                    --"000000000000" & alu1_zeroFlag;
-
-    --memory1_read_gpu <= tmp_gpu_read;
-
-    --process(clk)
-    --begin
-        --if rising_edge(clk) then
-
-        ---- Temporary GPU emulator
-        --memory1_address_gpu <= tmp_buss;
-        --tmp_gpu_data <= memory1_data_gpu;
-        --tmp_gpu_read <= not tmp_gpu_read;
-
-        --end if;
-    --end process;
+    -- TODO
+    -- Handle +1 and -1 differently! Needs fixing :<
+    ALU_operation <= ALU_code(1 downto 0);
 
 end Behavioral;
 
