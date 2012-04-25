@@ -110,3 +110,4 @@ NOTE: COREWAR, Get it @ http://www.koth.org/pmars/
            För muxarna sitter alltid före/efter store moduler så vår main module får som uppgift att läsa styrsignaler och rerouta signaler vars de ska. Blir mycket renare och lättare att hålla reda på.
 
     Eller vad anser du?
+

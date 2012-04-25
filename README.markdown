@@ -2,8 +2,7 @@
 Todo
 ====
 
-* Uppdatera blockschema
-    * Ta bort PC till ALU, gå via bussen istället
+* Två extra register på bussen?
 
 * Dela upp schemat i block och definiera in- och utsignaler. Dessa kan vi sedan göra var för sig.  
     Förslagsvis:
@@ -27,7 +26,6 @@ Todo
         * Adress 13 bit
         * Graphic adress 13 bit
         * Read graphics 1 bit
-        * Write graphics 1 bit (ev samma som read?)
         * Graphics color in 8 bit
         * Read 1 bit
         * Write 1 bit (ev fler?)

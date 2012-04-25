@@ -47,7 +47,7 @@ buss_in
     I/O
     3 bit
 
-buss_out
+buss_out FIXME! (ta bort och lägg in "från buss" signaler till alla register) FIXME!
     nothing
     PC
     M1
