@@ -151,7 +151,7 @@ begin
 			if (h_cnt = 800) then 
 				h_cnt <= "0000000000";
 			-- else, increase the horizontal counter by 1.
-			else
+			elsif (h_cnt < 800) then
 				h_cnt <= h_cnt + 1;
 			end if;
 			
@@ -162,7 +162,7 @@ begin
 				-- then reset the vertical counter
 				if(v_cnt = 525) then
 					v_cnt <= "0000000000";
-				else
+				elsif (v_cnt < 525) then
 					-- otherwise, keep counting the vertical counter
 					v_cnt <= v_cnt + 1;
 				end if;
