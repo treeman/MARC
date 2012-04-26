@@ -72,13 +72,11 @@ to buss
 
 ALU
     000     nothing (hold AR and don't update Z)
-    001     load
+    001     load (and update Z)
     010     add
     011     sub
     100     +1
     101     -1
-
-    (ALU module only have 2 last bits)
 
 ALU1 src
     00      M1
@@ -86,8 +84,9 @@ ALU1 src
     10      M2
 
 ALU2 src
-    0       M1
-    1       M2
+    00      M1
+    01      buss
+    10      M2
 
 ADR1
     00     hold

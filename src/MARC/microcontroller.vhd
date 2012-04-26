@@ -51,12 +51,43 @@ architecture Behavioral of Microcontroller is
 
 
     -- IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1_src ALU2_src ALU buss PC uCount uPC  uPC adr
-    -- 0   00  00   0  00 00  00   00   00    000       00       00     000 000  00 00     000  00000000
+    -- 0   00  00   0  00 00  00   00   00    000      00       00     000 000  00 00     000  00000000
+
+    -- ALU1 = ALU1 + PC
+    -- 0   00  00   0  00 00  00   00   00    000      01       00     010 000  00 00     000  00000000
+
+    -- ALU1 = ALU1 - PC
+    -- 0   00  00   0  00 00  00   00   00    000      01       00     011 000  00 00     000  00000000
+
+    -- ALU1--
+    -- 0   00  00   0  00 00  00   00   00    000      00       00     101 000  00 00     000  00000000
 
     signal mem : Data := (
+        "10000000000000000000000000000100000000000000", -- PC -> IR, PC++
 
+        "00000100000000000000000000000000000000000000", -- PC -> OP
+        "00000000001000000000000000000000000000000000", -- OP -> mem1
+        -- mem1(1) = 1
+
+        -- PC = 1
+        "00000000000000000000100001000000000000000000", -- PC -> AR 1
+        "00000000000000000000000100000100000000000000", -- ALU1 +1, PC++
+        -- AR1 = 2, PC = 2
+
+        "00000000000000000000100010000000000000000000", -- ALU1 = ALU1 + PC
+        -- AR1 = 4
+
+        "00000000000000000000100011000000000000000000", -- ALU1 = ALU1 - PC
+        "00000000000000000000000101000000000000000000", -- ALU1--
+        "00000000000000000000000101000000000000000000", -- ALU1--
+        -- AR1 = 0, Z = 1
+
+        -- OP -> IR
+
+        -- Test stuff
+        "10000000000000000000000000000100000000000000", -- PC -> IR; PC++
         "10000000000000000000000000000000000000000000", -- PC -> IR
-        "00000000000000000000000000000100000000000000", -- PC++ (simulator dies on this wut?)
+        "00000000000000000000000000000100000000000000", -- PC++
         "00000001000000000000000000000000000000000000", -- PC -> M1
         "00000000000010000000000000000000000000000000", -- M1 -> mem2
         "00000000000000000000000000000000000000000000", -- nothing
@@ -77,16 +108,16 @@ architecture Behavioral of Microcontroller is
     signal signals : DataLine;
 
     -- Controll the behavior of next uPC value
-    signal uPC_code : std_logic_vector(2 downto 0);
     signal uPC_addr : std_logic_vector(7 downto 0) := "XXXXXXXX";
+    signal uPC_code : std_logic_vector(2 downto 0);
+
+    signal IR_code : std_logic;
 
     -- TODO
     -- when in delay must output zero signals
     signal uCounter : std_logic_vector(7 downto 0) := "00000000";
     signal uCount_limit : std_logic_vector(7 downto 0) := "00000000";
     signal uCount_code : std_logic_vector(1 downto 0) := "00";
-
-    signal IR_code : std_logic;
 
     -- Registers
     signal IR : std_logic_vector(7 downto 0);
@@ -176,7 +207,11 @@ begin
             end if;
 
             -- Update current micro controls
-            signals <= mem(conv_integer(uPC));
+            if reset_a = '1' then
+                signals <= (others => '0');
+            else
+                signals <= mem(conv_integer(uPC));
+            end if;
 
             -------------------------------------------------------------------------
             -- SIGNAL MULTIPLEXERS
