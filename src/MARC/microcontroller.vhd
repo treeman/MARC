@@ -9,8 +9,8 @@ entity Microcontroller is
         -- Our clock
         clk : in std_logic;
 
-        -- Synced reset
-        reset : in std_logic;
+        -- Asynced reset
+        reset_a : in std_logic;
 
         -- Buss input
         buss_in : in std_logic_vector(7 downto 0);
@@ -55,7 +55,7 @@ architecture Behavioral of Microcontroller is
 
 
     signal mem : Data := (
-        "1000000000000000000000000000000000000000000", -- -> IR
+        "1000000000000000000000000000000000000000000", -- PC -> IR
       --"0000000000000000000000000000000000000000000"
         "0000000000000000000000000000000000000000000", -- nothing
         "0000000000000000000000000000010000011110000", -- +1 PC
@@ -74,8 +74,10 @@ architecture Behavioral of Microcontroller is
     signal uPC_code : std_logic_vector(2 downto 0);
     signal uPC_addr : std_logic_vector(7 downto 0) := "XXXXXXXX";
 
+    -- TODO
+    -- when in delay must output zero signals
     signal uCounter : std_logic_vector(7 downto 0) := "00000000";
-    signal uCount_limit : std_logic_vector(7 downto 0) := "00000010";
+    signal uCount_limit : std_logic_vector(7 downto 0) := "00000000";
     signal uCount_code : std_logic_vector(1 downto 0) := "00";
 
     signal IR_code : std_logic;
@@ -93,7 +95,10 @@ architecture Behavioral of Microcontroller is
     signal Z : std_logic := '0';
 begin
 
-    -- Retrieve all signals
+    -------------------------------------------------------------------------
+    -- RETRIEVE SIGNALS
+    -------------------------------------------------------------------------
+
     uPC_addr <= signals(7 downto 0);
     uPC_code <= signals(10 downto 8);
     uCount_code <= signals(12 downto 11);
@@ -125,12 +130,47 @@ begin
 
     IR_code <= signals(42);
 
+    -------------------------------------------------------------------------
+    -- SIGNAL MULTIPLEXERS
+    -------------------------------------------------------------------------
+
+    with IR_code select
+        IR <= buss_in when '1',
+              IR when others;
+
+    -------------------------------------------------------------------------
+    -- ENCODINGS
+    -------------------------------------------------------------------------
+
+    -- OP code address decoding
+    with IR(7 downto 4) select
+        op_addr <= "00000000" when "0000",
+                   "11001110" when "0101",
+                   "11111111" when others;
+
+    -- A a-mod address decoding
+    with IR(3 downto 2) select
+        A_addr <= "00000000" when "00",
+                  "00000001" when "01",
+                  "00000010" when others;
+
+    -- B a-mod address decoding
+    with IR(1 downto 0) select
+        B_addr <= "00000011" when "00",
+                  "00000100" when "01",
+                  "00000101" when others;
+
+
+    -------------------------------------------------------------------------
+    -- ON CLOCK EVENT
+    -------------------------------------------------------------------------
+
     process (clk)
     begin
         if rising_edge(clk) then
 
             -- Handle reset, will be delayed 1 clockpulse but whatever?
-            if reset = '1' then
+            if reset_a = '1' then
                 IR <= "00000000";
                 uPC <= "00000000";
                 uCounter <= "00000000";
@@ -173,26 +213,6 @@ begin
     end process;
 
     -- TODO proper address decodings
-
-    -- OP code address decoding
-    with IR(7 downto 4) select
-        op_addr <= "00000000" when "0000",
-                   "11001110" when "0101",
-                   "11111111" when others;
-
-    -- A a-mod address decoding
-    with IR(3 downto 2) select
-        A_addr <= "00000000" when "00",
-                  "00000001" when "01",
-                  "00000010" when others;
-
-    -- B a-mod address decoding
-    with IR(1 downto 0) select
-        B_addr <= "00000011" when "00",
-                  "00000100" when "01",
-                  "00000101" when others;
-
-    PC_code <= "00";
 
 end Behavioral;
 
