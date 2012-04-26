@@ -33,7 +33,6 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity ALU is
     Port (  clk : in std_logic;
-            main_buss_in : in STD_LOGIC_VECTOR (12 downto 0);
 
             -- ALU Control
             alu_operation : in STD_LOGIC_VECTOR(1 downto 0);
@@ -43,17 +42,11 @@ entity ALU is
             -- xx -
 
             alu1_zeroFlag : out STD_LOGIC;
+				
+				alu1_operand : in STD_LOGIC_VECTOR(12 downto 0);
+				alu2_operand : in STD_LOGIC_VECTOR(12 downto 0);
 
-            -- ALU Control mux
-            alu1_source : in STD_LOGIC_VECTOR(1 downto 0);
-            -- xx main buss
-				-- 10 Constant 0
-				-- 11 Constant 1
-
-            alu2_source : in STD_LOGIC_VECTOR(1 downto 0);
-            -- xx main buss
-				-- 10 Constant 0
-				-- 11 Constant 1
+            
 
             alu1_out : out STD_LOGIC_VECTOR (12 downto 0);
             alu2_out : out STD_LOGIC_VECTOR (12 downto 0)
@@ -65,19 +58,11 @@ architecture Behavioral of ALU is
     signal alu1_register : STD_LOGIC_VECTOR (12 downto 0);
     signal alu2_register : STD_LOGIC_VECTOR (12 downto 0);
 
-    signal alu1_operand : STD_LOGIC_VECTOR (12 downto 0);
-    signal alu2_operand : STD_LOGIC_VECTOR (12 downto 0);
+   
 
 begin
 
-    alu1_operand <= 	"0000000000000" when alu1_source = "10" else		-- Constant 0
-							"0000000000001" when alu1_source = "11" else		-- Constant 1
-							main_buss_in;
-    -- Insert constants here!
-
-    alu2_operand <= 	"0000000000000" when alu2_source = "10" else		-- Constant 0
-							"0000000000001" when alu2_source = "11" else		-- Constant 1
-							main_buss_in;
+   
     -- Insert constants here!
 
 

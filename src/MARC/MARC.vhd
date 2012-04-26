@@ -54,13 +54,13 @@ architecture Behavioral of MARC is
 
     component ALU
         Port (  clk : in std_logic;
-                main_buss_in : in std_logic_vector(12 downto 0);    -- TODO need dual input, one for each ALU
+               
 
                 alu_operation : in std_logic_vector(1 downto 0);
                 alu1_zeroFlag : out std_logic;
 
-                alu1_source : in std_logic_vector(1 downto 0);
-                alu2_source : in std_logic_vector(1 downto 0);
+                alu1_operand : in STD_LOGIC_VECTOR(12 downto 0);
+					 alu2_operand : in STD_LOGIC_VECTOR(12 downto 0);
 
                 alu1_out : out std_logic_vector(12 downto 0);
                 alu2_out : out std_logic_vector(12 downto 0)
@@ -113,6 +113,20 @@ architecture Behavioral of MARC is
 
     signal ALU_src : std_logic_vector(1 downto 0);
     signal ALU_operation : std_logic_vector(1 downto 0);
+	 
+	 -- ALU Control mux
+	 signal alu1_source : STD_LOGIC_VECTOR(1 downto 0);
+		-- xx main buss
+		-- 10 Constant 0
+		-- 11 Constant 1
+
+	 signal alu2_source : STD_LOGIC_VECTOR(1 downto 0);
+		-- xx main buss
+		-- 10 Constant 0
+		-- 11 Constant 1
+		
+	 signal alu1_operand : STD_LOGIC_VECTOR (12 downto 0);
+    signal alu2_operand : STD_LOGIC_VECTOR (12 downto 0);
 
     signal memory1_data_in : std_logic_vector(7 downto 0);
     signal memory2_data_in : std_logic_vector(12 downto 0);
@@ -234,11 +248,13 @@ begin
 
     alus: ALU
         port map (  clk => clk,
-                    main_buss_in => ALU_in,
+                   
                     alu_operation => ALU_operation,
                     alu1_zeroFlag => Z,     -- TODO not direct mapped
-                    alu1_source => ALU_src,
-                    alu2_source => ALU_src,
+                    --alu1_source => ALU_src,
+                    --alu2_source => ALU_src,
+						  alu1_operand => alu1_operand,
+						  alu2_operand => alu2_operand,
                     alu1_out => ALU1_out,
                     alu2_out => ALU2_out
         );
@@ -329,6 +345,19 @@ begin
                            ALU1_out when "10",
                            ALU2_out when "11",
                            memory3_data_out when others;
+									
+	 -------------------------------------------------------------------------
+    -- ALU MULTIPLEXERS
+    -------------------------------------------------------------------------
+
+	 alu1_operand <= 	"0000000000000" when alu1_source = "10" else		-- Constant 0
+							"0000000000001" when alu1_source = "11" else		-- Constant 1
+							main_buss;
+    -- Insert constants here!
+
+    alu2_operand <= 	"0000000000000" when alu2_source = "10" else		-- Constant 0
+							"0000000000001" when alu2_source = "11" else		-- Constant 1
+							main_buss;
 
     -------------------------------------------------------------------------
     -- REGISTRY MULTIPLEXERS
