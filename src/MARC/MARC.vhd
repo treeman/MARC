@@ -20,19 +20,45 @@ architecture Behavioral of MARC is
 
     component Microcontroller
         Port (  clk : in std_logic;
+                reset : in std_logic;
                 buss_in : in std_logic_vector(7 downto 0);
+
                 PC_code : out std_logic_vector(1 downto 0);
-                test : in std_logic_vector(2 downto 0)
+                buss_code : out std_logic_vector(2 downto 0);
+
+                ALU_code : out std_logic_vector(2 downto 0);
+                ALU1_src_code : out std_logic_vector(1 downto 0);
+                ALU2_src_code : out std_logic;
+
+                memory_address_code : out std_logic_vector(2 downto 0);
+
+                memory1_write : out std_logic;
+                memory2_write : out std_logic;
+                memory3_write : out std_logic;
+
+                memory1_read : out std_logic;
+                memory2_read : out std_logic;
+                memory3_read : out std_logic;
+
+                OP_code : out std_logic;
+                M1_code : out std_logic_vector(1 downto 0);
+                M2_code : out std_logic_vector(1 downto 0);
+
+                ADR1_code : out std_logic_vector(1 downto 0);
+                ADR2_code : out std_logic_vector(1 downto 0)
         );
     end component;
 
     component ALU
         Port (  clk : in std_logic;
                 main_buss_in : in std_logic_vector(12 downto 0);    -- TODO need dual input, one for each ALU
+
                 alu_operation : in std_logic_vector(1 downto 0);
                 alu1_zeroFlag : out std_logic;
+
                 alu1_source : in std_logic_vector(1 downto 0);
                 alu2_source : in std_logic_vector(1 downto 0);
+
                 alu1_out : out std_logic_vector(12 downto 0);
                 alu2_out : out std_logic_vector(12 downto 0)
         );
@@ -42,8 +68,10 @@ architecture Behavioral of MARC is
         Port (  clk : in std_logic;
                 read : in std_logic;
                 write : in std_logic;
+
                 address_in : in std_logic_vector(12 downto 0);
                 address_out : out std_logic_vector(12 downto 0);
+
                 data_in : in std_logic_vector(12 downto 0);
                 data_out : out std_logic_vector(12 downto 0)
         );
@@ -53,11 +81,15 @@ architecture Behavioral of MARC is
         Port (  clk : in std_logic;
                 read : in std_logic;
                 write : in std_logic;
+
                 active_player : in std_logic_vector(1 downto 0);
+
                 address_in : in std_logic_vector(12 downto 0);
                 address_out : out std_logic_vector (12 downto 0);
+
                 data_in : in std_logic_vector(7 downto 0);
                 data_out : out std_logic_vector(7 downto 0);
+
                 address_gpu : in std_logic_vector(12 downto 0);
                 data_gpu : out std_logic_vector(7 downto 0);
                 read_gpu : in std_logic
@@ -119,7 +151,6 @@ architecture Behavioral of MARC is
     -------------------------------------------------------------------------
 
     signal PC_code : std_logic_vector(1 downto 0);
-    signal IR_code : std_logic;
 
     signal buss_code : std_logic_vector(2 downto 0);
 
@@ -167,9 +198,32 @@ begin
 
     micro: Microcontroller
         port map (  clk => clk,
+                    reset => reset,
                     buss_in => microcontroller_in,
+
                     PC_code => PC_code,
-                    test => "010"
+                    buss_code => buss_code,
+
+                    ALU_code => ALU_code,
+                    ALU1_src_code => ALU1_src_code,
+                    ALU2_src_code => ALU2_src_code,
+
+                    memory_address_code => memory_address_code,
+
+                    memory1_write => memory1_write,
+                    memory2_write => memory2_write,
+                    memory3_write => memory3_write,
+
+                    memory1_read => memory1_read,
+                    memory2_read => memory2_read,
+                    memory3_read => memory3_read,
+
+                    OP_code => OP_code,
+                    M1_code => M1_code,
+                    M2_code => M2_code,
+
+                    ADR1_code => ADR1_code,
+                    ADR2_code => ADR2_code
         );
 
     alus: ALU
