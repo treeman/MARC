@@ -7,7 +7,10 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity MARC is
     Port (  clk : in std_logic;
             reset_a : in std_logic;
-            tst : in std_logic
+
+            tmp_buss : in std_logic_vector(12 downto 0);
+            tmp_gpu_adr : in std_logic_vector(12 downto 0);
+            tmp_gpu_data : out std_logic_vector(7 downto 0)
     );
 end MARC;
 
@@ -129,7 +132,6 @@ architecture Behavioral of MARC is
 
     signal memory1_address_gpu : std_logic_vector(12 downto 0); -- Unsynced!
     signal memory1_data_gpu : std_logic_vector(7 downto 0); -- Unsynced!
-
     signal memory1_read_gpu : std_logic;
 
 
@@ -189,6 +191,10 @@ architecture Behavioral of MARC is
     -- TODO connect these modules later
     signal fifo_out : std_logic_vector(12 downto 0) := "0010XXXXXXXXX";
     signal IN_out : std_logic_vector(12 downto 0) := "0001XXXXXXXXX";
+
+    signal tmp_gpu_read : STD_LOGIC := '0';
+    signal tmp_gpu_adr_sync : STD_LOGIC_VECTOR(12 downto 0) := "0000000000000";
+    signal tmp_gpu_data_sync : STD_LOGIC_VECTOR(7 downto 0);
 
 begin
 
@@ -286,6 +292,11 @@ begin
                 reset <= '0';
             end if;
 
+            -- Temporary GPU emulator
+            memory1_address_gpu <= tmp_buss;
+            tmp_gpu_data <= memory1_data_gpu;
+            tmp_gpu_read <= not tmp_gpu_read;
+
         end if;
     end process;
 
@@ -351,6 +362,8 @@ begin
                     fifo_out when "011",
                     IN_out when "100",
                     main_buss when others;
+
+    memory1_read_gpu <= tmp_gpu_read;
 
     -- TODO
     -- Handle +1 and -1 differently! Needs fixing :<
