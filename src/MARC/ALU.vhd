@@ -46,12 +46,14 @@ entity ALU is
 
             -- ALU Control mux
             alu1_source : in STD_LOGIC_VECTOR(1 downto 0);
-            -- 001 main buss
-            -- xxx !?
+            -- xx main buss
+				-- 10 Constant 0
+				-- 11 Constant 1
 
             alu2_source : in STD_LOGIC_VECTOR(1 downto 0);
-            -- 001 main buss
-            -- xxx !?
+            -- xx main buss
+				-- 10 Constant 0
+				-- 11 Constant 1
 
             alu1_out : out STD_LOGIC_VECTOR (12 downto 0);
             alu2_out : out STD_LOGIC_VECTOR (12 downto 0)
@@ -68,12 +70,14 @@ architecture Behavioral of ALU is
 
 begin
 
-    alu1_operand <= "0000000000000" when alu1_source = "10" else
-                    main_buss_in;
+    alu1_operand <= 	"0000000000000" when alu1_source = "10" else		-- Constant 0
+							"0000000000001" when alu1_source = "11" else		-- Constant 1
+							main_buss_in;
     -- Insert constants here!
 
-    alu2_operand <= "0000000000000" when alu2_source = "10" else
-                    main_buss_in;
+    alu2_operand <= 	"0000000000000" when alu2_source = "10" else		-- Constant 0
+							"0000000000001" when alu2_source = "11" else		-- Constant 1
+							main_buss_in;
     -- Insert constants here!
 
 
