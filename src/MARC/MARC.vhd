@@ -282,22 +282,10 @@ begin
             -- Sync reset
             if reset_a = '1' then
                 reset <= '1';
-
-                PC <= "0000000000000";
             elsif reset = '1' then
                 reset <= '0';
             end if;
 
-            --case PC_code is
-                --when "01" => PC <= main_buss;
-                --when "10" => PC <= PC + 1;
-                --when others => PC <= PC;
-            --end case;
-
-            --with PC_code select
-                --PC <= main_buss when "01",
-                    --PC + 1 when "10",
-                    --PC when others;
         end if;
     end process;
 
