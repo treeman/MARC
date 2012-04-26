@@ -56,9 +56,9 @@ architecture Behavioral of Microcontroller is
 
     signal mem : Data := (
         "1000000000000000000000000000000000000000000", -- PC -> IR
-        --"0000000000000000000000000000100000000000000", -- PC++ (simulator dies on this wut?)
-        --"0000000100000000000000000000000000000000000", -- PC -> M1
-        --"0000000000001000000000000000000000000000000", -- M1 -> mem2
+        "0000000000000000000000000000100000000000000", -- PC++ (simulator dies on this wut?)
+        "0000000100000000000000000000000000000000000", -- PC -> M1
+        "0000000000001000000000000000000000000000000", -- M1 -> mem2
         "0000000000000000000000000000000000000000000", -- nothing
         "0000000000000000000000000000010000011110000", -- +1 PC
         "0000000000000000000000000000000100000001111", -- set Z if uCounter >= limit
@@ -136,16 +136,10 @@ begin
     IR_code <= signals(42);
 
     -------------------------------------------------------------------------
-    -- SIGNAL MULTIPLEXERS
-    -------------------------------------------------------------------------
-
-    IR <= "00000000" when reset = '1' else
-          buss_in when IR_code = '1' else
-          IR;
-
-    -------------------------------------------------------------------------
     -- ENCODINGS
     -------------------------------------------------------------------------
+
+    -- TODO proper address encodings
 
     -- OP code address decoding
     with IR(7 downto 4) select
@@ -183,6 +177,10 @@ begin
             -- Update current micro controls
             signals <= mem(conv_integer(uPC));
 
+            -------------------------------------------------------------------------
+            -- SIGNAL MULTIPLEXERS
+            -------------------------------------------------------------------------
+
             -- Update uPC
             if reset_a = '1' then
                 uPC <= "00000000";
@@ -217,10 +215,14 @@ begin
                 uCounter <= "00000000";
             end if;
 
+            if reset = '1' then
+                IR <= "00000000";
+            elsif IR_code = '1' then
+                IR <= buss_in;
+            end if;
+
         end if;
     end process;
-
-    -- TODO proper address decodings
 
 end Behavioral;
 
