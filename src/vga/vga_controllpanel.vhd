@@ -150,9 +150,15 @@ begin
 			-- then reset the horizontal counter.
 			if (h_cnt = 800) then 
 				h_cnt <= "0000000000";
+				red <= "000";
+				grn <= "000";
+				blu <= "00";
 			-- else, increase the horizontal counter by 1.
 			elsif (h_cnt < 800) then
 				h_cnt <= h_cnt + 1;
+				red <= colorpix(7 downto 5);
+				grn <= colorpix(4 downto 2);
+				blu <= colorpix(1 downto 0);
 			end if;
 			
 			-- vertical counter	
@@ -162,7 +168,13 @@ begin
 				-- then reset the vertical counter
 				if(v_cnt = 525) then
 					v_cnt <= "0000000000";
+					red <= "000";
+					grn <= "000";
+					blu <= "00";
 				elsif (v_cnt < 525) then
+					red <= colorpix(7 downto 5);
+					grn <= colorpix(4 downto 2);
+					blu <= colorpix(1 downto 0);
 					-- otherwise, keep counting the vertical counter
 					v_cnt <= v_cnt + 1;
 				end if;
@@ -178,10 +190,7 @@ begin
 			if(h_cnt >= 648) and (h_cnt < 744) then
 				HS <= '0';
 				-- output pixel color due to input data
-				red <= colorpix(7 downto 5);
-				grn <= colorpix(4 downto 2);
-				blu <= colorpix(1 downto 0);
-			else
+			elsif (h_cnt < 648) and (h_cnt >= 744) then
 				HS <= '1';
 				red <= "000";
 				grn <= "000";
@@ -196,10 +205,7 @@ begin
 			if(v_cnt >= 482) and (v_cnt < 484) then
 				VS <= '0';
 				-- output pixel color due to input data
-				red <= colorpix(7 downto 5);
-				grn <= colorpix(4 downto 2);
-				blu <= colorpix(1 downto 0);
-			else
+			elsif (v_cnt < 482) and (v_cnt >= 484) then
 				VS <= '1';
 				red <= "000";
 				grn <= "000";

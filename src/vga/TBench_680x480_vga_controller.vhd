@@ -2,10 +2,10 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   23:27:19 04/21/2012
+-- Create Date:   16:49:59 04/26/2012
 -- Design Name:   
--- Module Name:   C:/Users/Ingram/Documents/TSEA43/gpu/tsb.vhd
--- Project Name:  gpu
+-- Module Name:   E:/vhdl_project/vga_blockbox/bench.vhd
+-- Project Name:  vga_blockbox
 -- Target Device:  
 -- Tool versions:  
 -- Description:   
@@ -27,13 +27,15 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
-USE ieee.std_logic_unsigned.all;
-USE ieee.numeric_std.ALL;
  
-ENTITY tsb IS
-END tsb;
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--USE ieee.numeric_std.ALL;
  
-ARCHITECTURE behavior OF tsb IS 
+ENTITY bench IS
+END bench;
+ 
+ARCHITECTURE behavior OF bench IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
@@ -67,7 +69,7 @@ ARCHITECTURE behavior OF tsb IS
    signal row : std_logic_vector(9 downto 0);
    signal column : std_logic_vector(9 downto 0);
 
-   -- Clock period definitions (25 MHz)
+   -- Clock period definitions
    constant pixel_clk_period : time := 10 ns;
  
 BEGIN
@@ -99,13 +101,14 @@ BEGIN
    -- Stimulus process
    stim_proc: process
    begin		
-      -- hold reset state for 100ns.
-      wait for 100 ns;
+      -- hold reset state for 100 ns.
+      wait for 100 ns;	
 
       -- insert stimulus here 
 		rst <= '1' after 10 ns, '0' after 20 ns;
-		colorpix <= "10101010" after 10 ns, "01010101" after 8000 ns;
-      wait;
+ 	   colorpix <= "10101010" after 10 ns, "01010101" after 40 ns;
+      
+		wait;
    end process;
 
 END;
