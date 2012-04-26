@@ -56,7 +56,9 @@ architecture Behavioral of Microcontroller is
 
     signal mem : Data := (
         "1000000000000000000000000000000000000000000", -- PC -> IR
-      --"0000000000000000000000000000000000000000000"
+        --"0000000000000000000000000000100000000000000", -- PC++ (simulator dies on this wut?)
+        --"0000000100000000000000000000000000000000000", -- PC -> M1
+        --"0000000000001000000000000000000000000000000", -- M1 -> mem2
         "0000000000000000000000000000000000000000000", -- nothing
         "0000000000000000000000000000010000011110000", -- +1 PC
         "0000000000000000000000000000000100000001111", -- set Z if uCounter >= limit
@@ -67,6 +69,7 @@ architecture Behavioral of Microcontroller is
         others => (others => '0')
     );
 
+    -- Synced reset
     signal reset : std_logic;
 
     -- Current microcode line to process

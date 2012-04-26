@@ -24,6 +24,14 @@ uCount
     01      Z = uCounter >= limit
     11      uCounter = 0
 
+mem address
+    000   PC
+    001   buss
+    010   AR 1
+    011   AR 2
+    100   ADR 1
+    101   ADR 2
+
 mem1
     00      nothing
     01      read
@@ -38,6 +46,22 @@ mem3
     00      nothing
     01      read
     10      write
+
+OP
+    0       hold
+    1       buss
+
+M1
+    00      hold
+    01      buss
+    10      AR 1
+    11      AR 2
+
+M2
+    00      hold
+    01      buss
+    10      AR 1
+    11      AR 2
 
 to buss
     000     PC
@@ -64,31 +88,6 @@ ALU1 src
 ALU2 src
     0       M1
     1       M2
-
-OP
-    0       hold
-    1       buss
-
-M1
-    00      hold
-    01      buss
-    10      AR 1
-    11      AR 2
-
-M2
-    00      hold
-    01      buss
-    10      AR 1
-    11      AR 2
-
-mem address
-    000   hold
-    001   buss
-    010   AR 1
-    011   AR 2
-    100   ADR 1
-    101   ADR 2
-    110   PC
 
 ADR1
     00     hold
