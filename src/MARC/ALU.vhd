@@ -65,6 +65,7 @@ begin
    
     -- Insert constants here!
 
+  alu1_zeroFlag <= not(alu1_register(0) or alu1_register(1) or alu1_register(2) or alu1_register(3) or alu1_register(4) or alu1_register(5) or alu1_register(6) or alu1_register(7) or alu1_register(8) or alu1_register(9) or alu1_register(10) or alu1_register(11) or alu1_register(12));                
 
     alu1_out <= alu1_register;
     alu2_out <= alu2_register;
@@ -82,12 +83,8 @@ begin
                 alu1_register <= alu1_register+alu1_operand; -- ALU1 += OP1
             else
                 alu1_register <= alu1_register-alu1_operand; -- ALU1 -= OP1
-
-                for i in 12 downto 0 loop
-                    z := z or alu1_register(i);
-                end loop;
-                    alu1_zeroFlag <= z; -- Set zero flag (invert this?)
-
+                
+                
             end if;
 
 

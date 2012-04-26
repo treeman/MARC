@@ -22,7 +22,7 @@ entity Microcontroller is
 
         ALU_code : out std_logic_vector(2 downto 0);
         ALU1_src_code : out std_logic_vector(1 downto 0);
-        ALU2_src_code : out std_logic;
+        ALU2_src_code : out std_logic_vector(1 downto 0);
 
         memory_address_code : out std_logic_vector(2 downto 0);
 
@@ -46,14 +46,27 @@ end Microcontroller;
 architecture Behavioral of Microcontroller is
 
     -- Microcode lives here
-    subtype DataLine is std_logic_vector(42 downto 0);
+    subtype DataLine is std_logic_vector(43 downto 0);
     type Data is array (0 to 255) of DataLine;
 
 
     -- IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1_src ALU2_src ALU buss PC uCount uPC  uPC adr
-    -- 0   00  00   0  00 00  00   00   00    000       00       0     000 000  00 00     000  00000000
+    -- 0   00  00   0  00 00  00   00   00    000       00       00     000 000  00 00     000  00000000
 
     signal mem : Data := (
+<<<<<<< HEAD
+        "10000000000000000000000000000000000000000000", -- PC -> IR
+        "00000000000000000000000000000100000000000000", -- PC++ (simulator dies on this wut?)
+        "00000001000000000000000000000000000000000000", -- PC -> M1
+        "00000000000010000000000000000000000000000000", -- M1 -> mem2
+        "00000000000000000000000000000000000000000000", -- nothing
+        "00000000000000000000000000000010000011110000", -- +1 PC
+        "00000000000000000000000000000000100000001111", -- set Z if uCounter >= limit
+        "00000000000000000000000000000000010100000110", -- jmpz to line 6
+        "00000000000000000000000000000001100000000000", -- reset uCounter
+        "00000000000000000000000000000000011100000000", -- Never gonna happen
+        "00000000000000000000000000000000011111111111", -- line 6, reset uPC
+=======
         "1000000000000000000000000000000000000000000", -- PC -> IR
         "0000000000000000000000000000100000000000000", -- PC++
         "0000000100000000000000000000000000000000000", -- PC -> M1
@@ -65,6 +78,7 @@ architecture Behavioral of Microcontroller is
         "0000000000000000000000000000001100000000000", -- reset uCounter
         "0000000000000000000000000000000011100000000", -- Never gonna happen
         "0000000000000000000000000000000011111111111", -- line 6, reset uPC
+>>>>>>> 3e292ea533ebfe3484795d202172f8e4d151cbbd
         others => (others => '0')
     );
 
@@ -111,28 +125,28 @@ begin
     buss_code <= signals(17 downto 15);
 
     ALU_code <= signals(20 downto 18);
-    ALU2_src_code <= signals(21);
-    ALU1_src_code <= signals(23 downto 22);
+    ALU2_src_code <= signals(22 downto 21);
+    ALU1_src_code <= signals(24 downto 23);
 
-    memory_address_code <= signals(26 downto 24);
+    memory_address_code <= signals(27 downto 25);
 
-    memory3_read <= signals(27);
-    memory3_write <= signals(28);
+    memory3_read <= signals(28);
+    memory3_write <= signals(29);
 
-    memory2_read <= signals(29);
-    memory2_write <= signals(30);
+    memory2_read <= signals(30);
+    memory2_write <= signals(31);
 
-    memory1_read <= signals(31);
-    memory1_write <= signals(32);
+    memory1_read <= signals(32);
+    memory1_write <= signals(33);
 
-    M2_code <= signals(34 downto 33);
-    M1_code <= signals(36 downto 35);
-    OP_code <= signals(37);
+    M2_code <= signals(35 downto 34);
+    M1_code <= signals(37 downto 36);
+    OP_code <= signals(38);
 
-    ADR2_code <= signals(39 downto 38);
-    ADR1_code <= signals(41 downto 40);
+    ADR2_code <= signals(40 downto 39);
+    ADR1_code <= signals(42 downto 41);
 
-    IR_code <= signals(42);
+    IR_code <= signals(43);
 
     -------------------------------------------------------------------------
     -- ENCODINGS

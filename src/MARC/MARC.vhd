@@ -31,7 +31,7 @@ architecture Behavioral of MARC is
 
                 ALU_code : out std_logic_vector(2 downto 0);
                 ALU1_src_code : out std_logic_vector(1 downto 0);
-                ALU2_src_code : out std_logic;
+                ALU2_src_code : out std_logic_vector(1 downto 0);
 
                 memory_address_code : out std_logic_vector(2 downto 0);
 
@@ -123,9 +123,6 @@ architecture Behavioral of MARC is
 		-- 10 Constant 0
 		-- 11 Constant 1
 		
-	 signal alu1_operand : STD_LOGIC_VECTOR (12 downto 0);
-    signal alu2_operand : STD_LOGIC_VECTOR (12 downto 0);
-
     signal memory1_data_in : std_logic_vector(7 downto 0);
     signal memory2_data_in : std_logic_vector(12 downto 0);
     signal memory3_data_in : std_logic_vector(12 downto 0);
@@ -170,7 +167,10 @@ architecture Behavioral of MARC is
 
     signal ALU_code : std_logic_vector(2 downto 0);
     signal ALU1_src_code : std_logic_vector(1 downto 0);
-    signal ALU2_src_code : std_logic;
+    signal ALU2_src_code : std_logic_vector(1 downto 0);
+	 
+	 signal alu1_operand : std_logic_vector(12 downto 0);
+	 signal alu2_operand : std_logic_vector(12 downto 0);
 
     signal memory_address_code : std_logic_vector(2 downto 0);
 
@@ -374,13 +374,13 @@ begin
     -- ALU MULTIPLEXERS
     -------------------------------------------------------------------------
 
-	 alu1_operand <= 	"0000000000000" when alu1_source = "10" else		-- Constant 0
-							"0000000000001" when alu1_source = "11" else		-- Constant 1
+	 alu1_operand <= 	"0000000000000" when ALU1_src_code = "10" else		-- Constant 0
+							"0000000000001" when ALU1_src_code = "11" else		-- Constant 1
 							main_buss;
     -- Insert constants here!
 
-    alu2_operand <= 	"0000000000000" when alu2_source = "10" else		-- Constant 0
-							"0000000000001" when alu2_source = "11" else		-- Constant 1
+    alu2_operand <= 	"0000000000000" when ALU2_src_code = "10" else		-- Constant 0
+							"0000000000001" when ALU2_src_code = "11" else		-- Constant 1
 							main_buss;
 
     -------------------------------------------------------------------------
