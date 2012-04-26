@@ -11,6 +11,7 @@ architecture behavior of MARC_test is
             clk : in std_logic;
             reset_a : in std_logic;
 
+            tmp_buss : in std_logic_vector(12 downto 0);
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
             tmp_gpu_data : out std_logic_vector(7 downto 0)
         );
@@ -22,8 +23,9 @@ architecture behavior of MARC_test is
     signal tst : std_logic := '0';
 
     -- Outputs
-    signal tmp_gpu_data : std_logic_vector(7 downto 0);
+    signal tmp_buss : std_logic_vector(12 downto 0);
     signal tmp_gpu_adr : std_logic_vector(12 downto 0);
+    signal tmp_gpu_data : std_logic_vector(7 downto 0);
 
     -- Clock period definitions
     constant clk_period : time := 1 us;
@@ -34,8 +36,9 @@ begin
     uut: MARC Port map (
         clk => clk,
         reset_a => reset_a,
-        tmp_gpu_data => tmp_gpu_data,
-        tmp_gpu_adr => tmp_gpu_adr
+        tmp_buss => tmp_buss,
+        tmp_gpu_adr => tmp_gpu_adr,
+        tmp_gpu_data => tmp_gpu_data
     );
 
     clk_process :process
@@ -54,6 +57,8 @@ begin
         reset_a <= '0', '1' after 50 ns, '0' after 70 ns, '1' after 1 us, '0' after 2 us;
 
         tmp_gpu_adr <= "0000000000000";
+
+        tmp_buss <= "0000000000000";
 
         wait;
     end process;

@@ -105,8 +105,6 @@ architecture Behavioral of MARC is
     -------------------------------------------------------------------------
 
     -- Module data signals
-    signal microcontroller_in : std_logic_vector(7 downto 0);
-
     signal ALU_in : std_logic_vector(12 downto 0);
     signal ALU1_out : std_logic_vector(12 downto 0);
     signal ALU2_out : std_logic_vector(12 downto 0);
@@ -205,7 +203,7 @@ begin
     micro: Microcontroller
         port map (  clk => clk,
                     reset_a => reset_a,
-                    buss_in => microcontroller_in,
+                    buss_in => main_buss(7 downto 0),
 
                     PC_code => PC_code,
                     buss_code => buss_code,
@@ -297,6 +295,32 @@ begin
             tmp_gpu_data <= memory1_data_gpu;
             tmp_gpu_read <= not tmp_gpu_read;
 
+            -------------------------------------------------------------------------
+            -- REGISTRY MULTIPLEXERS
+            -------------------------------------------------------------------------
+
+            if reset_a = '1' then
+                PC <= "0000000000000";
+            elsif PC_code = "01" then
+                PC <= main_buss;
+            elsif PC_code = "10" then
+                PC <= PC + 1;
+            end if;
+
+            case ADR1_code is
+                when "01" => ADR1 <= main_buss;
+                when "10" => ADR1 <= memory2_data_out;
+                when "11" => ADR1 <= ALU1_out;
+                when others => ADR1 <= ADR1;
+            end case;
+
+            case ADR2_code is
+                when "01" => ADR2 <= main_buss;
+                when "10" => ADR2 <= memory3_data_out;
+                when "11" => ADR2 <= ALU2_out;
+                when others => ADR2 <= ADR2;
+            end case;
+
         end if;
     end process;
 
@@ -331,27 +355,6 @@ begin
                            memory3_data_out when others;
 
     -------------------------------------------------------------------------
-    -- REGISTRY MULTIPLEXERS
-    -------------------------------------------------------------------------
-
-    PC <= "0000000000000" when reset = '1' else
-          main_buss when PC_code = "01" else
-          PC + 1 when PC_code = "10" else
-          PC;
-
-    with ADR1_code select
-        ADR1 <= main_buss when "01",
-                memory2_data_out when "10",
-                ALU1_out when "11",
-                ADR1 when others;
-
-    with ADR2_code select
-        ADR2 <= main_buss when "01",
-                memory3_data_out when "10",
-                ALU2_out when "11",
-                ADR2 when others;
-
-    -------------------------------------------------------------------------
     -- BUSS MEGA-MULTIPLEXER
     -------------------------------------------------------------------------
 
@@ -360,8 +363,7 @@ begin
                     "00000" & memory1_data_out when "001",
                     ALU1_out when "010",
                     fifo_out when "011",
-                    IN_out when "100",
-                    main_buss when others;
+                    IN_out when others;
 
     memory1_read_gpu <= tmp_gpu_read;
 
