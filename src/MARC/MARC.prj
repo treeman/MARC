@@ -1,5 +1,0 @@
-vhdl work "microcontroller.vhd"
-vhdl work "Memory_Cell_DualPort.vhd"
-vhdl work "memory_cell.vhd"
-vhdl work "ALU.vhd"
-vhdl work "MARC.vhd"
