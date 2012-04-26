@@ -335,11 +335,10 @@ begin
     -- REGISTRY MULTIPLEXERS
     -------------------------------------------------------------------------
 
-    -- Will not register PC update?
-    --with PC_code select
-        --PC <= main_buss when "01",
-              --PC + 1 when "10",
-              --PC when others;
+    PC <= "0000000000000" when reset = '1' else
+          main_buss when PC_code = "01" else
+          PC + 1 when PC_code = "10" else
+          PC;
 
     with ADR1_code select
         ADR1 <= main_buss when "01",

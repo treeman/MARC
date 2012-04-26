@@ -67,6 +67,8 @@ architecture Behavioral of Microcontroller is
         others => (others => '0')
     );
 
+    signal reset : std_logic;
+
     -- Current microcode line to process
     signal signals : DataLine;
 
@@ -134,9 +136,9 @@ begin
     -- SIGNAL MULTIPLEXERS
     -------------------------------------------------------------------------
 
-    with IR_code select
-        IR <= buss_in when '1',
-              IR when others;
+    IR <= "00000000" when reset = '1' else
+          buss_in when IR_code = '1' else
+          IR;
 
     -------------------------------------------------------------------------
     -- ENCODINGS
@@ -169,44 +171,47 @@ begin
     begin
         if rising_edge(clk) then
 
-            -- Handle reset, will be delayed 1 clockpulse but whatever?
             if reset_a = '1' then
-                IR <= "00000000";
+                reset <= '1';
+            elsif reset = '1' then
+                reset <= '0';
+            end if;
+
+            -- Update current micro controls
+            signals <= mem(conv_integer(uPC));
+
+            -- Update uPC
+            if reset_a = '1' then
                 uPC <= "00000000";
+            elsif uPC_code = "000" then
+                uPC <= uPC + 1;
+            elsif uPC_code = "001" then
+                uPC <= op_addr;
+            elsif uPC_code = "010" then
+                uPC <= A_addr;
+            elsif uPC_code = "011" then
+                uPC <= B_addr;
+            elsif uPC_code = "100" then
+                uPC <= uPC_addr;
+            elsif uPC_code = "101" and Z = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "111" then
+                uPC <= "00000000";
+            end if;
+
+            -- Update uCounter
+            if reset_a = '1' then
                 uCounter <= "00000000";
-            else
-                -- Update current micro controls
-                signals <= mem(conv_integer(uPC));
-
-                -- Update uPC
-                if uPC_code = "000" then
-                    uPC <= uPC + 1;
-                elsif uPC_code = "001" then
-                    uPC <= op_addr;
-                elsif uPC_code = "010" then
-                    uPC <= A_addr;
-                elsif uPC_code = "011" then
-                    uPC <= B_addr;
-                elsif uPC_code = "100" then
-                    uPC <= uPC_addr;
-                elsif uPC_code = "101" and Z = '1' then
-                    uPC <= uPC_addr;
-                elsif uPC_code = "111" then
-                    uPC <= "00000000";
+            elsif uCount_code = "00" then
+                uCounter <= uCounter + 1;
+            elsif uCount_code = "01" then
+                if uCount_limit <= uCounter then
+                    Z <= '1';
+                else
+                    Z <= '0';
                 end if;
-
-                -- Update uCounter
-                if uCount_code = "00" then
-                    uCounter <= uCounter + 1;
-                elsif uCount_code = "01" then
-                    if uCount_limit <= uCounter then
-                        Z <= '1';
-                    else
-                        Z <= '0';
-                    end if;
-                elsif uCount_code = "11" then
-                    uCounter <= "00000000";
-                end if;
+            elsif uCount_code = "11" then
+                uCounter <= "00000000";
             end if;
 
         end if;
