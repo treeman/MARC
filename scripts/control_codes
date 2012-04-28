@@ -1,0 +1,326 @@
+#!/usr/bin/perl -w
+
+use utf8;
+use autodie;
+
+use Modern::Perl;
+use Getopt::Long;
+use File::Slurp;
+
+# Command line options
+my $help;
+my $dest;
+my $verbose;
+my $debug;
+
+GetOptions(
+    'help|h' => \$help,
+    'destination|d=s' => \$dest,
+    'verbose|v' => \$verbose,
+    'debug' => \$debug,
+);
+
+$dest = "code_output" if !$dest;
+my $src = $ARGV[0];
+
+if ($help || !$src) {
+    say "Convert control code comments to actual control code.";
+    exit;
+}
+
+# Ouput format
+my $h = "IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uCount uPC  uPC_addr";
+my $c = "0   00  00   0  00 00  00   00   00    000     00   0   000 000  00   00   000  00000000";
+
+# One word commands
+my %single_cmd = (
+    'PC++' => "10",
+
+    'ALU++' => "100",
+    'ALU--' => "101",
+);
+
+# Specific codes
+my %buss = (
+    PC => "000",
+    OP => "001",
+    'AR1' => "010",
+    FIFO => "011",
+    IN => "100",
+);
+
+my %mem_addr = (
+    PC => "000",
+    buss => "001",
+    AR1 => "010",
+    AR2 => "011",
+    ADR1 => "100",
+    ADR2 => "101",
+);
+
+# Positions for our subsignals in the grand control scheme
+my %positions;
+
+# Calculate positions from output format
+my @namechunks = split (/\s+/, trim($h));
+my @codechunks = split (/\s+/, trim($c));
+
+my $length = length (join "", @codechunks);
+my $l = $length - 1;
+
+for my $chunk (@codechunks) {
+    my $r = $l - length ($chunk) + 1;
+
+    my $name = shift @namechunks;
+
+    say "$name has $r .. $l" if $debug;
+
+    $positions{$name} = [$r .. $l];
+
+    $l = $r - 1;
+}
+
+say "" if $debug;
+
+# Reverse the positions (we're using strings 0 indexed to the left but vhdl uses bits reversed)
+for my $key (keys %positions) {
+    my @mod;
+
+    for my $val (@{$positions{$key}}) {
+        push (@mod, 43 - $val);
+    }
+
+    # Need to reverse here as otherwise we'll assign eg (43, 42) to something which will reverse our code
+    $positions{$key} = [reverse @mod];
+}
+
+# Convenience function, take reference to list and a string
+sub update {
+    my ($signal, $pos, $what) = @_;
+
+    @$signal[ @{$pos} ] = split (//, $what);
+}
+
+open my $in, '<', $src;
+#open my $out, '>', $dest;
+
+my $codeline = 0;
+
+# Process and write
+while (my $line = <$in>) {
+    chomp $line;
+
+    # Comments
+    if ($line =~ /^;(.*)/) {
+        # If we're in verbose, simply output comments
+        if ($verbose) {
+            say $line;
+        }
+        # Otherwise transform into vhdl comments
+        else {
+            say "-- $1";
+        }
+        next;
+    }
+    # Simply output empty lines
+    elsif ($line =~ /^\s*$/) {
+        say $line;
+        next;
+    }
+
+    $codeline++;
+
+    my @signal = ((0) x 44);
+    my @comments;
+
+    for my $cmd (split /\s*,\s*/, $line)
+    {
+        # Grab single word commands eg PC++, ALU--0 = substr (signal, 0, 1), space: ''
+
+        if ($cmd =~ /^(\S+?)(\+{2}|-{2})$/) {
+            my $reg = $1;
+
+            my $val = $single_cmd{$cmd};
+            if ($val) {
+                update (\@signal, $positions{$reg}, $val);
+
+                #say $cmd;
+                push (@comments, $cmd);
+            }
+            else {
+                push (@comments, "(? $cmd)");
+            }
+        }
+        # dest -> src
+        elsif ($cmd =~ /(\S+)\s*->\s*(\S+)/) {
+            my ($dest, $src) = ($1, $2);
+
+            # Direct:
+            #
+            # PC -> ADR1
+            # M1 -> ADR1
+            # AR1 -> ADR1
+            #
+            # PC -> ADR2
+            # M2 -> ADR2
+            # AR2 -> ADR2
+            #
+            # PC -> mem_addr
+            # AR1 -> mem_addr
+            # AR2 -> mem_addr
+            # ADR1 -> mem_addr
+            # ADR2 -> mem_addr
+            #
+            # M1 -> ALU1
+            # M2 -> ALU1
+            #
+            # M1 -> ALU2
+            # M2 -> ALU2
+            #
+            # To buss:
+            #
+            # PC
+            # OP
+            # AR1
+            # FIFO
+            # IN
+            #
+            # From buss:
+            #
+            # PC
+            # IR
+            # mem_addr
+            # OP
+            # M1
+            # M2
+            # ALU1
+            # ALU2
+            # ADR1
+            # ADR2
+            # FIFO
+
+            #say "$dest -> $src";
+            push (@comments, "(? $cmd)");
+        }
+        # var = l op r
+        elsif ($cmd =~ /(\S+)            # Assigned variable
+                        \s*=\s*
+                        (\S+)            # left
+                        \s+(\S)\s+       # op
+                        (\S+)            # right
+                       /x)
+        {
+            my ($res, $l, $op, $r) = ($1, $2, $3, $4);
+
+            #say "$res = $l $op $r";
+            push (@comments, "(? $cmd)");
+        }
+        # var = stuff eg uPC = 0, uCount = 0, uPC_addr = AB or 10101011 (will truncate/fill)
+        elsif ($cmd =~ /(\S+)\s*=\s*(\S+)/) {
+            my ($var, $res) = ($1, $2);
+
+            #say "var = $var, res = $res";
+
+            if ($var eq 'uPC_addr') {
+                my $bin;
+
+                if ($res =~ /^[01]+$/) {
+                    $bin = $res;
+                }
+                elsif ($res =~ /^[0123456789ABCDEF]+$/i) {
+                    $bin = hex2bin($res);
+                }
+                else {
+                    push (@comments, "(? $cmd)");
+                    next;
+                }
+
+                # Force to length 8
+                if (length($bin) < 8) {
+                    $bin = '0' x (8 - length($bin)) . $bin;
+                }
+                elsif (length($bin) > 8) {
+                    # Truncate from the back so 00 1111 1111 -> 1111 1111
+                    $bin = substr $bin, -8;
+                }
+
+                update (\@signal, $positions{$var}, $bin);
+
+                push (@comments, $cmd);
+            }
+            else {
+                push (@comments, $cmd);
+            }
+        }
+        else {
+            push (@comments, "(? $cmd)");
+        }
+    }
+
+    # Output verbose mode, for humans
+    if ($verbose) {
+        # Output verbose output, format lines like this with the occassional help header
+
+        # Need to display this more than once
+        if ($codeline == 1) {
+            # Take into account line numbering
+            say "    $h";
+        }
+
+        my $result = "";
+        my $last = 0;
+        my $signal = join ("", @signal);
+
+        my @codechunks = split (/\s+/, $c);
+        my @spacechunks = split (/\S+/, $c);
+
+        # Remove if there's an opening space
+        if ($c =~ /^\s/) {
+            $result .= shift @spacechunks;
+            shift @codechunks;
+        }
+        # Will split out an empty string space otherwise
+        else {
+            shift @spacechunks;
+        }
+
+        # Bundle a code string by alternating code/space
+        for my $code (@codechunks) {
+            my $l = length($code);
+            my $sig = substr ($signal, $last, $l);
+
+            $result .= $sig;
+
+            my $space = shift @spacechunks;
+            $result .= $space if $space;
+
+            $last += $l;
+        }
+
+        my $hexline = sprintf ("%x", $codeline);
+        $hexline = "0".$hexline if length ($hexline) < 2;
+
+        say "$hexline  $result ; " . join (", ", @comments);
+    }
+    # Output for vhdl copy paste
+    else {
+        my $res = '"' . join ("", @signal) . '", -- ' . join (", ", @comments);
+        say $res;
+    }
+}
+
+sub hex2bin {
+    my $h = shift;
+    my $hlen = length($h);
+    my $blen = $hlen * 4;
+    return unpack("B$blen", pack("H$hlen", $h));
+}
+
+sub trim
+{
+    my $string = shift;
+    $string =~ s/^\s+//;
+    $string =~ s/\s+$//;
+    return $string;
+}
+

@@ -2,10 +2,10 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   15:46:07 04/23/2012
+-- Create Date:   20:38:41 04/26/2012
 -- Design Name:   
--- Module Name:   C:/Users/J3X/Documents/Digital-konstruktion/src/Alu/memoryCell_test.vhd
--- Project Name:  Alu
+-- Module Name:   C:/Users/J3X/Documents/My Dropbox/Studier/Digitalkonstruktion/Digital-konstruktion/src/MARC/memory_2_and_3_test.vhd
+-- Project Name:  MARC
 -- Target Device:  
 -- Tool versions:  
 -- Description:   
@@ -27,15 +27,17 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
  
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
-ENTITY memoryCell_test IS
-END memoryCell_test;
+ENTITY memory_2_and_3_test IS
+END memory_2_and_3_test;
  
-ARCHITECTURE behavior OF memoryCell_test IS 
+ARCHITECTURE behavior OF memory_2_and_3_test IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
@@ -65,6 +67,8 @@ ARCHITECTURE behavior OF memoryCell_test IS
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
+   
+   	signal fill_signal : std_logic_vector(12 downto 0) := "0000000000000";
  
 BEGIN
  
@@ -93,53 +97,35 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-      --wait for 100 ns;	
+      wait for 100 ns;	
 
-      --wait for clk_period*10;
+      wait for clk_period*10;
 
       -- insert stimulus here 
-		
-		
-		
-		wait for 10 ns;
-		read <= '0';
-		write <= '0';
-		
-		address_in <= "0000000000000";
-		data_in <= "1111111111111";
-		
-		wait for 10 ns;
-		write <= '1';
 
-		wait for 10 ns;
-		read <= '1';
-		write <= '0';
-		
-    wait for 10 ns;
-		
-		read <= '1';
-		write <= '0';
-		
-		wait for 10 ns;
-		read <= '0';
-		write <= '0';
-		
-		address_in <= "1111111111111";
-		data_in <= "0000000000000";
-		
-		wait for 10 ns;
-		write <= '1';
-
-		wait for 10 ns;
-		read <= '1';
-		write <= '0';
-		
-    wait for 10 ns;
-		
-		read <= '1';
-		write <= '0';
-		
       wait;
    end process;
+
+-- Requesting random GPU Addresses
+   fill_process :process
+   begin
+     if write = '0' then
+		  fill_signal <= fill_signal + 1;
+	    write <='1';
+	    read <='0';
+	   data_in <= fill_signal;
+		  address_in <= fill_signal;
+	   else
+	      fill_signal <= fill_signal;
+	     write <='0';
+	     read <='1';
+
+	     end if;
+	     		address_in <= fill_signal;
+		--read <= '1';
+		
+		wait for clk_period;
+  end process;
+
 
 END;

@@ -30,10 +30,10 @@ architecture Behavioral of MARC is
                 buss_code : out std_logic_vector(2 downto 0);
 
                 ALU_code : out std_logic_vector(2 downto 0);
-                ALU1_src_code : out std_logic_vector(1 downto 0);
-                ALU2_src_code : out std_logic_vector(1 downto 0);
+                ALU1_code : out std_logic_vector(1 downto 0);
+                ALU2_code : out std_logic;
 
-                memory_address_code : out std_logic_vector(2 downto 0);
+                memory_addr_code : out std_logic_vector(2 downto 0);
 
                 memory1_write : out std_logic;
                 memory2_write : out std_logic;
@@ -54,13 +54,12 @@ architecture Behavioral of MARC is
 
     component ALU
         Port (  clk : in std_logic;
-               
 
                 alu_operation : in std_logic_vector(1 downto 0);
                 alu1_zeroFlag : out std_logic;
 
                 alu1_operand : in STD_LOGIC_VECTOR(12 downto 0);
-					 alu2_operand : in STD_LOGIC_VECTOR(12 downto 0);
+                alu2_operand : in STD_LOGIC_VECTOR(12 downto 0);
 
                 alu1_out : out std_logic_vector(12 downto 0);
                 alu2_out : out std_logic_vector(12 downto 0)
@@ -109,20 +108,12 @@ architecture Behavioral of MARC is
     signal ALU1_out : std_logic_vector(12 downto 0);
     signal ALU2_out : std_logic_vector(12 downto 0);
 
-    signal ALU_src : std_logic_vector(1 downto 0);
     signal ALU_operation : std_logic_vector(1 downto 0);
-	 
-	 -- ALU Control mux
-	 signal alu1_source : STD_LOGIC_VECTOR(1 downto 0);
-		-- xx main buss
-		-- 10 Constant 0
-		-- 11 Constant 1
+    -- 00 hold
+    -- 01 load main buss
+    -- 10 +
+    -- xx -
 
-	 signal alu2_source : STD_LOGIC_VECTOR(1 downto 0);
-		-- xx main buss
-		-- 10 Constant 0
-		-- 11 Constant 1
-		
     signal memory1_data_in : std_logic_vector(7 downto 0);
     signal memory2_data_in : std_logic_vector(12 downto 0);
     signal memory3_data_in : std_logic_vector(12 downto 0);
@@ -166,13 +157,13 @@ architecture Behavioral of MARC is
     signal buss_code : std_logic_vector(2 downto 0);
 
     signal ALU_code : std_logic_vector(2 downto 0);
-    signal ALU1_src_code : std_logic_vector(1 downto 0);
-    signal ALU2_src_code : std_logic_vector(1 downto 0);
-	 
-	 signal alu1_operand : std_logic_vector(12 downto 0);
-	 signal alu2_operand : std_logic_vector(12 downto 0);
+    signal ALU1_code : std_logic_vector(1 downto 0);
+    signal ALU2_code : std_logic;
 
-    signal memory_address_code : std_logic_vector(2 downto 0);
+    signal alu1_operand : std_logic_vector(12 downto 0);
+    signal alu2_operand : std_logic_vector(12 downto 0);
+
+    signal memory_addr_code : std_logic_vector(2 downto 0);
 
     signal memory1_write : std_logic;
     signal memory2_write : std_logic;
@@ -223,10 +214,10 @@ begin
                     buss_code => buss_code,
 
                     ALU_code => ALU_code,
-                    ALU1_src_code => ALU1_src_code,
-                    ALU2_src_code => ALU2_src_code,
+                    ALU1_code => ALU1_code,
+                    ALU2_code => ALU2_code,
 
-                    memory_address_code => memory_address_code,
+                    memory_addr_code => memory_addr_code,
 
                     memory1_write => memory1_write,
                     memory2_write => memory2_write,
@@ -246,13 +237,11 @@ begin
 
     alus: ALU
         port map (  clk => clk,
-                   
+
                     alu_operation => ALU_operation,
                     alu1_zeroFlag => Z,     -- TODO not direct mapped
-                    --alu1_source => ALU_src,
-                    --alu2_source => ALU_src,
-						  alu1_operand => alu1_operand,
-						  alu2_operand => alu2_operand,
+                    alu1_operand => alu1_operand,
+                    alu2_operand => alu2_operand,
                     alu1_out => ALU1_out,
                     alu2_out => ALU2_out
         );
@@ -345,7 +334,7 @@ begin
     -- MEMORY MULTIPLEXERS
     -------------------------------------------------------------------------
 
-    with memory_address_code select
+    with memory_addr_code select
         memory_address_in <= PC when "000",
                              main_buss when "001",
                              ALU1_out when "010",
@@ -369,19 +358,55 @@ begin
                            ALU1_out when "10",
                            ALU2_out when "11",
                            memory3_data_out when others;
-									
-	 -------------------------------------------------------------------------
+
+    -------------------------------------------------------------------------
     -- ALU MULTIPLEXERS
     -------------------------------------------------------------------------
 
-	 alu1_operand <= 	"0000000000000" when ALU1_src_code = "10" else		-- Constant 0
-							"0000000000001" when ALU1_src_code = "11" else		-- Constant 1
-							main_buss;
-    -- Insert constants here!
+    -- This works like follows:
+    -- alu operand is the in data to the alu
 
-    alu2_operand <= 	"0000000000000" when ALU2_src_code = "10" else		-- Constant 0
-							"0000000000001" when ALU2_src_code = "11" else		-- Constant 1
-							main_buss;
+    -- ALU_code is the control signal which says what the ALU should do
+
+    -- ALU_code has these commands:
+    -- 000     nothing (hold AR and don't update Z)
+    -- 001     load
+    -- 010     add
+    -- 011     sub
+    -- 100     +1
+    -- 101     -1
+    -- 110     zero?  (Will Z be set when we simply load?)
+
+    -- ALUx_code states the source
+    -- 00      M1
+    -- 01      buss
+    -- 10      M2
+
+    -- This will be ignored when ALU is set to +1, -1 or zero?
+
+    -- Also, do we want to be able to set something else, maybe a memory location, to 0? Should a 0 be produced here then?
+
+    alu1_operand <= "0000000000000" when ALU_code = "110" else -- zero?
+                    "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
+                    memory2_data_out when ALU1_code = "00" else
+                    memory3_data_out when ALU1_code = "10" else
+                    main_buss;
+
+    alu2_operand <= "0000000000000" when ALU_code = "110" else -- zero?
+                    "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
+                    memory2_data_out when ALU2_code = '0' else
+                    memory3_data_out;
+
+    -- 00 hold
+    -- 01 load main buss
+    -- 10 +
+    -- xx -
+    ALU_operation <= "01" when ALU_code = "001" else -- load
+                     "10" when ALU_code = "010" else -- +
+                     "11" when ALU_code = "011" else -- -
+                     "10" when ALU_code = "100" else -- +1
+                     "11" when ALU_code = "101" else -- -1
+                     "00"; -- hold
 
     -------------------------------------------------------------------------
     -- BUSS MEGA-MULTIPLEXER
@@ -395,10 +420,6 @@ begin
                     IN_out when others;
 
     memory1_read_gpu <= tmp_gpu_read;
-
-    -- TODO
-    -- Handle +1 and -1 differently! Needs fixing :<
-    ALU_operation <= ALU_code(1 downto 0);
 
 end Behavioral;
 
