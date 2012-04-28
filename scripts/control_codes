@@ -10,12 +10,14 @@ use File::Slurp;
 # Command line options
 my $help;
 my $dest;
+my $lines_until_header = 20;
 my $verbose;
 my $debug;
 
 GetOptions(
     'help|h' => \$help,
     'destination|d=s' => \$dest,
+    'header|h=i' => \$lines_until_header,
     'verbose|v' => \$verbose,
     'debug' => \$debug,
 );
@@ -180,6 +182,9 @@ open my $in, '<', $src;
 #open my $out, '>', $dest;
 
 my $codeline = 0;
+my $rows_since_help = 0;
+my $last_was_code = 0;
+my $header_shown = 0;
 
 # Process and write
 while (my $line = <$in>) {
@@ -195,11 +200,13 @@ while (my $line = <$in>) {
         else {
             say "-- $1";
         }
+        $last_was_code = 0;
         next;
     }
     # Simply output empty lines
     elsif ($line =~ /^\s*$/) {
         say $line;
+        $last_was_code = 0;
         next;
     }
 
@@ -219,7 +226,7 @@ while (my $line = <$in>) {
         if ($cmd =~ /^(\S+?)(\+{2}|-{2})$/) {
             my ($reg, $op) = ($1, $2);
 
-            say "$reg $op";
+            #say "$reg $op";
             if (exists $registers{$reg}->{$op}) {
                 update (\@signal, $positions{$reg}, $registers{$reg}->{$op});
 
@@ -272,12 +279,12 @@ while (my $line = <$in>) {
 
                 # Can only update from dataregisters
                 if (!exists $mem_map{$src}) {
-                    push (@comments, "(? $cmd)");
+                    push (@comments, "? $cmd ?");
                     next;
                 }
                 # Check memory adressing input as valid
                 elsif ($addr && !exists $registers{mem_addr}->{$addr}) {
-                    push (@comments, "(? $cmd)");
+                    push (@comments, "? $cmd ?");
                     next;
                 }
 
@@ -309,12 +316,12 @@ while (my $line = <$in>) {
 
                 # Can only update to dataregisters
                 if (!exists $mem_map{$dest}) {
-                    push (@comments, "(? $cmd)");
+                    push (@comments, "? $cmd ?");
                     next;
                 }
                 # Check memory adressing input as valid
                 elsif ($addr && !exists $registers{mem_addr}->{$addr}) {
-                    push (@comments, "(? $cmd)");
+                    push (@comments, "? $cmd ?");
                     next;
                 }
 
@@ -378,8 +385,7 @@ while (my $line = <$in>) {
                 push (@comments, "buss -> $dest");
             }
             else {
-                #say "Couldn't find buss -> $dest";
-                push (@comments, "(? $cmd)");
+                push (@comments, "? $cmd ?");
             }
         }
         # ALUx += src or ALUx -= src
@@ -417,8 +423,7 @@ while (my $line = <$in>) {
                 push (@comments, $cmd);
             }
             else {
-                #say "Couldn't find buss -> dest";
-                push (@comments, "(? $cmd)");
+                push (@comments, "? $cmd ?");
             }
         }
         # var = stuff eg uPC = 0, uCount = 0, uPC_addr = AB or 10101011 (will truncate/fill)
@@ -436,7 +441,7 @@ while (my $line = <$in>) {
                     $bin = hex2bin($res);
                 }
                 else {
-                    push (@comments, "(? $cmd)");
+                    push (@comments, "? $cmd ?");
                     next;
                 }
 
@@ -460,11 +465,11 @@ while (my $line = <$in>) {
                 push (@comments, $cmd);
             }
             else {
-                push (@comments, "(? $cmd)");
+                push (@comments, "? $cmd ?");
             }
         }
         else {
-            push (@comments, "(? $cmd)");
+            push (@comments, "? $cmd ?");
         }
     }
 
@@ -489,11 +494,21 @@ while (my $line = <$in>) {
     if ($verbose) {
         # Output verbose output, format lines like this with the occassional help header
 
-        # Need to display this more than once
-        if ($codeline == 1) {
-            # Take into account line numbering
+        if (!$header_shown || $rows_since_help > $lines_until_header && !$last_was_code) {
             say "    $h";
+
+            $header_shown = 1;
+            $rows_since_help = 0;
         }
+
+        $last_was_code = 1;
+        $rows_since_help++;
+
+        ##Need to display this more than once
+        #if ($codeline == 1) {
+            ##Take into account line numbering
+            #say "    $h";
+        #}
 
         my $result = "";
         my $last = 0;
