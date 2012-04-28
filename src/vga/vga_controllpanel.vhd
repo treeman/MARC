@@ -38,8 +38,8 @@ entity vga_controller is
 			-- input 
 			colorpix : in  STD_LOGIC_VECTOR (7 downto 0);
 			rst : in  STD_LOGIC;
-			pixel_clk : in std_logic;
-			--clk : in  STD_LOGIC;
+			--pixel_clk : in std_logic;
+			clk : in  STD_LOGIC;
 			 
 			-- vga output
 			HS,
@@ -74,12 +74,11 @@ architecture Behavioral of vga_controller is
 	--------------------------------------------------------------------------------
 	-- ==SIGNALS==
 	--------------------------------------------------------------------------------
-	--signal middle_clk: std_logic;  --50MHz 
-	--signal pixel_clk: std_logic;  -- 25MHz
+	signal pixel_clk: std_logic;  -- 25MHz
 
 	-- horizontal/vertical counters
 	signal h_cnt, v_cnt : std_logic_vector(9 downto 0);
-
+	signal pixel_cnt : std_logic_vector(3 downto 0) := "0000";
 	-- active when inside visible screen area	
 	-- signal video_enable : std_logic;
 	--------------------------------------------------------------------------------
@@ -92,18 +91,22 @@ begin
 	----------------------------------------------------------
 	-- or comment this if we can get a pixel_clk without doing this dividing
 	----------------------------------------------------------
-	--process(clk)
-	--begin
-	--	if rising_edge (clk) then
-	--		middle_clk <= not vhdl_clk;
-	--	end if;
-	--end process;
-	--process(middle_clk)
-	--begin
-	--	if rising_edge (middle_clk) then
-	--		pixel_clk <= not middle_clk;
-	--	end if;
-	--end process;
+	process(clk)
+	begin
+		if rising_edge (clk) then
+			if (pixel_cnt = 1) then
+				pixel_clk <= '1';
+				pixel_cnt <= pixel_cnt + 1;
+			elsif (pixel_cnt >= 3) then
+				pixel_clk <= '0';
+				pixel_cnt <= "0000";
+			elsif (pixel_cnt = 0) then
+				pixel_cnt <= pixel_cnt + 1;
+			elsif (pixel_cnt = 2) then
+				pixel_cnt <= pixel_cnt + 1;
+			end if;
+		end if;
+	end process;
 	----------------------------------------------------------
 	
 	
@@ -122,13 +125,6 @@ begin
 	-- signal to account for the pixel pipeline delay.
 	-- blank: set all the colors to 0.
 	-- blank: process(pixel_clk)
-	-- begin
-	-- 	if rising_edge(pixel_clk) then
-	-- 		red <= "000";
-	-- 		grn <= "000";
-	-- 		blu <= "00";
-	-- 	end if;
-	-- end process blank;
 	---------------------------------------------------------------------
 	
 	
