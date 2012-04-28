@@ -1,0 +1,12 @@
+M1 -> ADR1, PC++
+AR1 -> ADR1
+
+M2 -> ADR2
+AR2 -> ADR2
+
+M1 -> ALU1
+M2 -> ALU1
+
+M1 -> ALU2
+M2 -> ALU2
+

@@ -83,9 +83,9 @@ ALU1
     01      buss
     10      M2
 
-ALU2        (only 1 is needed!)
-    00      M1
-    10      M2
+ALU2
+    0       M1
+    1       M2
 
 ADR1
     00     hold

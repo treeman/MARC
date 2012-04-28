@@ -44,7 +44,7 @@ my %single_cmd = (
 my %buss = (
     PC => "000",
     OP => "001",
-    'AR1' => "010",
+    AR1 => "010",
     FIFO => "011",
     IN => "100",
 );
@@ -58,6 +58,29 @@ my %mem_addr = (
     ADR2 => "101",
 );
 
+my %ADR1 = (
+    buss => "01",
+    M1 => "10",
+    AR1 => "11",
+);
+
+my %ADR2 = (
+    buss => "01",
+    M2 => "10",
+    AR2 => "11",
+);
+
+my %ALU1 = (
+    M1 => "00",
+    buss => "01",
+    M2 => "10",
+);
+
+my %ALU2 = (
+    M1 => "0",
+    M2 => "1",
+);
+
 # Positions for our subsignals in the grand control scheme
 my %positions;
 
@@ -65,8 +88,8 @@ my %positions;
 my @namechunks = split (/\s+/, trim($h));
 my @codechunks = split (/\s+/, trim($c));
 
-my $length = length (join "", @codechunks);
-my $l = $length - 1;
+my $signallength = length (join "", @codechunks);
+my $l = $signallength - 1;
 
 for my $chunk (@codechunks) {
     my $r = $l - length ($chunk) + 1;
@@ -87,7 +110,7 @@ for my $key (keys %positions) {
     my @mod;
 
     for my $val (@{$positions{$key}}) {
-        push (@mod, 43 - $val);
+        push (@mod, $signallength - $val - 1);
     }
 
     # Need to reverse here as otherwise we'll assign eg (43, 42) to something which will reverse our code
@@ -153,15 +176,13 @@ while (my $line = <$in>) {
         }
         # dest -> src
         elsif ($cmd =~ /(\S+)\s*->\s*(\S+)/) {
-            my ($dest, $src) = ($1, $2);
+            my ($src, $dest) = ($1, $2);
 
             # Direct:
             #
-            # PC -> ADR1
             # M1 -> ADR1
             # AR1 -> ADR1
             #
-            # PC -> ADR2
             # M2 -> ADR2
             # AR2 -> ADR2
             #
@@ -199,8 +220,19 @@ while (my $line = <$in>) {
             # ADR2
             # FIFO
 
-            #say "$dest -> $src";
-            push (@comments, "(? $cmd)");
+            if ($dest eq "ADR1") {
+                if (exists $ADR1{$src}) {
+                    say "pos: " . join ",", @{$positions{$dest}};
+                    update (\@signal, $positions{$dest}, $ADR1{$src});
+                    push (@comments, $cmd);
+                }
+                else {
+                    push (@comments, "(? $cmd)");
+                }
+            }
+            else {
+                push (@comments, "(? $cmd)");
+            }
         }
         # var = l op r
         elsif ($cmd =~ /(\S+)            # Assigned variable
