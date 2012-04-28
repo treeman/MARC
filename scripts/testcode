@@ -24,9 +24,17 @@ PC -> M2
 M1 -> mem_addr
 OP -> IR
 
+; Explicit buss
+PC -> buss, buss -> ALU1
+M1 -> buss, buss -> PC, buss -> M2, buss -> ALU1
+
 ; Doesn't exist
 PC -> ALU2
 IR -> OP
+
+; Used buss
+M1 -> buss, M2 -> buss, buss -> PC
+PC -> M1, OP -> ALU1
 
 ; Misc
 ALU++

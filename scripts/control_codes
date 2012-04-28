@@ -60,6 +60,13 @@ my %mem_addr = (
 );
 
 my %registers = (
+    PC => {
+        buss => "01",
+        '++' => "10",
+    },
+    IR => {
+        buss => "1",
+    },
     ADR1 => {
         buss => "01",
         M1 => "10",
@@ -101,7 +108,7 @@ my %registers = (
 
 # One word commands
 my %single_cmd = (
-    'PC++' => "10",
+    'PC++' => $registers{PC}->{'++'},
     'ALU++' => $ALU{'++'},
     'ALU--' => $ALU{'--'},
 );
@@ -181,6 +188,8 @@ while (my $line = <$in>) {
     my @signal = ((0) x 44);
     my @comments;
 
+    my $buss_used = 0;
+
     for my $cmd (split /\s*,\s*/, $line)
     {
         # Grab single word commands eg PC++, ALU--0 = substr (signal, 0, 1), space: ''
@@ -203,58 +212,29 @@ while (my $line = <$in>) {
         elsif ($cmd =~ /(\S+)\s*->\s*(\S+)/) {
             my ($src, $dest) = ($1, $2);
 
-            # Direct:
-            #
-            # M1 -> ADR1
-            # AR1 -> ADR1
-            #
-            # M2 -> ADR2
-            # AR2 -> ADR2
-            #
-            # PC -> mem_addr
-            # AR1 -> mem_addr
-            # AR2 -> mem_addr
-            # ADR1 -> mem_addr
-            # ADR2 -> mem_addr
-            #
-            # M1 -> ALU1
-            # M2 -> ALU1
-            #
-            # M1 -> ALU2
-            # M2 -> ALU2
-            #
-            # To buss:
-            #
-            # PC
-            # OP
-            # AR1
-            # FIFO
-            # IN
-            #
-            # From buss:
-            #
-            # PC
-            # IR
-            # mem_addr
-            # OP
-            # M1
-            # M2
-            # ALU1
-            # ALU2
-            # ADR1
-            # ADR2
-            # FIFO
+            # src -> buss
+            if ($dest eq "buss" && exists $buss{$src}) {
 
-            # TODO should handle name lookup automatically!
+                # Check for multiple usage of buss
+                if ($buss_used) {
+                    push (@comments, "(? buss used! $cmd)");
+                    next;
+                }
 
-            if (!exists $registers{$dest}) {
+                $buss_used = 1;
+
+                update (\@signal, $positions{$dest}, $buss{$src});
+                push (@comments, $cmd);
+                next;
+            }
+            # Check that the register exists
+            elsif (!exists $registers{$dest}) {
                 #say "$dest doesn't exist";
                 push (@comments, "(? $cmd)");
                 next;
             }
-
             # Handle direct
-            if (exists $registers{$dest}->{$src}) {
+            elsif (exists $registers{$dest}->{$src}) {
                 my $val = $registers{$dest}->{$src};
 
                 update (\@signal, $positions{$dest}, $val);
@@ -273,6 +253,14 @@ while (my $line = <$in>) {
                 # Can we do src -> buss?
                 if (exists $buss{$src}) {
 
+                    # Check for multiple usage of buss
+                    if ($buss_used) {
+                        push (@comments, "(? buss used! $cmd)");
+                        next;
+                    }
+
+                    $buss_used = 1;
+
                     # Update src -> buss
                     update (\@signal, $positions{buss}, $buss{$src});
                     #say "src -> buss";
@@ -285,7 +273,9 @@ while (my $line = <$in>) {
                     #say "pos: " . join (",", @{$positions{$dest}});
                     #say "val: " . $registers{$dest}->{buss};
 
-                    push (@comments, $cmd);
+                    # Comment as src -> buss, buss -> dest
+                    push (@comments, "$src -> buss");
+                    push (@comments, "buss -> $dest");
                 }
                 else {
                     #say "Couldn't find src -> buss";
