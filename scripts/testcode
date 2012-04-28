@@ -32,15 +32,6 @@ IN -> M2
 PC -> buss, buss -> ALU1
 M1 -> buss, buss -> PC, buss -> M2, buss -> ALU1
 
-
-; Doesn't exist
-PC -> ALU2
-IR -> OP
-
-; Used buss
-M1 -> buss, M2 -> buss, buss -> PC
-PC -> M1, OP -> ALU1
-
 ; Memory stuff
 OP -> mem(PC)
 M1 -> mem(buss)
@@ -66,7 +57,7 @@ ALU++
 ALU2 += M2
 ALU1 -= PC
 
-ALU1 += M1, ALU1 += M2
+ALU1 += M1, ALU2 += M2
 
 uCount = 0
 uPC = 0
@@ -92,4 +83,10 @@ M1 -> buss, M2 -> buss, buss -> PC
 PC -> IR, M1 -> M2
 ALU1 += PC, ALU--
 ALU++, PC -> ALU1
+
+M1 -> buss, M2 -> buss, buss -> PC
+PC -> M1, OP -> ALU1
+
+PC -> ALU2
+IR -> OP
 

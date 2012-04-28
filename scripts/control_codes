@@ -219,9 +219,13 @@ while (my $line = <$in>) {
     my @comments;
 
     my $buss_used = 0;
-    my $mem_addr_set = 0;
+
+    my $curr_mem_addr = "";
     my $mem_data_used = 0;
-    my $alu_used = 0;
+    my $mem_err = 0;
+
+    my $alu_op = "";
+    my $alu_err = 0;
 
     for my $cmd (split /\s*,\s*/, $line)
     {
@@ -235,8 +239,9 @@ while (my $line = <$in>) {
 
                 push (@comments, $cmd);
             }
-            elsif ($reg eq "ALU") {
-                $alu_used++;
+            elsif ($reg =~ /ALU[12]?/) {
+                $alu_err = 1 if $alu_op && $alu_op ne $op;
+                $alu_op = $op;
 
                 update (\@signal, $positions{$reg}, $ALU{$op});
 
@@ -249,8 +254,6 @@ while (my $line = <$in>) {
         # We have a single shorthand notation
         elsif (exists $singles{$cmd}) {
             my $reg = $singles{$cmd};
-
-            $alu_used++ if $cmd =~ /^ALU/;
 
             update (\@signal, $positions{$reg}, $registers{$reg}->{$cmd});
 
@@ -292,7 +295,8 @@ while (my $line = <$in>) {
                 }
 
                 if ($addr) {
-                    $mem_addr_set++;
+                    $mem_err = 1 if $curr_mem_addr && $curr_mem_addr ne $addr;
+                    $curr_mem_addr = $addr;
 
                     # Update mem_addr
                     update (\@signal, $positions{mem_addr}, $registers{mem_addr}->{$addr});
@@ -329,7 +333,8 @@ while (my $line = <$in>) {
                 }
 
                 if ($addr) {
-                    $mem_addr_set++;
+                    $mem_err = 1 if $curr_mem_addr && $curr_mem_addr ne $addr;
+                    $curr_mem_addr = $addr;
 
                     # Update mem_addr
                     update (\@signal, $positions{mem_addr}, $registers{mem_addr}->{$addr});
@@ -354,12 +359,17 @@ while (my $line = <$in>) {
 
                 # load if ALU
                 if ($dest =~ /^ALU/) {
-                    update (\@signal, $positions{ALU}, $ALU{load});
-                    $alu_used++;
+                    my $op = "load";
+                    update (\@signal, $positions{ALU}, $ALU{$op});
+                    $alu_err = 1 if $alu_op && $alu_op ne $op;
                 }
 
                 $buss_used++ if $dest eq "buss";
-                $mem_addr_set++ if $dest eq "mem_addr";
+
+                if ($dest eq "mem_addr") {
+                    $mem_err = 1 if $curr_mem_addr && $curr_mem_addr ne $src;
+                    $curr_mem_addr = $src;
+                }
 
                 push (@comments, $cmd);
             }
@@ -376,12 +386,16 @@ while (my $line = <$in>) {
 
                 # load if ALU
                 if ($dest =~ /^ALU/) {
-                    update (\@signal, $positions{ALU}, $ALU{load});
-                    $alu_used++;
+                    my $op = "load";
+                    update (\@signal, $positions{ALU}, $ALU{$op});
+                    $alu_err = 1 if $alu_op && $alu_op ne $op;
                 }
 
                 # Check if mem_addr will get set
-                $mem_addr_set++ if $dest eq "mem_addr";
+                if ($dest eq "mem_addr") {
+                    $mem_err = 1 if $curr_mem_addr && $curr_mem_addr ne $src;
+                    $curr_mem_addr = $src;
+                }
 
                 # Comment as src -> buss, buss -> dest
                 push (@comments, "$src -> buss");
@@ -398,7 +412,8 @@ while (my $line = <$in>) {
             # Check direct connection
             if (exists $registers{$alu}->{$src}) {
 
-                $alu_used++;
+                $alu_err = 1 if $alu_op && $alu_op ne $op;
+                $alu_op = $op;
 
                 # Update data
                 update (\@signal, $positions{$alu}, $registers{$alu}->{$src});
@@ -412,7 +427,8 @@ while (my $line = <$in>) {
             elsif (exists $registers{$alu}->{buss} && exists $buss{$src}) {
 
                 $buss_used++;
-                $alu_used++;
+                $alu_err = 1 if $alu_op && $alu_op ne $op;
+                $alu_op = $op;
 
                 # Update src -> buss
                 update (\@signal, $positions{buss}, $buss{$src});
@@ -476,20 +492,20 @@ while (my $line = <$in>) {
         }
     }
 
-    # Add in error if we're using the memory but don't specify what to address
-    if ($mem_data_used && !$mem_addr_set) {
-        push (@comments, "! no mem_addr !");
-    }
     # Can only address all memory with one address at a time
-    if ($mem_addr_set > 1) {
+    if ($mem_err) {
         push (@comments, "! 2x -> mem_addr !");
+    }
+    # Add in error if we're using the memory but don't specify what to address
+    elsif ($mem_data_used && !$curr_mem_addr) {
+        push (@comments, "! no mem_addr !");
     }
     # Check that we're only using our buss once
     if ($buss_used > 1) {
         push (@comments, "! 2x -> buss !");
     }
     # Check only one operation for the alu
-    if ($alu_used > 1) {
+    if ($alu_err) {
         push (@comments, "! 2x alu op !");
     }
 
