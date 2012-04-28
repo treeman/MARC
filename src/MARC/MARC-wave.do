@@ -13,14 +13,14 @@ add wave -noupdate -radix hexadecimal /marc_test/uut/main_buss
 add wave -noupdate -radix hexadecimal /marc_test/uut/memory1_data_out
 add wave -noupdate -radix hexadecimal /marc_test/uut/memory2_data_out
 add wave -noupdate -radix hexadecimal /marc_test/uut/memory3_data_out
-add wave -noupdate /marc_test/uut/memory_address_code
+add wave -noupdate /marc_test/uut/memory_addr_code
 add wave -noupdate /marc_test/uut/micro/uPC_code
 add wave -noupdate /marc_test/uut/PC_code
 add wave -noupdate /marc_test/uut/M1_code
 add wave -noupdate /marc_test/uut/M2_code
 add wave -noupdate /marc_test/uut/OP_code
-add wave -noupdate /marc_test/uut/ALU1_src_code
-add wave -noupdate /marc_test/uut/ALU2_src_code
+add wave -noupdate /marc_test/uut/ALU1_code
+add wave -noupdate /marc_test/uut/ALU2_code
 add wave -noupdate -color {Slate Blue} /marc_test/uut/ALU_code
 add wave -noupdate -radix hexadecimal /marc_test/uut/alu1_operand
 add wave -noupdate -radix hexadecimal /marc_test/uut/alu2_operand

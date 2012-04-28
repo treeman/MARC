@@ -68,7 +68,7 @@ to buss
     001     OP
     010     AR 1
     011     FIFO
-    100     I/O
+    100     IN
 
 ALU
     000     nothing (hold AR and don't update Z)
@@ -78,14 +78,13 @@ ALU
     100     +1
     101     -1
 
-ALU1 src
+ALU1
     00      M1
     01      buss
     10      M2
 
-ALU2 src
+ALU2        (only 1 is needed!)
     00      M1
-    01      buss
     10      M2
 
 ADR1
