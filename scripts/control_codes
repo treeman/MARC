@@ -32,21 +32,22 @@ if ($help || !$src) {
 my $h = "IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uCount uPC  uPC_addr";
 my $c = "0   00  00   0  00 00  00   00   00    000     00   0   000 000  00   00   000  00000000";
 
-# One word commands
-my %single_cmd = (
-    'PC++' => "10",
-
-    'ALU++' => "100",
-    'ALU--' => "101",
+my %ALU = (
+    load => "001",
+    '+' => "010",
+    '-' =>"011",
+    '++' =>"100",
+    '--' => "101",
 );
 
-# Specific codes
 my %buss = (
     PC => "000",
     OP => "001",
-    AR1 => "010",
-    FIFO => "011",
-    IN => "100",
+    M1 => "010",
+    M2 => "011",
+    AR1 => "100",
+    FIFO => "101",
+    IN => "110",
 );
 
 my %mem_addr = (
@@ -58,27 +59,51 @@ my %mem_addr = (
     ADR2 => "101",
 );
 
-my %ADR1 = (
-    buss => "01",
-    M1 => "10",
-    AR1 => "11",
+my %registers = (
+    ADR1 => {
+        buss => "01",
+        M1 => "10",
+        AR1 => "11",
+    },
+    ADR2 => {
+        buss => "01",
+        M2 => "10",
+        AR2 => "11",
+    },
+    ALU1 => {
+        M1 => "00",
+        buss => "01",
+        M2 => "10",
+    },
+    ALU2 => {
+        M1 => "0",
+        M2 => "1",
+    },
+    M1 => {
+        buss => "01",
+        AR1 => "10",
+        AR2 => "11",
+    },
+    M2 => {
+        buss => "01",
+        AR1 => "10",
+        AR2 => "11",
+    },
+    mem_addr => {
+        PC => "000",
+        buss => "001",
+        AR1 => "010",
+        AR2 => "011",
+        ADR1 => "100",
+        ADR2 => "101",
+    },
 );
 
-my %ADR2 = (
-    buss => "01",
-    M2 => "10",
-    AR2 => "11",
-);
-
-my %ALU1 = (
-    M1 => "00",
-    buss => "01",
-    M2 => "10",
-);
-
-my %ALU2 = (
-    M1 => "0",
-    M2 => "1",
+# One word commands
+my %single_cmd = (
+    'PC++' => "10",
+    'ALU++' => $ALU{'++'},
+    'ALU--' => $ALU{'--'},
 );
 
 # Positions for our subsignals in the grand control scheme
@@ -220,17 +245,55 @@ while (my $line = <$in>) {
             # ADR2
             # FIFO
 
-            if ($dest eq "ADR1") {
-                if (exists $ADR1{$src}) {
-                    say "pos: " . join ",", @{$positions{$dest}};
-                    update (\@signal, $positions{$dest}, $ADR1{$src});
+            # TODO should handle name lookup automatically!
+
+            if (!exists $registers{$dest}) {
+                #say "$dest doesn't exist";
+                push (@comments, "(? $cmd)");
+                next;
+            }
+
+            # Handle direct
+            if (exists $registers{$dest}->{$src}) {
+                my $val = $registers{$dest}->{$src};
+
+                update (\@signal, $positions{$dest}, $val);
+
+                # load if ALU
+                if ($src =~ /^ALU/) {
+                    update (\@signal, $positions{ALU}, $val);
+                }
+
+                push (@comments, $cmd);
+            }
+            # Try to route through buss
+            elsif (exists $registers{$dest}->{buss}) {
+                #say "Routing through buss";
+
+                # Can we do src -> buss?
+                if (exists $buss{$src}) {
+
+                    # Update src -> buss
+                    update (\@signal, $positions{buss}, $buss{$src});
+                    #say "src -> buss";
+                    #say "pos: " . join (",", @{$positions{buss}});
+                    #say "val: " . $buss{$src};
+
+                    # Update buss -> dest
+                    update (\@signal, $positions{$dest}, $registers{$dest}->{buss});
+                    #say "buss -> dest";
+                    #say "pos: " . join (",", @{$positions{$dest}});
+                    #say "val: " . $registers{$dest}->{buss};
+
                     push (@comments, $cmd);
                 }
                 else {
+                    #say "Couldn't find src -> buss";
                     push (@comments, "(? $cmd)");
                 }
             }
             else {
+                #say "Couldn't find buss -> dest";
                 push (@comments, "(? $cmd)");
             }
         }

@@ -1,3 +1,4 @@
+; Direct
 M1 -> ADR1, PC++
 AR1 -> ADR1
 
@@ -10,3 +11,22 @@ M2 -> ALU1
 M1 -> ALU2
 M2 -> ALU2
 
+PC -> mem_addr
+AR1 -> mem_addr
+AR2 -> mem_addr
+ADR1 -> mem_addr
+ADR2 -> mem_addr
+
+; Through buss
+PC -> ALU1
+PC -> M1
+PC -> M2
+M1 -> mem_addr
+OP -> IR
+
+; Doesn't exist
+PC -> ALU2
+IR -> OP
+
+; Misc
+ALU++

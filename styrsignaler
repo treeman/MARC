@@ -66,9 +66,11 @@ M2
 to buss
     000     PC
     001     OP
-    010     AR 1
-    011     FIFO
-    100     IN
+    010     M1  (not implemented in MARC)
+    011     M2  (not implemented in MARC)
+    100     AR 1
+    101     FIFO
+    110     IN
 
 ALU
     000     nothing (hold AR and don't update Z)
