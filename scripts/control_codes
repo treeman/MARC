@@ -17,7 +17,7 @@ my $debug;
 GetOptions(
     'help|h' => \$help,
     'destination|d=s' => \$dest,
-    'header|h=i' => \$lines_until_header,
+    'header|l=i' => \$lines_until_header,
     'verbose|v' => \$verbose,
     'debug' => \$debug,
 );
@@ -27,6 +27,9 @@ my $src = $ARGV[0];
 
 if ($help || !$src) {
     say "Convert control code comments to actual control code.";
+    say "   options:";
+    say "   -h --help       Show this screen.";
+    say "   -v --verbose    Verbose output signals in a human readable format.";
     exit;
 }
 
