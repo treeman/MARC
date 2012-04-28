@@ -50,7 +50,7 @@ my %buss = (
     OP => "001",
     M1 => "010",
     M2 => "011",
-    AR1 => "100",
+    ALU1 => "100",
     FIFO => "101",
     IN => "110",
 );
@@ -99,12 +99,12 @@ my %registers = (
     ADR1 => {
         buss => "01",
         M1 => "10",
-        AR1 => "11",
+        ALU1 => "11",
     },
     ADR2 => {
         buss => "01",
         M2 => "10",
-        AR2 => "11",
+        ALU2 => "11",
     },
     ALU1 => {
         M1 => "00",
@@ -120,19 +120,19 @@ my %registers = (
     },
     M1 => {
         buss => "01",
-        AR1 => "10",
-        AR2 => "11",
+        ALU1 => "10",
+        ALU2 => "11",
     },
     M2 => {
         buss => "01",
-        AR1 => "10",
-        AR2 => "11",
+        ALU1 => "10",
+        ALU2 => "11",
     },
     mem_addr => {
         PC => "000",
         buss => "001",
-        AR1 => "010",
-        AR2 => "011",
+        ALU1 => "010",
+        ALU2 => "011",
         ADR1 => "100",
         ADR2 => "101",
     },
@@ -215,7 +215,7 @@ while (my $line = <$in>) {
 
     $codeline++;
 
-    my @signal = ((0) x 44);
+    my @signal = ((0) x $signallength);
     my @comments;
 
     my $buss_used = 0;
