@@ -43,7 +43,7 @@ ARCHITECTURE behavior OF bench IS
     PORT(
          colorpix : IN  std_logic_vector(7 downto 0);
          rst : IN  std_logic;
-         pixel_clk : IN  std_logic;
+         clk : IN  std_logic;
          HS : OUT  std_logic;
          VS : OUT  std_logic;
          red : OUT  std_logic_vector(2 downto 0);
@@ -58,7 +58,7 @@ ARCHITECTURE behavior OF bench IS
    --Inputs
    signal colorpix : std_logic_vector(7 downto 0) := (others => '0');
    signal rst : std_logic := '0';
-   signal pixel_clk : std_logic := '0';
+   signal clk : std_logic := '0';
 
  	--Outputs
    signal HS : std_logic;
@@ -70,7 +70,7 @@ ARCHITECTURE behavior OF bench IS
    signal column : std_logic_vector(9 downto 0);
 
    -- Clock period definitions
-   constant pixel_clk_period : time := 10 ns;
+   constant clk_period : time := 10 ns; -- 100 MHz
  
 BEGIN
  
@@ -78,7 +78,7 @@ BEGIN
    uut: vga_controller PORT MAP (
           colorpix => colorpix,
           rst => rst,
-          pixel_clk => pixel_clk,
+          clk => clk,
           HS => HS,
           VS => VS,
           red => red,
@@ -89,12 +89,12 @@ BEGIN
         );
 
    -- Clock process definitions
-   pixel_clk_process :process
+   clk_process :process
    begin
-		pixel_clk <= '0';
-		wait for pixel_clk_period/2;
-		pixel_clk <= '1';
-		wait for pixel_clk_period/2;
+		clk <= '0';
+		wait for clk_period/2;
+		clk <= '1';
+		wait for clk_period/2;
    end process;
  
 
@@ -105,8 +105,8 @@ BEGIN
       wait for 100 ns;	
 
       -- insert stimulus here 
-		rst <= '1' after 10 ns, '0' after 20 ns;
- 	   colorpix <= "10101010" after 10 ns, "01010101" after 40 ns;
+		rst <= '1' after 20 ns, '0' after 50 ns;
+ 	   colorpix <= "10101010" after 70 ns, "01010101" after 110 ns;
       
 		wait;
    end process;
