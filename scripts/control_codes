@@ -32,21 +32,22 @@ if ($help || !$src) {
 my $h = "IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uCount uPC  uPC_addr";
 my $c = "0   00  00   0  00 00  00   00   00    000     00   0   000 000  00   00   000  00000000";
 
-# One word commands
-my %single_cmd = (
-    'PC++' => "10",
-
-    'ALU++' => "100",
-    'ALU--' => "101",
+my %ALU = (
+    load => "001",
+    '+' => "010",
+    '-' =>"011",
+    '++' =>"100",
+    '--' => "101",
 );
 
-# Specific codes
 my %buss = (
     PC => "000",
     OP => "001",
-    'AR1' => "010",
-    FIFO => "011",
-    IN => "100",
+    M1 => "010",
+    M2 => "011",
+    AR1 => "100",
+    FIFO => "101",
+    IN => "110",
 );
 
 my %mem_addr = (
@@ -58,6 +59,60 @@ my %mem_addr = (
     ADR2 => "101",
 );
 
+my %registers = (
+    PC => {
+        buss => "01",
+        '++' => "10",
+    },
+    IR => {
+        buss => "1",
+    },
+    ADR1 => {
+        buss => "01",
+        M1 => "10",
+        AR1 => "11",
+    },
+    ADR2 => {
+        buss => "01",
+        M2 => "10",
+        AR2 => "11",
+    },
+    ALU1 => {
+        M1 => "00",
+        buss => "01",
+        M2 => "10",
+    },
+    ALU2 => {
+        M1 => "0",
+        M2 => "1",
+    },
+    M1 => {
+        buss => "01",
+        AR1 => "10",
+        AR2 => "11",
+    },
+    M2 => {
+        buss => "01",
+        AR1 => "10",
+        AR2 => "11",
+    },
+    mem_addr => {
+        PC => "000",
+        buss => "001",
+        AR1 => "010",
+        AR2 => "011",
+        ADR1 => "100",
+        ADR2 => "101",
+    },
+);
+
+# One word commands
+my %single_cmd = (
+    'PC++' => $registers{PC}->{'++'},
+    'ALU++' => $ALU{'++'},
+    'ALU--' => $ALU{'--'},
+);
+
 # Positions for our subsignals in the grand control scheme
 my %positions;
 
@@ -65,8 +120,8 @@ my %positions;
 my @namechunks = split (/\s+/, trim($h));
 my @codechunks = split (/\s+/, trim($c));
 
-my $length = length (join "", @codechunks);
-my $l = $length - 1;
+my $signallength = length (join "", @codechunks);
+my $l = $signallength - 1;
 
 for my $chunk (@codechunks) {
     my $r = $l - length ($chunk) + 1;
@@ -87,7 +142,7 @@ for my $key (keys %positions) {
     my @mod;
 
     for my $val (@{$positions{$key}}) {
-        push (@mod, 43 - $val);
+        push (@mod, $signallength - $val - 1);
     }
 
     # Need to reverse here as otherwise we'll assign eg (43, 42) to something which will reverse our code
@@ -133,6 +188,8 @@ while (my $line = <$in>) {
     my @signal = ((0) x 44);
     my @comments;
 
+    my $buss_used = 0;
+
     for my $cmd (split /\s*,\s*/, $line)
     {
         # Grab single word commands eg PC++, ALU--0 = substr (signal, 0, 1), space: ''
@@ -153,54 +210,82 @@ while (my $line = <$in>) {
         }
         # dest -> src
         elsif ($cmd =~ /(\S+)\s*->\s*(\S+)/) {
-            my ($dest, $src) = ($1, $2);
+            my ($src, $dest) = ($1, $2);
 
-            # Direct:
-            #
-            # PC -> ADR1
-            # M1 -> ADR1
-            # AR1 -> ADR1
-            #
-            # PC -> ADR2
-            # M2 -> ADR2
-            # AR2 -> ADR2
-            #
-            # PC -> mem_addr
-            # AR1 -> mem_addr
-            # AR2 -> mem_addr
-            # ADR1 -> mem_addr
-            # ADR2 -> mem_addr
-            #
-            # M1 -> ALU1
-            # M2 -> ALU1
-            #
-            # M1 -> ALU2
-            # M2 -> ALU2
-            #
-            # To buss:
-            #
-            # PC
-            # OP
-            # AR1
-            # FIFO
-            # IN
-            #
-            # From buss:
-            #
-            # PC
-            # IR
-            # mem_addr
-            # OP
-            # M1
-            # M2
-            # ALU1
-            # ALU2
-            # ADR1
-            # ADR2
-            # FIFO
+            # src -> buss
+            if ($dest eq "buss" && exists $buss{$src}) {
 
-            #say "$dest -> $src";
-            push (@comments, "(? $cmd)");
+                # Check for multiple usage of buss
+                if ($buss_used) {
+                    push (@comments, "(? buss used! $cmd)");
+                    next;
+                }
+
+                $buss_used = 1;
+
+                update (\@signal, $positions{$dest}, $buss{$src});
+                push (@comments, $cmd);
+                next;
+            }
+            # Check that the register exists
+            elsif (!exists $registers{$dest}) {
+                #say "$dest doesn't exist";
+                push (@comments, "(? $cmd)");
+                next;
+            }
+            # Handle direct
+            elsif (exists $registers{$dest}->{$src}) {
+                my $val = $registers{$dest}->{$src};
+
+                update (\@signal, $positions{$dest}, $val);
+
+                # load if ALU
+                if ($src =~ /^ALU/) {
+                    update (\@signal, $positions{ALU}, $val);
+                }
+
+                push (@comments, $cmd);
+            }
+            # Try to route through buss
+            elsif (exists $registers{$dest}->{buss}) {
+                #say "Routing through buss";
+
+                # Can we do src -> buss?
+                if (exists $buss{$src}) {
+
+                    # Check for multiple usage of buss
+                    if ($buss_used) {
+                        push (@comments, "(? buss used! $cmd)");
+                        next;
+                    }
+
+                    $buss_used = 1;
+
+                    # Update src -> buss
+                    update (\@signal, $positions{buss}, $buss{$src});
+                    #say "src -> buss";
+                    #say "pos: " . join (",", @{$positions{buss}});
+                    #say "val: " . $buss{$src};
+
+                    # Update buss -> dest
+                    update (\@signal, $positions{$dest}, $registers{$dest}->{buss});
+                    #say "buss -> dest";
+                    #say "pos: " . join (",", @{$positions{$dest}});
+                    #say "val: " . $registers{$dest}->{buss};
+
+                    # Comment as src -> buss, buss -> dest
+                    push (@comments, "$src -> buss");
+                    push (@comments, "buss -> $dest");
+                }
+                else {
+                    #say "Couldn't find src -> buss";
+                    push (@comments, "(? $cmd)");
+                }
+            }
+            else {
+                #say "Couldn't find buss -> dest";
+                push (@comments, "(? $cmd)");
+            }
         }
         # var = l op r
         elsif ($cmd =~ /(\S+)            # Assigned variable
