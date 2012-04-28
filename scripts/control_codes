@@ -59,6 +59,18 @@ my %mem_addr = (
     ADR2 => "101",
 );
 
+# For mem1 mem2 mem3
+my %mem = (
+    read => "01",
+    write => "10",
+);
+
+my %mem_map = (
+    OP => "mem1",
+    M1 => "mem2",
+    M2 => "mem3",
+);
+
 my %registers = (
     PC => {
         buss => "01",
@@ -86,6 +98,9 @@ my %registers = (
         M1 => "0",
         M2 => "1",
     },
+    OP => {
+        buss => "0",
+    },
     M1 => {
         buss => "01",
         AR1 => "10",
@@ -96,14 +111,7 @@ my %registers = (
         AR1 => "10",
         AR2 => "11",
     },
-    mem_addr => {
-        PC => "000",
-        buss => "001",
-        AR1 => "010",
-        AR2 => "011",
-        ADR1 => "100",
-        ADR2 => "101",
-    },
+    mem_addr => \%mem_addr,
 );
 
 # One word commands
@@ -189,11 +197,12 @@ while (my $line = <$in>) {
     my @comments;
 
     my $buss_used = 0;
+    my $mem_addr_set = 0;
+    my $mem_data_used = 0;
 
     for my $cmd (split /\s*,\s*/, $line)
     {
-        # Grab single word commands eg PC++, ALU--0 = substr (signal, 0, 1), space: ''
-
+        # Grab single word commands eg PC++, ALU--
         if ($cmd =~ /^(\S+?)(\+{2}|-{2})$/) {
             my $reg = $1;
 
@@ -227,6 +236,80 @@ while (my $line = <$in>) {
                 push (@comments, $cmd);
                 next;
             }
+            # src -> mem(mem_addr) or src -> mem
+            elsif ($dest =~ /mem
+                             (?:        # Non matching group
+                             \(
+                               (\S+)    # address
+                             \)
+                             )?         # Not necessary
+                             $          # Match until the end (it doesn't match mem_addr for example)
+                            /x)
+            {
+                my $addr = $1 // "";
+
+                # Can only update from dataregisters
+                if (!exists $mem_map{$src}) {
+                    push (@comments, "(? $cmd)");
+                    next;
+                }
+                # Check memory adressing input as valid
+                elsif ($addr && !exists $mem_addr{$addr}) {
+                    push (@comments, "(? $cmd)");
+                    next;
+                }
+
+                if ($addr) {
+                    $mem_addr_set = 1;
+
+                    # Update mem_addr
+                    update (\@signal, $positions{mem_addr}, $mem_addr{$addr});
+                }
+
+                $mem_data_used = 1;
+
+                # Set mem to write
+                update (\@signal, $positions{$mem_map{$src}}, $mem{write});
+
+                push (@comments, $cmd);
+            }
+            # mem(mem_addr) -> dest or mem -> src
+            elsif ($src =~ /mem
+                             (?:        # Non matching group
+                             \(
+                               (\S+)    # address
+                             \)
+                             )?         # Not necessary
+                             $          # Match until the end (it doesn't match mem_addr for example)
+                            /x)
+            {
+                my $addr = $1 // "";
+
+                # Can only update to dataregisters
+                if (!exists $mem_map{$dest}) {
+                    push (@comments, "(? $cmd)");
+                    next;
+                }
+                # Check memory adressing input as valid
+                elsif ($addr && !exists $mem_addr{$addr}) {
+                    push (@comments, "(? $cmd)");
+                    next;
+                }
+
+                if ($addr) {
+                    $mem_addr_set = 1;
+
+                    # Update mem_addr
+                    update (\@signal, $positions{mem_addr}, $mem_addr{$addr});
+                }
+
+                $mem_data_used = 1;
+
+                # Set mem to read
+                update (\@signal, $positions{$mem_map{$dest}}, $mem{read});
+
+                push (@comments, $cmd);
+            }
             # Check that the register exists
             elsif (!exists $registers{$dest}) {
                 #say "$dest doesn't exist";
@@ -243,6 +326,9 @@ while (my $line = <$in>) {
                 if ($src =~ /^ALU/) {
                     update (\@signal, $positions{ALU}, $val);
                 }
+
+                # Check if mem_addr will get set
+                $mem_addr_set = 1 if $dest eq "mem_addr";
 
                 push (@comments, $cmd);
             }
@@ -272,6 +358,9 @@ while (my $line = <$in>) {
                     #say "buss -> dest";
                     #say "pos: " . join (",", @{$positions{$dest}});
                     #say "val: " . $registers{$dest}->{buss};
+
+                    # Check if mem_addr will get set
+                    $mem_addr_set = 1 if $dest eq "mem_addr";
 
                     # Comment as src -> buss, buss -> dest
                     push (@comments, "$src -> buss");
@@ -340,6 +429,11 @@ while (my $line = <$in>) {
         else {
             push (@comments, "(? $cmd)");
         }
+    }
+
+    # Add in error if we're using the memory but don't specify what to address
+    if ($mem_data_used && !$mem_addr_set) {
+        push (@comments, "! no mem_addr set !");
     }
 
     # Output verbose mode, for humans
