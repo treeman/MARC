@@ -54,6 +54,17 @@ architecture Behavioral of Microcontroller is
     -- 0   00  00   0  00 00  00   00   00    000     00   0   000 000  00 00     000  00000000
 
     signal mem : Data := (
+
+        --  Fill memory
+        "0000010101000000000000000000000000000000000", -- PC -> buss, buss -> OP, buss -> M1, buss -> M2
+        "0000000000101010000000000000000000000000000", -- PC -> mem_addr, OP -> mem, M1 -> mem, M2 -> mem
+        "0000000000000000000010001000000000000000000", -- PC -> buss, buss -> ALU1
+        "0000000000000000000000100000000000000000000", -- ALU++
+        "0000000000000000000000000100010000000000000", -- ALU1 -> buss, buss -> PC
+        "0000000000010101000000000000000000000000000", -- PC -> mem_addr, mem -> OP, mem -> M1, mem -> M2
+        "0000000000000000000000000000000011100000000", -- uPC = 0
+
+        -- Old shit
         "1000000000000000000000000000100000000000000", -- PC -> IR, PC++
 
         "0000010000000000000000000000000000000000000", -- PC -> OP
@@ -198,11 +209,11 @@ begin
             end if;
 
             -- Update current micro controls
-            if reset_a = '1' then
-                signals <= (others => '0');
-            else
-                signals <= mem(conv_integer(uPC));
-            end if;
+            --if reset_a = '1' then
+                --signals <= (others => '0');
+            --else
+                --signals <= mem(conv_integer(uPC));
+            --end if;
 
             -------------------------------------------------------------------------
             -- SIGNAL MULTIPLEXERS
@@ -250,6 +261,8 @@ begin
 
         end if;
     end process;
+
+    signals <= mem(conv_integer(uPC));
 
 end Behavioral;
 

@@ -1,42 +1,10 @@
-; Super test codez!
-; T.T
 
-PC -> IR, PC++
-PC -> OP
-OP -> mem1
-
-PC -> AR1
-ALU1 + 1, PC++
-
-ALU1 = ALU1 + PC
-
-ALU1 = ALU1 - PC
-ALU1--
-ALU1--
-
-uPC_addr = 0
-uPC_addr = 1
-uPC_addr = a
-uPC_addr = ab
-uPC_addr = abab
-uPC_addr = 010
-uPC_addr = 0011111111
-uPC_addr = jonas
-
-PC -> IR, PC++
-PC -> OP
-OP -> mem1
-; mem1(1) = 1
-
-; PC = 1
-PC -> AR1
-ALU++, PC++
-; AR1 = 2, PC = 2
-
-ALU1 = ALU1 + PC
-; AR1 = 4
-
-ALU1 = ALU1 - PC, bork = 0
-ALU--, bork -> borker
-ALU--, bork
+; Fill memory
+PC -> buss, buss -> OP, buss -> M1, buss -> M2
+PC -> mem_addr, OP -> mem, M1 -> mem, M2 -> mem
+PC -> ALU1
+ALU++
+ALU1 -> PC
+PC -> mem_addr, mem -> OP, mem -> M1, mem -> M2
+uPC = 0
 

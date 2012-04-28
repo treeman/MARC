@@ -116,7 +116,7 @@ my %registers = (
         M2 => "1",
     },
     OP => {
-        buss => "0",
+        buss => "1",
     },
     M1 => {
         buss => "01",
@@ -559,7 +559,7 @@ while (my $line = <$in>) {
             $last += $l;
         }
 
-        my $hexline = sprintf ("%x", $codeline);
+        my $hexline = sprintf ("%x", $codeline - 1);
         $hexline = "0".$hexline if length ($hexline) < 2;
 
         say "$hexline  $result ; " . join (", ", @comments);

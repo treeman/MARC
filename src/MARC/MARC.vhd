@@ -415,8 +415,10 @@ begin
     with buss_code select
         main_buss <= PC when "000",
                     "00000" & memory1_data_out when "001",
-                    ALU1_out when "010",
-                    fifo_out when "011",
+                    memory2_data_out when "010",
+                    memory3_data_out when "011",
+                    ALU1_out when "100",
+                    fifo_out when "101",
                     IN_out when others;
 
     memory1_read_gpu <= tmp_gpu_read;

@@ -66,9 +66,9 @@ M2
 to buss
     000     PC
     001     OP
-    010     M1  (not implemented in MARC)
-    011     M2  (not implemented in MARC)
-    100     AR 1
+    010     M1
+    011     M2
+    100     ALU 1
     101     FIFO
     110     IN
 
