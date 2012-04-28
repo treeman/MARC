@@ -41,9 +41,6 @@ IR -> OP
 M1 -> buss, M2 -> buss, buss -> PC
 PC -> M1, OP -> ALU1
 
-; Misc
-ALU++
-
 ; Memory stuff
 OP -> mem(PC)
 M1 -> mem(buss)
@@ -62,3 +59,37 @@ mem(ADR2) -> M2
 mem(PC) -> OP, mem(PC) -> M1, mem(PC) -> M2
 OP -> mem(PC), M1 -> mem(PC), M2 -> mem(PC)
 PC -> mem_addr, M1 -> mem, mem -> M2
+
+; Advanced commands
+ALU--
+ALU++
+ALU2 += M2
+ALU1 -= PC
+
+ALU1 += M1, ALU1 += M2
+
+uCount = 0
+uPC = 0
+uCount -> Z
+
+uPC++
+op_addr -> uPC
+A_addr -> uPC
+B_addr -> uPC
+jmp
+jmpZ
+
+M1 -> buss, buss -> M2
+
+; Errors
+M1 -> mem(PC), M1 -> mem(ADR1)
+mem -> OP
+ALU1 -> mem
+
+IR -> OP
+PC -> ALU2
+M1 -> buss, M2 -> buss, buss -> PC
+PC -> IR, M1 -> M2
+ALU1 += PC, ALU--
+ALU++, PC -> ALU1
+

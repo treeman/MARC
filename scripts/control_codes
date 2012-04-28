@@ -50,15 +50,6 @@ my %buss = (
     IN => "110",
 );
 
-my %mem_addr = (
-    PC => "000",
-    buss => "001",
-    AR1 => "010",
-    AR2 => "011",
-    ADR1 => "100",
-    ADR2 => "101",
-);
-
 # For mem1 mem2 mem3
 my %mem = (
     read => "01",
@@ -71,7 +62,28 @@ my %mem_map = (
     M2 => "mem3",
 );
 
+# Single value shorthands will be a shorthand for
+# position: $position{<val>} value: $registers{<val>}->{<key>}
+my %singles = (
+    jmp => "uPC",
+    jmpZ => "uPC",
+);
+
 my %registers = (
+    uPC => {
+        '++' => "000",
+        op_addr => "001",
+        A_addr => "010",
+        B_addr => "011",
+        jmp => "100",
+        jmpZ => "101",
+        '0' => "111",
+    },
+    uCount => {
+        '++' => "00",
+        Z => "01",
+        '0' => "11",
+    },
     PC => {
         buss => "01",
         '++' => "10",
@@ -111,14 +123,14 @@ my %registers = (
         AR1 => "10",
         AR2 => "11",
     },
-    mem_addr => \%mem_addr,
-);
-
-# One word commands
-my %single_cmd = (
-    'PC++' => $registers{PC}->{'++'},
-    'ALU++' => $ALU{'++'},
-    'ALU--' => $ALU{'--'},
+    mem_addr => {
+        PC => "000",
+        buss => "001",
+        AR1 => "010",
+        AR2 => "011",
+        ADR1 => "100",
+        ADR2 => "101",
+    },
 );
 
 # Positions for our subsignals in the grand control scheme
@@ -199,42 +211,52 @@ while (my $line = <$in>) {
     my $buss_used = 0;
     my $mem_addr_set = 0;
     my $mem_data_used = 0;
+    my $alu_used = 0;
 
     for my $cmd (split /\s*,\s*/, $line)
     {
-        # Grab single word commands eg PC++, ALU--
+        # Grab single word affixes eg PC++, ALU--
         if ($cmd =~ /^(\S+?)(\+{2}|-{2})$/) {
-            my $reg = $1;
+            my ($reg, $op) = ($1, $2);
 
-            my $val = $single_cmd{$cmd};
-            if ($val) {
-                update (\@signal, $positions{$reg}, $val);
+            say "$reg $op";
+            if (exists $registers{$reg}->{$op}) {
+                update (\@signal, $positions{$reg}, $registers{$reg}->{$op});
 
-                #say $cmd;
+                push (@comments, $cmd);
+            }
+            elsif ($reg eq "ALU") {
+                $alu_used++;
+
+                update (\@signal, $positions{$reg}, $ALU{$op});
+
                 push (@comments, $cmd);
             }
             else {
                 push (@comments, "(? $cmd)");
             }
         }
+        # We have a single shorthand notation
+        elsif (exists $singles{$cmd}) {
+            my $reg = $singles{$cmd};
+
+            $alu_used++ if $cmd =~ /^ALU/;
+
+            update (\@signal, $positions{$reg}, $registers{$reg}->{$cmd});
+
+            push (@comments, $cmd);
+        }
         # dest -> src
-        elsif ($cmd =~ /(\S+)\s*->\s*(\S+)/) {
+        elsif ($cmd =~ /(\S+)\s*[=-]>\s*(\S+)/) {
             my ($src, $dest) = ($1, $2);
 
             # src -> buss
             if ($dest eq "buss" && exists $buss{$src}) {
 
-                # Check for multiple usage of buss
-                if ($buss_used) {
-                    push (@comments, "(? buss used! $cmd)");
-                    next;
-                }
-
-                $buss_used = 1;
+                $buss_used++;
 
                 update (\@signal, $positions{$dest}, $buss{$src});
                 push (@comments, $cmd);
-                next;
             }
             # src -> mem(mem_addr) or src -> mem
             elsif ($dest =~ /mem
@@ -254,19 +276,19 @@ while (my $line = <$in>) {
                     next;
                 }
                 # Check memory adressing input as valid
-                elsif ($addr && !exists $mem_addr{$addr}) {
+                elsif ($addr && !exists $registers{mem_addr}->{$addr}) {
                     push (@comments, "(? $cmd)");
                     next;
                 }
 
                 if ($addr) {
-                    $mem_addr_set = 1;
+                    $mem_addr_set++;
 
                     # Update mem_addr
-                    update (\@signal, $positions{mem_addr}, $mem_addr{$addr});
+                    update (\@signal, $positions{mem_addr}, $registers{mem_addr}->{$addr});
                 }
 
-                $mem_data_used = 1;
+                $mem_data_used++;
 
                 # Set mem to write
                 update (\@signal, $positions{$mem_map{$src}}, $mem{write});
@@ -291,110 +313,119 @@ while (my $line = <$in>) {
                     next;
                 }
                 # Check memory adressing input as valid
-                elsif ($addr && !exists $mem_addr{$addr}) {
+                elsif ($addr && !exists $registers{mem_addr}->{$addr}) {
                     push (@comments, "(? $cmd)");
                     next;
                 }
 
                 if ($addr) {
-                    $mem_addr_set = 1;
+                    $mem_addr_set++;
 
                     # Update mem_addr
-                    update (\@signal, $positions{mem_addr}, $mem_addr{$addr});
+                    update (\@signal, $positions{mem_addr}, $registers{mem_addr}->{$addr});
                 }
 
-                $mem_data_used = 1;
+                $mem_data_used++;
 
                 # Set mem to read
                 update (\@signal, $positions{$mem_map{$dest}}, $mem{read});
 
                 push (@comments, $cmd);
             }
-            # Check that the register exists
-            elsif (!exists $registers{$dest}) {
-                #say "$dest doesn't exist";
-                push (@comments, "(? $cmd)");
-                next;
+            # Handle special assignments eg uCount -> Z
+            elsif (exists $registers{$src}->{$dest}) {
+                update (\@signal, $positions{$src}, $registers{$src}->{$dest});
+
+                push (@comments, $cmd);
             }
             # Handle direct
             elsif (exists $registers{$dest}->{$src}) {
-                my $val = $registers{$dest}->{$src};
-
-                update (\@signal, $positions{$dest}, $val);
+                update (\@signal, $positions{$dest}, $registers{$dest}->{$src});
 
                 # load if ALU
-                if ($src =~ /^ALU/) {
-                    update (\@signal, $positions{ALU}, $val);
+                if ($dest =~ /^ALU/) {
+                    update (\@signal, $positions{ALU}, $ALU{load});
+                    $alu_used++;
                 }
 
-                # Check if mem_addr will get set
-                $mem_addr_set = 1 if $dest eq "mem_addr";
+                $buss_used++ if $dest eq "buss";
+                $mem_addr_set++ if $dest eq "mem_addr";
 
                 push (@comments, $cmd);
             }
             # Try to route through buss
-            elsif (exists $registers{$dest}->{buss}) {
-                #say "Routing through buss";
+            elsif (exists $registers{$dest}->{buss} && exists $buss{$src}) {
 
-                # Can we do src -> buss?
-                if (exists $buss{$src}) {
+                $buss_used++;
 
-                    # Check for multiple usage of buss
-                    if ($buss_used) {
-                        push (@comments, "(? buss used! $cmd)");
-                        next;
-                    }
+                # Update src -> buss
+                update (\@signal, $positions{buss}, $buss{$src});
 
-                    $buss_used = 1;
+                # Update buss -> dest
+                update (\@signal, $positions{$dest}, $registers{$dest}->{buss});
 
-                    # Update src -> buss
-                    update (\@signal, $positions{buss}, $buss{$src});
-                    #say "src -> buss";
-                    #say "pos: " . join (",", @{$positions{buss}});
-                    #say "val: " . $buss{$src};
-
-                    # Update buss -> dest
-                    update (\@signal, $positions{$dest}, $registers{$dest}->{buss});
-                    #say "buss -> dest";
-                    #say "pos: " . join (",", @{$positions{$dest}});
-                    #say "val: " . $registers{$dest}->{buss};
-
-                    # Check if mem_addr will get set
-                    $mem_addr_set = 1 if $dest eq "mem_addr";
-
-                    # Comment as src -> buss, buss -> dest
-                    push (@comments, "$src -> buss");
-                    push (@comments, "buss -> $dest");
+                # load if ALU
+                if ($dest =~ /^ALU/) {
+                    update (\@signal, $positions{ALU}, $ALU{load});
+                    $alu_used++;
                 }
-                else {
-                    #say "Couldn't find src -> buss";
-                    push (@comments, "(? $cmd)");
-                }
+
+                # Check if mem_addr will get set
+                $mem_addr_set++ if $dest eq "mem_addr";
+
+                # Comment as src -> buss, buss -> dest
+                push (@comments, "$src -> buss");
+                push (@comments, "buss -> $dest");
+            }
+            else {
+                #say "Couldn't find buss -> $dest";
+                push (@comments, "(? $cmd)");
+            }
+        }
+        # ALUx += src or ALUx -= src
+        elsif ($cmd =~ /^(ALU[12])\s*(\+|-)=\s*(\S+)$/) {
+            my ($alu, $op, $src) = ($1, $2, $3);
+
+            # Check direct connection
+            if (exists $registers{$alu}->{$src}) {
+
+                $alu_used++;
+
+                # Update data
+                update (\@signal, $positions{$alu}, $registers{$alu}->{$src});
+
+                # Update alu action
+                update (\@signal, $positions{ALU}, $ALU{$op});
+
+                push (@comments, $cmd);
+            }
+            # Try to route through buss
+            elsif (exists $registers{$alu}->{buss} && exists $buss{$src}) {
+
+                $buss_used++;
+                $alu_used++;
+
+                # Update src -> buss
+                update (\@signal, $positions{buss}, $buss{$src});
+
+                # Update buss -> alu
+                update (\@signal, $positions{$alu}, $registers{$alu}->{buss});
+
+                # load ALU
+                update (\@signal, $positions{ALU}, $ALU{$op});
+
+                push (@comments, $cmd);
             }
             else {
                 #say "Couldn't find buss -> dest";
                 push (@comments, "(? $cmd)");
             }
         }
-        # var = l op r
-        elsif ($cmd =~ /(\S+)            # Assigned variable
-                        \s*=\s*
-                        (\S+)            # left
-                        \s+(\S)\s+       # op
-                        (\S+)            # right
-                       /x)
-        {
-            my ($res, $l, $op, $r) = ($1, $2, $3, $4);
-
-            #say "$res = $l $op $r";
-            push (@comments, "(? $cmd)");
-        }
         # var = stuff eg uPC = 0, uCount = 0, uPC_addr = AB or 10101011 (will truncate/fill)
         elsif ($cmd =~ /(\S+)\s*=\s*(\S+)/) {
             my ($var, $res) = ($1, $2);
 
-            #say "var = $var, res = $res";
-
+            # Convert hex and stuff for addr jumping
             if ($var eq 'uPC_addr') {
                 my $bin;
 
@@ -422,8 +453,14 @@ while (my $line = <$in>) {
 
                 push (@comments, $cmd);
             }
-            else {
+            # Check special eg uPC = 0
+            elsif (exists $registers{$var} && exists $registers{$var}->{$res}) {
+                update (\@signal, $positions{$var}, $registers{$var}->{$res});
+
                 push (@comments, $cmd);
+            }
+            else {
+                push (@comments, "(? $cmd)");
             }
         }
         else {
@@ -433,7 +470,19 @@ while (my $line = <$in>) {
 
     # Add in error if we're using the memory but don't specify what to address
     if ($mem_data_used && !$mem_addr_set) {
-        push (@comments, "! no mem_addr set !");
+        push (@comments, "! no mem_addr !");
+    }
+    # Can only address all memory with one address at a time
+    if ($mem_addr_set > 1) {
+        push (@comments, "! 2x -> mem_addr !");
+    }
+    # Check that we're only using our buss once
+    if ($buss_used > 1) {
+        push (@comments, "! 2x -> buss !");
+    }
+    # Check only one operation for the alu
+    if ($alu_used > 1) {
+        push (@comments, "! 2x alu op !");
     }
 
     # Output verbose mode, for humans
