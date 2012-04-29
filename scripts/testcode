@@ -56,10 +56,22 @@ jmpZ
 
 M1 -> buss, buss -> M2
 
+uPC++
+op_addr -> uPC
+jmp
 jmpZ
 jmpC
 jmpIN
 jmpS
+
+jmpAimm
+jmpAdir
+jmpApre
+
+jmpBimm
+jmpBdir
+jmpBpre
+uPC = 0
 
 ; Errors
 ALU1 -> mem

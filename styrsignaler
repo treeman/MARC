@@ -3,14 +3,21 @@ Styrsignaler:
 uPC
     0000    +1
     0001    op addr
-    0010    A a-mod addr
-    0011    B a-mod addr
-    0100    jmp
-    0101    jmp on Z                    (jmpZ)
-    0110    jmp on new IN               (jmpIN)
-    0111    jmp if uCounter >= limit    (jmpC)
-    1000    jmp if game started         (jmpS)
-    1111    0
+
+    0010    jmp
+    0011    jmp on Z                    (jmpZ)
+    0100    jmp on new IN               (jmpIN)
+    0101    jmp if uCounter >= limit    (jmpC)
+    0110    jmp if game started         (jmpS)
+
+    1000    jmp if A immediate          (jmpAimm)
+    1001    jmp if A direct             (jmpAdir)
+    1010    jmp if A predecrement       (jmpApre)
+    1011    jmp if B immediate          (jmpBimm)
+    1100    jmp if B direct             (jmpBdir)
+    1101    jmp if B predecrement       (jmpBpre)
+
+    1111    = 0
 
 uCount
     0       uCounter + 1
@@ -108,12 +115,6 @@ Totalt
 FIXME!
 Kontrollera signalerna under
 FIXME!
-
-More jump flags for uPC?
-jmpIN   jmp if we have something in IN register
-jmpS    jmp if we're started
-jmpG    jmp if game over        (combine with above?)
-jmpC    jmp if uCounter >= limit
 
 FIFO
     2bit

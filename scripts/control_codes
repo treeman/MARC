@@ -75,19 +75,32 @@ my %singles = (
     jmpIN => "uPC",
     jmpC => "uPC",
     jmpS => "uPC",
+    jmpAimm => "uPC",
+    jmpAdir => "uPC",
+    jmpApre => "uPC",
+    jmpBimm => "uPC",
+    jmpBdir => "uPC",
+    jmpBpre => "uPC",
 );
 
 my %registers = (
     uPC => {
         '++' => "0000",
         op_addr => "0001",
-        A_addr => "0010",
-        B_addr => "0011",
-        jmp => "0100",
-        jmpZ => "0101",
-        jmpIN => "0110",
-        jmpC => "0111",
-        jmpS => "1000",
+
+        jmp => "0010",
+        jmpZ => "0011",
+        jmpIN => "0100",
+        jmpC => "0101",
+        jmpS => "0110",
+
+        jmpAimm => "1000",
+        jmpAdir => "1001",
+        jmpApre => "1010",
+        jmpBimm => "1011",
+        jmpBdir => "1100",
+        jmpBpre => "1101",
+
         '0' => "1111",
     },
     uCount => {

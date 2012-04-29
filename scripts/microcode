@@ -13,7 +13,29 @@ PC = 0
 PC -> mem_addr, uCount = 0
 mem -> OP
 OP -> IR
-op_addr -> uPC
+
+; Calculate adress
+
+; Examine A-field
+; if immediate, we're done
+; otherwise A-field += PC
+; if direct, we're done
+; otherwise the B-field of this direct memory location is read into the A-field
+; if predecrement, then the value just read is decremented and written back
+;   to the memory location from whence it came
+;   A-field += PC
+;
+; do the same for the B-field...
+; now examine and do code!
+;
+; finally, if no branch and instr not a DAT
+; PC++ and insert into fifo
+;
+; We need:
+; A and B-fields check
+; is immediate?
+; is direct?
+; is predecrement?
 
 ; Check memory for correctness
 ; PC -> mem_addr

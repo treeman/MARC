@@ -74,8 +74,6 @@ architecture Behavioral of Microcontroller is
         "0000000000010000000000000000000000000000000", -- mem -> OP
         "1000000000000000000000000001000000000000000", -- OP -> buss, buss -> IR
 
-        "0000000000000000000000000000000001000000000", -- A_addr -> uPC
-
         others => (others => '0')
     );
 
@@ -101,10 +99,19 @@ architecture Behavioral of Microcontroller is
     signal IR : std_logic_vector(7 downto 0);
     signal uPC : std_logic_vector(7 downto 0) := "00000000";
 
-    -- OP code decodings
+    -- Split up IR
+    alias OP_field is IR(7 downto 4);
+    alias A_field is IR(3 downto 2);
+    alias B_field is IR(1 downto 0);
+
+    -- Instruction code decodings
     signal op_addr : std_logic_vector(7 downto 0);
-    signal A_addr : std_logic_vector(7 downto 0);
-    signal B_addr : std_logic_vector(7 downto 0);
+    signal A_imm : std_logic;
+    signal A_dir : std_logic;
+    signal A_pre : std_logic;
+    signal B_imm : std_logic;
+    signal B_dir : std_logic;
+    signal B_pre : std_logic;
 begin
 
     -------------------------------------------------------------------------
@@ -149,23 +156,18 @@ begin
     -- TODO proper address encodings
 
     -- OP code address decoding
-    with IR(7 downto 4) select
+    with OP_field select
         op_addr <= "00000000" when "0000",
                    "11001110" when "0101",
                    "11111111" when others;
 
-    -- A a-mod address decoding
-    with IR(3 downto 2) select
-        A_addr <= "00000000" when "00",
-                  "00000001" when "01",
-                  "00000010" when others;
+    A_imm <= '1' when A_field = "00" else '0';
+    A_dir <= '1' when A_field = "01" else '0';
+    A_pre <= '1' when A_field = "11" else '0';
 
-    -- B a-mod address decoding
-    with IR(1 downto 0) select
-        B_addr <= "00000011" when "00",
-                  "00000100" when "01",
-                  "00000101" when others;
-
+    B_imm <= '1' when B_field = "00" else '0';
+    B_dir <= '1' when B_field = "01" else '0';
+    B_pre <= '1' when B_field = "11" else '0';
 
     -------------------------------------------------------------------------
     -- ON CLOCK EVENT
@@ -190,22 +192,33 @@ begin
                 uPC <= "00000000";
             elsif uPC_code = "0000" then
                 uPC <= uPC + 1;
+
             elsif uPC_code = "0001" then
                 uPC <= op_addr;
             elsif uPC_code = "0010" then
-                uPC <= A_addr;
-            elsif uPC_code = "0011" then
-                uPC <= B_addr;
-            elsif uPC_code = "0100" then
                 uPC <= uPC_addr;
-            elsif uPC_code = "0101" and Z = '1' then
+            elsif uPC_code = "0011" and Z = '1' then
                 uPC <= uPC_addr;
-            elsif uPC_code = "0110" and new_IN = '1' then
+            elsif uPC_code = "0100" and new_IN = '1' then
                 uPC <= uPC_addr;
-            elsif uPC_code = "0111" and uCounter >= uCount_limit then
+            elsif uPC_code = "0101" and uCounter >= uCount_limit then
                 uPC <= uPC_addr;
-            elsif uPC_code = "1000" and game_started = '1' then
+            elsif uPC_code = "0110" and game_started = '1' then
                 uPC <= uPC_addr;
+
+            elsif uPC_code = "1000" and A_imm = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1001" and A_dir = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1010" and A_pre = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1011" and B_imm = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1100" and B_dir = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1101" and B_pre = '1' then
+                uPC <= uPC_addr;
+
             elsif uPC_code = "1111" then
                 uPC <= "00000000";
             end if;
