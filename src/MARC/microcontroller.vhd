@@ -69,6 +69,7 @@ architecture Behavioral of Microcontroller is
 
         --  Replace PC and restart
         "0000000000000000000000000100010000000000000", -- ALU1 -> buss, buss -> PC
+        "0000000000000000000000000000110000000000000", -- PC = 0
         "0000000000000000000000000000000011100000000", -- uPC = 0
 
         others => (others => '0')

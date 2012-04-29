@@ -13,6 +13,7 @@ PC
     00      PC (nothing)
     01      load from buss
     10      +1
+    11      = 0
 
 IR
     0       hold
@@ -148,3 +149,4 @@ FBART:
         000 Noting special
         001 First transmission, start at top of memory (maybe not needed).
         010 End of transmission, quit recieving loop and wait for the player to start the game.
+

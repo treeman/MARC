@@ -118,9 +118,10 @@ architecture Behavioral of MARC is
     signal memory2_data_in : std_logic_vector(12 downto 0);
     signal memory3_data_in : std_logic_vector(12 downto 0);
 
-    signal memory1_data_out : std_logic_vector(7 downto 0);
-    signal memory2_data_out : std_logic_vector(12 downto 0);
-    signal memory3_data_out : std_logic_vector(12 downto 0);
+    -- Memory outputs register values
+    signal OP : std_logic_vector(7 downto 0);
+    signal M1 : std_logic_vector(12 downto 0);
+    signal M2 : std_logic_vector(12 downto 0);
 
     -- Combined to one for now
     signal memory_address_in : std_logic_vector(12 downto 0);
@@ -253,7 +254,7 @@ begin
                     address_out => memory1_address_out,
                     write => memory1_write,
                     data_in => memory1_data_in,
-                    data_out => memory1_data_out,
+                    data_out => OP,
                     data_gpu => memory1_data_gpu,
                     read_gpu => memory1_read_gpu,
                     address_gpu => memory1_address_gpu,
@@ -267,7 +268,7 @@ begin
                     address_out => memory2_address_out,
                     write => memory2_write,
                     data_in => memory2_data_in,
-                    data_out => memory2_data_out
+                    data_out => M1
         );
 
     memory3: Memory_Cell
@@ -277,7 +278,7 @@ begin
                     address_out => memory3_address_out,
                     write => memory3_write,
                     data_in => memory3_data_in,
-                    data_out => memory3_data_out
+                    data_out => M2
         );
 
     -------------------------------------------------------------------------
@@ -310,18 +311,20 @@ begin
                 PC <= main_buss;
             elsif PC_code = "10" then
                 PC <= PC + 1;
+            elsif PC_code = "11" then
+                PC <= (others => '0');
             end if;
 
             case ADR1_code is
                 when "01" => ADR1 <= main_buss;
-                when "10" => ADR1 <= memory2_data_out;
+                when "10" => ADR1 <= M1;
                 when "11" => ADR1 <= ALU1_out;
                 when others => ADR1 <= ADR1;
             end case;
 
             case ADR2_code is
                 when "01" => ADR2 <= main_buss;
-                when "10" => ADR2 <= memory3_data_out;
+                when "10" => ADR2 <= M2;
                 when "11" => ADR2 <= ALU2_out;
                 when others => ADR2 <= ADR2;
             end case;
@@ -345,19 +348,19 @@ begin
 
     with OP_code select
         memory1_data_in <= main_buss(7 downto 0) when '1',
-                           memory1_data_out when others;
+                           OP when others;
 
     with M1_code select
         memory2_data_in <= main_buss when "01",
                            ALU1_out when "10",
                            ALU2_out when "11",
-                           memory2_data_out when others;
+                           M1 when others;
 
     with M2_code select
         memory3_data_in <= main_buss when "01",
                            ALU1_out when "10",
                            ALU2_out when "11",
-                           memory3_data_out when others;
+                           M2 when others;
 
     -------------------------------------------------------------------------
     -- ALU MULTIPLEXERS
@@ -388,14 +391,14 @@ begin
 
     alu1_operand <= "0000000000000" when ALU_code = "110" else -- zero?
                     "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
-                    memory2_data_out when ALU1_code = "00" else
-                    memory3_data_out when ALU1_code = "10" else
+                    M1 when ALU1_code = "00" else
+                    M2 when ALU1_code = "10" else
                     main_buss;
 
     alu2_operand <= "0000000000000" when ALU_code = "110" else -- zero?
                     "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
-                    memory2_data_out when ALU2_code = '0' else
-                    memory3_data_out;
+                    M1 when ALU2_code = '0' else
+                    M2;
 
     -- 00 hold
     -- 01 load main buss
@@ -414,9 +417,9 @@ begin
 
     with buss_code select
         main_buss <= PC when "000",
-                    "00000" & memory1_data_out when "001",
-                    memory2_data_out when "010",
-                    memory3_data_out when "011",
+                    "00000" & OP when "001",
+                    M1 when "010",
+                    M2 when "011",
                     ALU1_out when "100",
                     fifo_out when "101",
                     IN_out when others;
