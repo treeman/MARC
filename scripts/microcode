@@ -1,17 +1,14 @@
+; Load some operations into mem with test bench
+IN -> OP
+OP -> mem(PC), PC++, IN -> OP
+OP -> mem(PC), PC++, IN -> OP
+OP -> mem(PC)
 
-; Fill memory
-PC -> buss, buss -> OP, buss -> M1, buss -> M2
-PC -> mem_addr, OP -> mem, M1 -> mem, M2 -> mem
-PC -> ALU1
+; Reset
+PC = 0
 
-; Increase and erase mem registries
-ALU++
-ALU1 -> buss, buss -> OP, buss -> M1, buss -> M2
-
-; Read back again, check memory contents
-PC -> mem_addr, mem -> OP, mem -> M1, mem -> M2
-
-; Replace PC and restart
-ALU1 -> PC
-uPC = 0
+; Start examin instr
+mem(PC) -> OP, PC++
+mem(PC) -> OP, PC++
+mem(PC) -> OP
 

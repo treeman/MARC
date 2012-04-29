@@ -1,0 +1,15 @@
+; Load some operations into mem with test bench
+    IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uCount uPC  uPC_addr
+00  0   00  00   1  00 00  00   00   00    000     00   0   000 110  00   0    0000 00000000 ; IN -> buss, buss -> OP
+01  0   00  00   1  00 00  10   00   00    000     00   0   000 110  10   0    0000 00000000 ; OP -> mem(PC), PC++, IN -> buss, buss -> OP
+02  0   00  00   1  00 00  10   00   00    000     00   0   000 110  10   0    0000 00000000 ; OP -> mem(PC), PC++, IN -> buss, buss -> OP
+03  0   00  00   0  00 00  10   00   00    000     00   0   000 000  00   0    0000 00000000 ; OP -> mem(PC)
+
+; Reset
+04  0   00  00   0  00 00  00   00   00    000     00   0   000 000  11   0    0000 00000000 ; PC = 0
+
+; Start examin instr
+05  0   00  00   0  00 00  01   00   00    000     00   0   000 000  00   0    0000 00000000 ; mem(PC) -> OP
+06  1   00  00   0  00 00  00   00   00    000     00   0   000 001  00   0    0000 00000000 ; OP -> buss, buss -> IR
+07  0   00  00   0  00 00  00   00   00    000     00   0   000 000  00   0    0001 00000000 ; op_addr -> uPC
+

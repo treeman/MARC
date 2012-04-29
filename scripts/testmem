@@ -1,0 +1,19 @@
+; Startup?
+uCount = 0
+
+; Fill memory
+PC -> buss, buss -> OP, buss -> M1, buss -> M2
+PC -> mem_addr, OP -> mem, M1 -> mem, M2 -> mem
+PC -> ALU1
+
+; Increase and erase mem registries
+ALU++
+ALU1 -> buss, buss -> OP, buss -> M1, buss -> M2
+
+; Read back again, check memory contents
+PC -> mem_addr, mem -> OP, mem -> M1, mem -> M2
+
+; Replace PC and restart
+ALU1 -> PC
+uPC = 0
+

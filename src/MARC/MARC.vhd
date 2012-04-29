@@ -8,9 +8,12 @@ entity MARC is
     Port (  clk : in std_logic;
             reset_a : in std_logic;
 
+            -- Temporary shit
             tmp_buss : in std_logic_vector(12 downto 0);
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
-            tmp_gpu_data : out std_logic_vector(7 downto 0)
+            tmp_gpu_data : out std_logic_vector(7 downto 0);
+
+            tmp_IN : in std_logic_vector(12 downto 0)
     );
 end MARC;
 
@@ -48,7 +51,11 @@ architecture Behavioral of MARC is
                 M2_code : out std_logic_vector(1 downto 0);
 
                 ADR1_code : out std_logic_vector(1 downto 0);
-                ADR2_code : out std_logic_vector(1 downto 0)
+                ADR2_code : out std_logic_vector(1 downto 0);
+
+                Z : in std_logic;
+                new_IN : in std_logic;
+                game_started : in std_logic
         );
     end component;
 
@@ -118,10 +125,9 @@ architecture Behavioral of MARC is
     signal memory2_data_in : std_logic_vector(12 downto 0);
     signal memory3_data_in : std_logic_vector(12 downto 0);
 
-    -- Memory outputs register values
-    signal OP : std_logic_vector(7 downto 0);
-    signal M1 : std_logic_vector(12 downto 0);
-    signal M2 : std_logic_vector(12 downto 0);
+    signal memory1_data_out : std_logic_vector(7 downto 0);
+    signal memory2_data_out : std_logic_vector(12 downto 0);
+    signal memory3_data_out : std_logic_vector(12 downto 0);
 
     -- Combined to one for now
     signal memory_address_in : std_logic_vector(12 downto 0);
@@ -148,6 +154,12 @@ architecture Behavioral of MARC is
     signal ADR1 : std_logic_vector(12 downto 0);
     signal ADR2 : std_logic_vector(12 downto 0);
 
+    -- Memory outputs register values
+    signal OP : std_logic_vector(7 downto 0);
+    signal M1 : std_logic_vector(12 downto 0);
+    signal M2 : std_logic_vector(12 downto 0);
+
+    signal IN_reg : std_logic_vector(12 downto 0);
 
     -------------------------------------------------------------------------
     -- CONTROL SIGNALS
@@ -188,14 +200,14 @@ architecture Behavioral of MARC is
     -- Status signals
     signal Z : std_logic := '0';
     signal active_player : std_logic_vector(1 downto 0);
-
-    -- Other stuff
+    signal game_started : std_logic := '1';
+    signal new_IN : std_logic := '0';
     signal reset : std_logic := '0';
 
     -- TODO connect these modules later
     signal fifo_out : std_logic_vector(12 downto 0) := "0010XXXXXXXXX";
-    signal IN_out : std_logic_vector(12 downto 0) := "0001XXXXXXXXX";
 
+    -- Crap
     signal tmp_gpu_read : STD_LOGIC := '0';
     signal tmp_gpu_adr_sync : STD_LOGIC_VECTOR(12 downto 0) := "0000000000000";
     signal tmp_gpu_data_sync : STD_LOGIC_VECTOR(7 downto 0);
@@ -233,7 +245,11 @@ begin
                     M2_code => M2_code,
 
                     ADR1_code => ADR1_code,
-                    ADR2_code => ADR2_code
+                    ADR2_code => ADR2_code,
+
+                    Z => Z,
+                    new_IN => new_IN,
+                    game_started => game_started
         );
 
     alus: ALU
@@ -254,7 +270,7 @@ begin
                     address_out => memory1_address_out,
                     write => memory1_write,
                     data_in => memory1_data_in,
-                    data_out => OP,
+                    data_out => memory1_data_out,
                     data_gpu => memory1_data_gpu,
                     read_gpu => memory1_read_gpu,
                     address_gpu => memory1_address_gpu,
@@ -268,7 +284,7 @@ begin
                     address_out => memory2_address_out,
                     write => memory2_write,
                     data_in => memory2_data_in,
-                    data_out => M1
+                    data_out => memory2_data_out
         );
 
     memory3: Memory_Cell
@@ -278,7 +294,7 @@ begin
                     address_out => memory3_address_out,
                     write => memory3_write,
                     data_in => memory3_data_in,
-                    data_out => M2
+                    data_out => memory3_data_out
         );
 
     -------------------------------------------------------------------------
@@ -329,6 +345,18 @@ begin
                 when others => ADR2 <= ADR2;
             end case;
 
+            --if OP_code = '1' then
+                --memory1_data_in <= main_buss(7 downto 0);
+            --else
+                --memory1_data_in <= OP;
+            --end if;
+
+            --with OP_code select
+                --memory1_data_in <= main_buss(7 downto 0) when '1',
+                                   --OP when others;
+
+            IN_reg <= tmp_IN;
+
         end if;
     end process;
 
@@ -346,6 +374,12 @@ begin
                              ADR2 when "101",
                              memory1_address_out when others;
 
+    -- Can't do OP -> mem(PC), IN -> OP
+    --memory1_data_in <= memory1_data_out when memory1_write = '1' else
+                       --main_buss(7 downto 0) when OP_code = '1' else
+                       --OP;
+
+    -- Will write one behind
     with OP_code select
         memory1_data_in <= main_buss(7 downto 0) when '1',
                            OP when others;
@@ -361,6 +395,10 @@ begin
                            ALU1_out when "10",
                            ALU2_out when "11",
                            M2 when others;
+
+    OP <= memory1_data_out;
+    M1 <= memory2_data_out;
+    M2 <= memory3_data_out;
 
     -------------------------------------------------------------------------
     -- ALU MULTIPLEXERS
@@ -422,9 +460,11 @@ begin
                     M2 when "011",
                     ALU1_out when "100",
                     fifo_out when "101",
-                    IN_out when others;
+                    IN_reg when others;
+
 
     memory1_read_gpu <= tmp_gpu_read;
+
 
 end Behavioral;
 

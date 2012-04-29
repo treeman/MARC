@@ -72,6 +72,11 @@ jmpZ
 
 M1 -> buss, buss -> M2
 
+jmpZ
+jmpC
+jmpIN
+jmpS
+
 ; Errors
 M1 -> mem(PC), M1 -> mem(ADR1)
 mem -> OP
