@@ -125,10 +125,6 @@ architecture Behavioral of MARC is
     signal memory2_data_in : std_logic_vector(12 downto 0);
     signal memory3_data_in : std_logic_vector(12 downto 0);
 
-    signal memory1_data_out : std_logic_vector(7 downto 0);
-    signal memory2_data_out : std_logic_vector(12 downto 0);
-    signal memory3_data_out : std_logic_vector(12 downto 0);
-
     -- Combined to one for now
     signal memory_address_in : std_logic_vector(12 downto 0);
     signal memory_address : std_logic_vector(12 downto 0);
@@ -266,7 +262,7 @@ begin
                     address_out => memory_address,
                     write => memory1_write,
                     data_in => memory1_data_in,
-                    data_out => memory1_data_out,
+                    data_out => OP,
                     data_gpu => memory1_data_gpu,
                     read_gpu => memory1_read_gpu,
                     address_gpu => memory1_address_gpu,
@@ -280,7 +276,7 @@ begin
                     --address_out => memory2_address_out,
                     write => memory2_write,
                     data_in => memory2_data_in,
-                    data_out => memory2_data_out
+                    data_out => M1
         );
 
     memory3: Memory_Cell
@@ -290,7 +286,7 @@ begin
                     --address_out => memory3_address_out,
                     write => memory3_write,
                     data_in => memory3_data_in,
-                    data_out => memory3_data_out
+                    data_out => M2
         );
 
     -------------------------------------------------------------------------
@@ -358,10 +354,7 @@ begin
                              ALU2_out when "011",
                              ADR1 when "100",
                              ADR2 when others;
-                             --ADR2 when "101",
-                             --memory1_address_out when others;
 
-    -- Will write one behind
     with OP_code select
         memory1_data_in <= main_buss(7 downto 0) when '1',
                            OP when others;
@@ -377,10 +370,6 @@ begin
                            ALU1_out when "10",
                            ALU2_out when "11",
                            M2 when others;
-
-    OP <= memory1_data_out;
-    M1 <= memory2_data_out;
-    M2 <= memory3_data_out;
 
     -------------------------------------------------------------------------
     -- ALU MULTIPLEXERS

@@ -1,10 +1,10 @@
 
 ; Direct
 M1 -> ADR1, PC++
-AR1 -> ADR1
+ALU1 -> ADR1
 
 M2 -> ADR2
-AR2 -> ADR2
+ALU2 -> ADR2
 
 M1 -> ALU1
 M2 -> ALU1
@@ -13,8 +13,8 @@ M1 -> ALU2
 M2 -> ALU2
 
 PC -> mem_addr
-AR1 -> mem_addr
-AR2 -> mem_addr
+ALU1 -> mem_addr
+ALU1 -> mem_addr
 ADR1 -> mem_addr
 ADR2 -> mem_addr
 
@@ -33,23 +33,8 @@ PC -> buss, buss -> ALU1
 M1 -> buss, buss -> PC, buss -> M2, buss -> ALU1
 
 ; Memory stuff
-OP -> mem(PC)
-M1 -> mem(buss)
-M2 -> mem(AR1)
-OP -> mem(AR2)
-M1 -> mem(ADR1)
-M2 -> mem(ADR2)
-
-mem(PC) -> OP
-mem(buss) -> M1
-mem(AR1) -> M2
-mem(AR2) -> OP
-mem(ADR1) -> M1
-mem(ADR2) -> M2
-
-mem(PC) -> OP, mem(PC) -> M1, mem(PC) -> M2
-OP -> mem(PC), M1 -> mem(PC), M2 -> mem(PC)
-PC -> mem_addr, M1 -> mem, mem -> M2
+PC -> mem_addr
+M1 -> mem, mem -> M2
 
 ; Advanced commands
 ALU--
@@ -61,7 +46,6 @@ ALU1 += M1, ALU2 += M2
 
 uCount = 0
 uPC = 0
-uCount -> Z
 
 uPC++
 op_addr -> uPC
@@ -78,8 +62,6 @@ jmpIN
 jmpS
 
 ; Errors
-M1 -> mem(PC), M1 -> mem(ADR1)
-mem -> OP
 ALU1 -> mem
 
 IR -> OP

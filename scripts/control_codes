@@ -281,21 +281,31 @@ while (my $line = <$in>) {
             elsif ($dest eq "mem") {
                 $mem_data_used++;
 
-                # Set mem to write
-                update (\@signal, $positions{$mem_map{$src}}, $mem{write});
+                if ($src =~ /OP|M1|M2/) {
+                    # Set mem to write
+                    update (\@signal, $positions{$mem_map{$src}}, $mem{write});
 
-                push (@comments, $cmd);
+                    push (@comments, $cmd);
+                }
+                else {
+                    push (@comments, "? $cmd ?");
+                }
             }
             # mem -> src
             elsif ($src eq "mem") {
                 $mem_data_used++;
 
-                # Set mem to read
-                update (\@signal, $positions{$mem_map{$dest}}, $mem{read});
+                if ($dest =~ /OP|M1|M2/) {
+                    # Set mem to read
+                    update (\@signal, $positions{$mem_map{$dest}}, $mem{read});
 
-                push (@comments, $cmd);
+                    push (@comments, $cmd);
+                }
+                else {
+                    push (@comments, "? $cmd ?");
+                }
             }
-            # Handle special assignments eg uCount -> Z
+            # Handle special assignments
             elsif (exists $registers{$src}->{$dest}) {
                 update (\@signal, $positions{$src}, $registers{$src}->{$dest});
 

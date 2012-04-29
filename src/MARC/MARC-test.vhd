@@ -65,10 +65,10 @@ begin
         tmp_buss <= "0000000000000";
 
         tmp_IN <= "XXXXXUUXXUUXX",
-            "0000010101010" after 0.5 us,
-            "0000010111011" after 1.5 us,
-            "0000011001100" after 2.5 us,
-            "XXXXXXXXXXXXX" after 3.5 us;
+            "0000010101010" after 1.5 us,
+            "0000010111011" after 3.5 us,
+            "0000011001100" after 5.5 us,
+            "XXXXXXXXXXXXX" after 7.5 us;
 
         wait;
     end process;
