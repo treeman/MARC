@@ -31,16 +31,16 @@ use ieee.numeric_std.all;
 
 entity Memory_Cell_DualPort is
     Port ( clk              : in  STD_LOGIC;
-           read                 : in  STD_LOGIC;
-           write                : in  STD_LOGIC;
-              active_player : in STD_LOGIC_VECTOR(1 downto 0);
+           read             : in  STD_LOGIC;
+           write            : in  STD_LOGIC;
+           active_player    : in STD_LOGIC_VECTOR(1 downto 0);
            address_in       : in  STD_LOGIC_VECTOR (12 downto 0);
-              address_out       : out  STD_LOGIC_VECTOR (12 downto 0);
-              data_in           : in  STD_LOGIC_VECTOR (7 downto 0);
-              data_out          : out  STD_LOGIC_VECTOR (7 downto 0);
+           address_out      : out  STD_LOGIC_VECTOR (12 downto 0);
+           data_in          : in  STD_LOGIC_VECTOR (7 downto 0);
+           data_out         : out  STD_LOGIC_VECTOR (7 downto 0);
            address_gpu      : in  STD_LOGIC_VECTOR (12 downto 0);
-           data_gpu             : out  STD_LOGIC_VECTOR (7 downto 0);
-           read_gpu             : in  STD_LOGIC);
+           data_gpu         : out  STD_LOGIC_VECTOR (7 downto 0);
+           read_gpu         : in  STD_LOGIC);
 end Memory_Cell_DualPort;
 
 architecture Behavioral of Memory_Cell_DualPort is

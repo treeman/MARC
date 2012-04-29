@@ -21,9 +21,9 @@ add wave -noupdate -color Orchid /marc_test/uut/memory_addr_code
 add wave -noupdate -color Orchid /marc_test/uut/micro/uPC_code
 add wave -noupdate /marc_test/uut/micro/uCount_code
 add wave -noupdate -color Orchid /marc_test/uut/PC_code
+add wave -noupdate -color Orchid /marc_test/uut/OP_code
 add wave -noupdate -color Orchid /marc_test/uut/M1_code
 add wave -noupdate -color Orchid /marc_test/uut/M2_code
-add wave -noupdate -color Orchid /marc_test/uut/OP_code
 add wave -noupdate -color Orchid /marc_test/uut/ADR1_code
 add wave -noupdate -color Orchid /marc_test/uut/ADR2_code
 add wave -noupdate -color Orchid /marc_test/uut/ALU1_code
@@ -37,6 +37,8 @@ add wave -noupdate /marc_test/uut/alus/alu1_zeroFlag
 add wave -noupdate -radix hexadecimal /marc_test/uut/memory_address_in
 add wave -noupdate -expand -group mem1 -radix hexadecimal /marc_test/uut/memory1_data_in
 add wave -noupdate -expand -group mem1 -radix hexadecimal /marc_test/uut/memory1_data_out
+add wave -noupdate -expand -group mem1 -radix hexadecimal /marc_test/uut/memory1/data_sync
+add wave -noupdate -expand -group mem1 -radix hexadecimal /marc_test/uut/memory1/address_sync
 add wave -noupdate -expand -group mem1 /marc_test/uut/memory1_read
 add wave -noupdate -expand -group mem1 /marc_test/uut/memory1_write
 add wave -noupdate -expand -group mem2 -radix hexadecimal /marc_test/uut/memory2_data_in
@@ -48,7 +50,7 @@ add wave -noupdate -expand -group mem3 -radix hexadecimal /marc_test/uut/memory3
 add wave -noupdate -expand -group mem3 /marc_test/uut/memory3_read
 add wave -noupdate -expand -group mem3 /marc_test/uut/memory3_write
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {20259 ns} 0}
+WaveRestoreCursors {{Cursor 1} {1390 ns} 0}
 configure wave -namecolwidth 252
 configure wave -valuecolwidth 101
 configure wave -justifyvalue left

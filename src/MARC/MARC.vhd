@@ -94,7 +94,7 @@ architecture Behavioral of MARC is
                 active_player : in std_logic_vector(1 downto 0);
 
                 address_in : in std_logic_vector(12 downto 0);
-                address_out : out std_logic_vector (12 downto 0);
+                --address_out : out std_logic_vector (12 downto 0);
 
                 data_in : in std_logic_vector(7 downto 0);
                 data_out : out std_logic_vector(7 downto 0);
@@ -133,9 +133,9 @@ architecture Behavioral of MARC is
     signal memory_address_in : std_logic_vector(12 downto 0);
 
     -- Need to reroute back if we want to keep the value
-    signal memory1_address_out : std_logic_vector(12 downto 0);
-    signal memory2_address_out : std_logic_vector(12 downto 0); -- Not used as of now?! Will everything implode?
-    signal memory3_address_out : std_logic_vector(12 downto 0); -- Not used as of now?!
+    --signal memory1_address_out : std_logic_vector(12 downto 0);
+    --signal memory2_address_out : std_logic_vector(12 downto 0); -- Not used as of now?! Will everything implode?
+    --signal memory3_address_out : std_logic_vector(12 downto 0); -- Not used as of now?!
 
     signal memory1_address_gpu : std_logic_vector(12 downto 0); -- Unsynced!
     signal memory1_data_gpu : std_logic_vector(7 downto 0); -- Unsynced!
@@ -267,7 +267,7 @@ begin
         port map (  clk => clk,
                     read => memory1_read,
                     address_in => memory_address_in,
-                    address_out => memory1_address_out,
+                    --address_out => memory1_address_out,
                     write => memory1_write,
                     data_in => memory1_data_in,
                     data_out => memory1_data_out,
@@ -281,7 +281,7 @@ begin
         port map (  clk => clk,
                     read => memory2_read,
                     address_in => memory_address_in,
-                    address_out => memory2_address_out,
+                    --address_out => memory2_address_out,
                     write => memory2_write,
                     data_in => memory2_data_in,
                     data_out => memory2_data_out
@@ -291,7 +291,7 @@ begin
         port map (  clk => clk,
                     read => memory3_read,
                     address_in => memory_address_in,
-                    address_out => memory3_address_out,
+                    --address_out => memory3_address_out,
                     write => memory3_write,
                     data_in => memory3_data_in,
                     data_out => memory3_data_out
@@ -371,8 +371,9 @@ begin
                              ALU1_out when "010",
                              ALU2_out when "011",
                              ADR1 when "100",
-                             ADR2 when "101",
-                             memory1_address_out when others;
+                             ADR2 when others;
+                             --ADR2 when "101",
+                             --memory1_address_out when others;
 
     -- Can't do OP -> mem(PC), IN -> OP
     --memory1_data_in <= memory1_data_out when memory1_write = '1' else
