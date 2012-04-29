@@ -1,13 +1,19 @@
 ; Load some operations into mem with test bench
-IN -> OP, PC -> mem_addr
-OP -> mem, PC++
-IN -> OP, PC -> mem_addr
-OP -> mem, PC++
-IN -> OP, PC -> mem_addr
-OP -> mem, PC++
+IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
+OP -> mem, M1 -> mem, M2 -> mem, PC++
+IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
+OP -> mem, M1 -> mem, M2 -> mem, PC++
+IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
+OP -> mem, M1 -> mem, M2 -> mem, PC++
 
 ; Reset
 PC = 0
+
+; Fetch instruction
+PC -> mem_addr, uCount = 0
+mem -> OP
+OP -> IR
+op_addr -> uPC
 
 ; Check memory for correctness
 ; PC -> mem_addr

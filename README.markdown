@@ -2,76 +2,11 @@
 Todo
 ====
 
-* Dela upp schemat i block och definiera in- och utsignaler. Dessa kan vi sedan göra var för sig.  
-    Förslagsvis:
-    * Fifo (Jonas)  
-        In:  
-        * Set 13 bit
-        * Who's turn? 1 bit (T ->)
-        * Read 1 bit
-        * Write 1 bit
-        * Reset (clear both queues) 1 bit
-
-        Ut:  
-        * Read 13 bit
-        * Game over player 1, 1 bit (-> P1)
-        * Game over player 2, 1 bit (-> P2)
-        * Queue full player 1, 1 bit (-> F1)
-        * Queue full player 2, 1 bit (-> F2)
-
-    * Primärminnet (Jesper)  
-        In:  
-        * Adress 13 bit
-        * Graphic adress 13 bit
-        * Read graphics 1 bit
-        * Graphics color in 8 bit
-        * Read 1 bit
-        * Write 1 bit (ev fler?)
-
-        Ut:  
-        * Graphics color 8 bit
-
-        In/Ut:  
-        * OP 8 bit
-        * Mem1 13 bit
-        * Mem2 13 bit
-
-    * Minneshantering runt om primärminnet (Jesper)
-    * ALU (Jesper)
-    * Mikrominnesdelen (Jonas)
-    * I/O med FBART (?)  
-        Vi behöver endast input
-    * Grafikdel (Li)  
-        In:  
-        * Graphics clock 1 bit
-        * Output color 8 bit (eller så många vi behöver)
-
-        Ut:  
-        * Color adress 13 bit
-        * hsync 1 bit
-        * vsync 1 bit
-        * red 3 bit
-        * green 3 bit
-        * blue 2 bit
-
-    * Bussen (Jonas & Jesper)  
-        In:  
-        * Active 1 bit
-
-        Massa till/från...  
-
-* Hur ska vi hantera reset/start?
-    Vi borde kunna detektera reset knappen från FPGA:n. Därefter kan vi i början av mikrokoden kolla om vi har reset och sen hoppa till en uppstartskodsnutt som ska göra:
-
-    1. Fyll minnet med DAT instruktioner
-    2. Rensa PC köerna
-    3. Hämta och lägg in PC player 1
-    4. Fyll i player 1 program
-    5. Hämta och lägg in PC player 2
-    6. Fyll i player 2 program
-    7. Reset status (Game over etc)
-
-    Borde fungera ganska bra?
+* VGA output
+* FIFO
+* input via fbart
+* microcode for instructions
+* handle reset/upstart
 
 Schema
 ------
@@ -103,14 +38,13 @@ Schema
     DONE
 
 ## v16
-- skriva VHDL, 1:a byggveckan
+- skriva VHDL, 1:a byggveckan  
     DONE
 
 ## v17
 - skriva VHDL, 2:a byggveckan
-- ungefär mitt i projektet finns en milstolpe, till vilken hör beslutspunkt 1. Vi kollar om ni har klarat av milstolpen.  
-  fredag 27/4 15-17  
-  måndag 30/4 15-17
+- milstolpe  
+    DONE
 
 ## v18
 - skriva VHDL, 3:e byggveckan
