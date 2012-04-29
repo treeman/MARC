@@ -200,7 +200,7 @@ begin
                 uPC <= uPC_addr;
             elsif uPC_code = "0111" and uCounter >= uCount_limit then
                 uPC <= uPC_addr;
-            elsif uPC_code = "0111" and game_started = '1' then
+            elsif uPC_code = "1000" and game_started = '1' then
                 uPC <= uPC_addr;
             elsif uPC_code = "1111" then
                 uPC <= "00000000";
@@ -221,10 +221,10 @@ begin
                 IR <= buss_in;
             end if;
 
+            signals <= mem(conv_integer(uPC));
+
         end if;
     end process;
-
-    signals <= mem(conv_integer(uPC));
 
 end Behavioral;
 
