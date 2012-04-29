@@ -277,37 +277,8 @@ while (my $line = <$in>) {
                 update (\@signal, $positions{$dest}, $buss{$src});
                 push (@comments, $cmd);
             }
-            # src -> mem(mem_addr) or src -> mem
-            elsif ($dest =~ /mem
-                             (?:        # Non matching group
-                             \(
-                               (\S+)    # address
-                             \)
-                             )?         # Not necessary
-                             $          # Match until the end (it doesn't match mem_addr for example)
-                            /x)
-            {
-                my $addr = $1 // "";
-
-                # Can only update from dataregisters
-                if (!exists $mem_map{$src}) {
-                    push (@comments, "? $cmd ?");
-                    next;
-                }
-                # Check memory adressing input as valid
-                elsif ($addr && !exists $registers{mem_addr}->{$addr}) {
-                    push (@comments, "? $cmd ?");
-                    next;
-                }
-
-                if ($addr) {
-                    $mem_err = 1 if $curr_mem_addr && $curr_mem_addr ne $addr;
-                    $curr_mem_addr = $addr;
-
-                    # Update mem_addr
-                    update (\@signal, $positions{mem_addr}, $registers{mem_addr}->{$addr});
-                }
-
+            # src -> mem
+            elsif ($dest eq "mem") {
                 $mem_data_used++;
 
                 # Set mem to write
@@ -315,37 +286,8 @@ while (my $line = <$in>) {
 
                 push (@comments, $cmd);
             }
-            # mem(mem_addr) -> dest or mem -> src
-            elsif ($src =~ /mem
-                             (?:        # Non matching group
-                             \(
-                               (\S+)    # address
-                             \)
-                             )?         # Not necessary
-                             $          # Match until the end (it doesn't match mem_addr for example)
-                            /x)
-            {
-                my $addr = $1 // "";
-
-                # Can only update to dataregisters
-                if (!exists $mem_map{$dest}) {
-                    push (@comments, "? $cmd ?");
-                    next;
-                }
-                # Check memory adressing input as valid
-                elsif ($addr && !exists $registers{mem_addr}->{$addr}) {
-                    push (@comments, "? $cmd ?");
-                    next;
-                }
-
-                if ($addr) {
-                    $mem_err = 1 if $curr_mem_addr && $curr_mem_addr ne $addr;
-                    $curr_mem_addr = $addr;
-
-                    # Update mem_addr
-                    update (\@signal, $positions{mem_addr}, $registers{mem_addr}->{$addr});
-                }
-
+            # mem -> src
+            elsif ($src eq "mem") {
                 $mem_data_used++;
 
                 # Set mem to read
@@ -501,10 +443,6 @@ while (my $line = <$in>) {
     # Can only address all memory with one address at a time
     if ($mem_err) {
         push (@comments, "! 2x -> mem_addr !");
-    }
-    # Add in error if we're using the memory but don't specify what to address
-    elsif ($mem_data_used && !$curr_mem_addr) {
-        push (@comments, "! no mem_addr !");
     }
     # Check that we're only using our buss once
     if ($buss_used > 1) {

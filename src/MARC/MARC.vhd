@@ -94,7 +94,7 @@ architecture Behavioral of MARC is
                 active_player : in std_logic_vector(1 downto 0);
 
                 address_in : in std_logic_vector(12 downto 0);
-                --address_out : out std_logic_vector (12 downto 0);
+                address_out : out std_logic_vector (12 downto 0);
 
                 data_in : in std_logic_vector(7 downto 0);
                 data_out : out std_logic_vector(7 downto 0);
@@ -131,11 +131,7 @@ architecture Behavioral of MARC is
 
     -- Combined to one for now
     signal memory_address_in : std_logic_vector(12 downto 0);
-
-    -- Need to reroute back if we want to keep the value
-    --signal memory1_address_out : std_logic_vector(12 downto 0);
-    --signal memory2_address_out : std_logic_vector(12 downto 0); -- Not used as of now?! Will everything implode?
-    --signal memory3_address_out : std_logic_vector(12 downto 0); -- Not used as of now?!
+    signal memory_address : std_logic_vector(12 downto 0);
 
     signal memory1_address_gpu : std_logic_vector(12 downto 0); -- Unsynced!
     signal memory1_data_gpu : std_logic_vector(7 downto 0); -- Unsynced!
@@ -267,7 +263,7 @@ begin
         port map (  clk => clk,
                     read => memory1_read,
                     address_in => memory_address_in,
-                    --address_out => memory1_address_out,
+                    address_out => memory_address,
                     write => memory1_write,
                     data_in => memory1_data_in,
                     data_out => memory1_data_out,
@@ -345,16 +341,6 @@ begin
                 when others => ADR2 <= ADR2;
             end case;
 
-            --if OP_code = '1' then
-                --memory1_data_in <= main_buss(7 downto 0);
-            --else
-                --memory1_data_in <= OP;
-            --end if;
-
-            --with OP_code select
-                --memory1_data_in <= main_buss(7 downto 0) when '1',
-                                   --OP when others;
-
             IN_reg <= tmp_IN;
 
         end if;
@@ -374,11 +360,6 @@ begin
                              ADR2 when others;
                              --ADR2 when "101",
                              --memory1_address_out when others;
-
-    -- Can't do OP -> mem(PC), IN -> OP
-    --memory1_data_in <= memory1_data_out when memory1_write = '1' else
-                       --main_buss(7 downto 0) when OP_code = '1' else
-                       --OP;
 
     -- Will write one behind
     with OP_code select

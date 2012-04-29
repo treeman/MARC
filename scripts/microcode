@@ -1,14 +1,19 @@
 ; Load some operations into mem with test bench
-IN -> OP
-OP -> mem(PC), PC++, IN -> OP
-OP -> mem(PC), PC++, IN -> OP
-OP -> mem(PC)
+IN -> OP, PC -> mem_addr
+OP -> mem, PC++, IN -> OP
+PC -> mem_addr
+OP -> mem, PC++, IN -> OP
+PC -> mem_addr
+OP -> mem
 
 ; Reset
 PC = 0
 
 ; Start examin instr
-mem(PC) -> OP, PC++
-mem(PC) -> OP, PC++
-mem(PC) -> OP
+PC -> mem_addr
+mem -> OP, PC++
+PC -> mem_addr
+mem -> OP, PC++
+PC -> mem_addr
+mem -> OP
 
