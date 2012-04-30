@@ -33,7 +33,7 @@ entity FBART_Controller is
     Port ( request_next_data : in  STD_LOGIC;
            reset : in  STD_LOGIC;
            clk : in  STD_LOGIC;
-			  rxd              : in std_logic;
+			     rxd              : in std_logic;
            control_signals : out  STD_LOGIC_VECTOR (2 downto 0);
            buss_out : out  STD_LOGIC_VECTOR (12 downto 0);
            has_next_data : out  STD_LOGIC);
@@ -57,15 +57,15 @@ architecture Behavioral of FBART_Controller is
 	--signal clk        : std_logic;     -- System clock input
 	--signal reset      : std_logic;     -- System reset input
 	--signal rxd        : std_logic;     -- Receiver data input
-	signal rxrdy      : std_logic;        -- Receiver ready output
-	signal rd         : std_logic;     -- Read received data input
-	signal rts        : std_logic;        -- Request To Send output
+	signal rxrdy      : std_logic := '0';        -- Receiver ready output
+	signal rd         : std_logic := '1';     -- Read received data input
+	signal rts        : std_logic := '0';        -- Request To Send output
 	signal d          : std_logic_vector(7 downto 0);    -- Data bus
-	
+	signal inverted_reset : std_logic := '0';
 begin
 
 	buss_out <= register1 & register2(4 downto 0);
-
+  inverted_reset <= not reset;
 	process(clk)
 	begin
 		if rising_edge(clk) then
@@ -73,7 +73,9 @@ begin
 		  
 			if (reset='1') then
 				state <= "000";
-
+				has_next_data <= '0';
+				--register1 <= "00000000";
+        --register2 <= "00000000";
 				-- Reset FBART here!
 			else
 			
@@ -81,11 +83,15 @@ begin
 				if state = "000" then
 					if request_next_data = '1' then
 						state <= "001";
-						has_next_data <= '1';
 						rd <= '1';
+						
+						-- We don't want junk data in out memory, better to have DAT 0 0 as default.
+						register1 <= "00000000";
+						register2 <= "00000000";
 					else
 						state <= "000";
 					end if;
+					has_next_data <= '0';
 					
 					--buss_out <= '0';
 				
@@ -133,7 +139,7 @@ begin
 	
 	fbart: fbart_rx
 	  port map (  	clk 	=> clk,			  
-						reset => reset,
+						reset => inverted_reset,
 						rxd 	=> rxd, 
 						rxrdy => rxrdy,
 						rd    => rd,
