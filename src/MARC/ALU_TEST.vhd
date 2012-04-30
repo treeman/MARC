@@ -97,13 +97,26 @@ BEGIN
 
       --wait for clk_period*10;
       
-      alu1_operand <= "0000000000101";
+      alu1_operand <= "0000000000010";   -- 2
       alu_operation <= "01";
       
       wait for 10 ns;
       
-      alu1_operand <= "0000000000001";
+      alu1_operand <= "1111111111110";    -- -2
+      alu_operation <= "10";
+      
+      -- This will be 2 + -2 = 0
+      wait for 10 ns;
+      
+      alu1_operand <= "0000000000100";   -- 4
+      alu_operation <= "01";
+      
+      wait for 10 ns;
+      
+      alu1_operand <= "1111111111100";    -- -4
       alu_operation <= "11";
+      
+      -- This will be 4 + -4 = 8
       
       --wait for 10 ns;
       

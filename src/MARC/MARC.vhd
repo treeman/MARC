@@ -13,7 +13,9 @@ entity MARC is
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
             tmp_gpu_data : out std_logic_vector(7 downto 0);
 
-            tmp_IN : in std_logic_vector(12 downto 0)
+            tmp_IN : in std_logic_vector(12 downto 0);
+				
+				fbart_out : in std_logic
     );
 end MARC;
 
@@ -104,8 +106,17 @@ architecture Behavioral of MARC is
                 read_gpu : in std_logic
         );
     end component;
-
-
+-- dirr
+    component FBART_Controller
+		Port ( 	request_next_data : in  STD_LOGIC;
+					reset : in  STD_LOGIC;
+					clk : in  STD_LOGIC;
+					control_signals : out  STD_LOGIC_VECTOR (2 downto 0);
+					buss_out : out  STD_LOGIC_VECTOR (12 downto 0);
+					has_next_data : out  STD_LOGIC;
+					rxd              : in std_logic); 
+	 end component;
+	 
     -------------------------------------------------------------------------
     -- DATA SIGNALS
     -------------------------------------------------------------------------
@@ -203,7 +214,17 @@ architecture Behavioral of MARC is
     signal tmp_gpu_read : STD_LOGIC := '0';
     signal tmp_gpu_adr_sync : STD_LOGIC_VECTOR(12 downto 0) := "0000000000000";
     signal tmp_gpu_data_sync : STD_LOGIC_VECTOR(7 downto 0);
+	 
 
+	 
+	 
+	 -------------------------------------------------------------------------
+    -- FBART SIGNALS
+    -------------------------------------------------------------------------
+	 signal fbart_request_next_data :  STD_LOGIC;			-- Generate this when we read from FBART into BUSS
+    signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
+	-- signal fbart_out : std_logic;
+    --signal fbart_has_next_data :   STD_LOGIC;
 begin
 
     -------------------------------------------------------------------------
@@ -288,6 +309,18 @@ begin
                     data_in => memory3_data_in,
                     data_out => M2
         );
+		  
+		  
+		  
+	fbart: FBART_Controller
+        port map (  clk => clk,
+						  request_next_data  => fbart_request_next_data,
+						  reset => reset,
+                    control_signals => fbart_control_signals,
+						  buss_out => IN_reg,
+                    has_next_data => new_IN,
+						  rxd	=> fbart_out
+        );
 
     -------------------------------------------------------------------------
     -- CLOCK EVENT
@@ -337,7 +370,7 @@ begin
                 when others => ADR2 <= ADR2;
             end case;
 
-            IN_reg <= tmp_IN;
+            --IN_reg <= tmp_IN;
 
         end if;
     end process;
