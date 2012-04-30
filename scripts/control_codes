@@ -538,9 +538,6 @@ while (my $line = <$in>) {
             $last += $l;
         }
 
-        #my $hexline = sprintf ("%x", $codeline - 1);
-        #$hexline = "0".$hexline if length ($hexline) < 2;
-
         my $hexline = dec2hex ($codeline - 1);
 
         say "$hexline  $result ; " . join (", ", @comments);
