@@ -47,13 +47,6 @@ ALU1 += M1, ALU2 += M2
 uCount = 0
 uPC = 0
 
-uPC++
-op_addr -> uPC
-A_addr -> uPC
-B_addr -> uPC
-jmp
-jmpZ
-
 M1 -> buss, buss -> M2
 
 uPC++
@@ -72,6 +65,10 @@ jmpBimm
 jmpBdir
 jmpBpre
 uPC = 0
+
+uPC_addr = ab
+uPC_addr = +2
+uPC_addr = -2
 
 ; Errors
 ALU1 -> mem

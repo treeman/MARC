@@ -1,0 +1,36 @@
+
+# Instructions
+
+DAT         0000
+MOV         0001
+ADD         0010
+SUB         0011
+JMP         0100
+JMPZ        0101
+JMN         0110
+CMP         0111
+SLT         1000
+DJN         1001
+SPL         1010
+
+# Adressing Modes
+
+Immediate               00
+Direct                  01
+Indirect                10
+pre-decrement indirect  11
+
+
+# Add in names to modelsim
+
+virtual type {immediate direct indirect pre-decr} mod_type
+virtual signal {/marc_test/uut/micro/A_field} A_field_bus
+virtual function {(mod_type)A_field_bus} A_field_
+add wave A_field
+
+virtual signal {/marc_test/uut/micro/B_field} B_field_bus
+virtual function {(mod_type)B_field_bus} B_field_
+add wave B_field_
+
+add instr was somehow annoying...
+
