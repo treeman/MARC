@@ -10,12 +10,14 @@ use File::Slurp;
 # Command line options
 my $help;
 my $dest;
+my $lines_until_header = 20;
 my $verbose;
 my $debug;
 
 GetOptions(
     'help|h' => \$help,
     'destination|d=s' => \$dest,
+    'header|l=i' => \$lines_until_header,
     'verbose|v' => \$verbose,
     'debug' => \$debug,
 );
@@ -25,12 +27,15 @@ my $src = $ARGV[0];
 
 if ($help || !$src) {
     say "Convert control code comments to actual control code.";
+    say "   options:";
+    say "   -h --help       Show this screen.";
+    say "   -v --verbose    Verbose output signals in a human readable format.";
     exit;
 }
 
 # Ouput format
 my $h = "IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uCount uPC  uPC_addr";
-my $c = "0   00  00   0  00 00  00   00   00    000     00   0   000 000  00   00   000  00000000";
+my $c = "0   00  00   0  00 00  00   00   00    000     00   0   000 000  00   0    0000 00000000";
 
 my %ALU = (
     load => "001",
@@ -45,24 +50,67 @@ my %buss = (
     OP => "001",
     M1 => "010",
     M2 => "011",
-    AR1 => "100",
+    ALU1 => "100",
     FIFO => "101",
     IN => "110",
 );
 
-my %mem_addr = (
-    PC => "000",
-    buss => "001",
-    AR1 => "010",
-    AR2 => "011",
-    ADR1 => "100",
-    ADR2 => "101",
+# For mem1 mem2 mem3
+my %mem = (
+    read => "01",
+    write => "10",
+);
+
+my %mem_map = (
+    OP => "mem1",
+    M1 => "mem2",
+    M2 => "mem3",
+);
+
+# Single value shorthands will be a shorthand for
+# position: $position{<val>} value: $registers{<val>}->{<key>}
+my %singles = (
+    jmp => "uPC",
+    jmpZ => "uPC",
+    jmpIN => "uPC",
+    jmpC => "uPC",
+    jmpS => "uPC",
+    jmpAimm => "uPC",
+    jmpAdir => "uPC",
+    jmpApre => "uPC",
+    jmpBimm => "uPC",
+    jmpBdir => "uPC",
+    jmpBpre => "uPC",
 );
 
 my %registers = (
+    uPC => {
+        '++' => "0000",
+        op_addr => "0001",
+
+        jmp => "0010",
+        jmpZ => "0011",
+        jmpIN => "0100",
+        jmpC => "0101",
+        jmpS => "0110",
+
+        jmpAimm => "1000",
+        jmpAdir => "1001",
+        jmpApre => "1010",
+        jmpBimm => "1011",
+        jmpBdir => "1100",
+        jmpBpre => "1101",
+
+        '0' => "1111",
+    },
+    uCount => {
+        '++' => '0',
+        '0' => '1',
+    },
     PC => {
         buss => "01",
         '++' => "10",
+        '0' => "11",
     },
     IR => {
         buss => "1",
@@ -70,12 +118,12 @@ my %registers = (
     ADR1 => {
         buss => "01",
         M1 => "10",
-        AR1 => "11",
+        ALU1 => "11",
     },
     ADR2 => {
         buss => "01",
         M2 => "10",
-        AR2 => "11",
+        ALU2 => "11",
     },
     ALU1 => {
         M1 => "00",
@@ -86,31 +134,27 @@ my %registers = (
         M1 => "0",
         M2 => "1",
     },
+    OP => {
+        buss => "1",
+    },
     M1 => {
         buss => "01",
-        AR1 => "10",
-        AR2 => "11",
+        ALU1 => "10",
+        ALU2 => "11",
     },
     M2 => {
         buss => "01",
-        AR1 => "10",
-        AR2 => "11",
+        ALU1 => "10",
+        ALU2 => "11",
     },
     mem_addr => {
         PC => "000",
         buss => "001",
-        AR1 => "010",
-        AR2 => "011",
+        ALU1 => "010",
+        ALU2 => "011",
         ADR1 => "100",
         ADR2 => "101",
     },
-);
-
-# One word commands
-my %single_cmd = (
-    'PC++' => $registers{PC}->{'++'},
-    'ALU++' => $ALU{'++'},
-    'ALU--' => $ALU{'--'},
 );
 
 # Positions for our subsignals in the grand control scheme
@@ -160,6 +204,9 @@ open my $in, '<', $src;
 #open my $out, '>', $dest;
 
 my $codeline = 0;
+my $rows_since_help = 0;
+my $last_was_code = 0;
+my $header_shown = 0;
 
 # Process and write
 while (my $line = <$in>) {
@@ -175,150 +222,236 @@ while (my $line = <$in>) {
         else {
             say "-- $1";
         }
+        $last_was_code = 0;
         next;
     }
     # Simply output empty lines
     elsif ($line =~ /^\s*$/) {
         say $line;
+        $last_was_code = 0;
         next;
     }
 
     $codeline++;
 
-    my @signal = ((0) x 44);
+    my @signal = ((0) x $signallength);
     my @comments;
 
     my $buss_used = 0;
 
+    my $curr_mem_addr = "";
+    my $mem_data_used = 0;
+    my $mem_err = 0;
+
+    my $alu_op = "";
+    my $alu_err = 0;
+
     for my $cmd (split /\s*,\s*/, $line)
     {
-        # Grab single word commands eg PC++, ALU--0 = substr (signal, 0, 1), space: ''
-
+        # Grab single word affixes eg PC++, ALU--
         if ($cmd =~ /^(\S+?)(\+{2}|-{2})$/) {
-            my $reg = $1;
+            my ($reg, $op) = ($1, $2);
 
-            my $val = $single_cmd{$cmd};
-            if ($val) {
-                update (\@signal, $positions{$reg}, $val);
+            #say "$reg $op";
+            if (exists $registers{$reg}->{$op}) {
+                update (\@signal, $positions{$reg}, $registers{$reg}->{$op});
 
-                #say $cmd;
+                push (@comments, $cmd);
+            }
+            elsif ($reg =~ /ALU[12]?/) {
+                $alu_err = 1 if $alu_op && $alu_op ne $op;
+                $alu_op = $op;
+
+                update (\@signal, $positions{$reg}, $ALU{$op});
+
                 push (@comments, $cmd);
             }
             else {
                 push (@comments, "(? $cmd)");
             }
         }
+        # We have a single shorthand notation
+        elsif (exists $singles{$cmd}) {
+            my $reg = $singles{$cmd};
+
+            update (\@signal, $positions{$reg}, $registers{$reg}->{$cmd});
+
+            push (@comments, $cmd);
+        }
         # dest -> src
-        elsif ($cmd =~ /(\S+)\s*->\s*(\S+)/) {
+        elsif ($cmd =~ /(\S+)\s*[=-]>\s*(\S+)/) {
             my ($src, $dest) = ($1, $2);
 
             # src -> buss
             if ($dest eq "buss" && exists $buss{$src}) {
 
-                # Check for multiple usage of buss
-                if ($buss_used) {
-                    push (@comments, "(? buss used! $cmd)");
-                    next;
-                }
-
-                $buss_used = 1;
+                $buss_used++;
 
                 update (\@signal, $positions{$dest}, $buss{$src});
                 push (@comments, $cmd);
-                next;
             }
-            # Check that the register exists
-            elsif (!exists $registers{$dest}) {
-                #say "$dest doesn't exist";
-                push (@comments, "(? $cmd)");
-                next;
+            # src -> mem
+            elsif ($dest eq "mem") {
+                $mem_data_used++;
+
+                if ($src =~ /OP|M1|M2/) {
+                    # Set mem to write
+                    update (\@signal, $positions{$mem_map{$src}}, $mem{write});
+
+                    push (@comments, $cmd);
+                }
+                else {
+                    push (@comments, "? $cmd ?");
+                }
+            }
+            # mem -> src
+            elsif ($src eq "mem") {
+                $mem_data_used++;
+
+                if ($dest =~ /OP|M1|M2/) {
+                    # Set mem to read
+                    update (\@signal, $positions{$mem_map{$dest}}, $mem{read});
+
+                    push (@comments, $cmd);
+                }
+                else {
+                    push (@comments, "? $cmd ?");
+                }
+            }
+            # Handle special assignments
+            elsif (exists $registers{$src}->{$dest}) {
+                update (\@signal, $positions{$src}, $registers{$src}->{$dest});
+
+                push (@comments, $cmd);
             }
             # Handle direct
             elsif (exists $registers{$dest}->{$src}) {
-                my $val = $registers{$dest}->{$src};
-
-                update (\@signal, $positions{$dest}, $val);
+                update (\@signal, $positions{$dest}, $registers{$dest}->{$src});
 
                 # load if ALU
-                if ($src =~ /^ALU/) {
-                    update (\@signal, $positions{ALU}, $val);
+                if ($dest =~ /^ALU/) {
+                    my $op = "load";
+                    update (\@signal, $positions{ALU}, $ALU{$op});
+                    $alu_err = 1 if $alu_op && $alu_op ne $op;
+                }
+
+                $buss_used++ if $dest eq "buss";
+
+                if ($dest eq "mem_addr") {
+                    $mem_err = 1 if $curr_mem_addr && $curr_mem_addr ne $src;
+                    $curr_mem_addr = $src;
                 }
 
                 push (@comments, $cmd);
             }
             # Try to route through buss
-            elsif (exists $registers{$dest}->{buss}) {
-                #say "Routing through buss";
+            elsif (exists $registers{$dest}->{buss} && exists $buss{$src}) {
 
-                # Can we do src -> buss?
-                if (exists $buss{$src}) {
+                $buss_used++;
 
-                    # Check for multiple usage of buss
-                    if ($buss_used) {
-                        push (@comments, "(? buss used! $cmd)");
-                        next;
-                    }
+                # Update src -> buss
+                update (\@signal, $positions{buss}, $buss{$src});
 
-                    $buss_used = 1;
+                # Update buss -> dest
+                update (\@signal, $positions{$dest}, $registers{$dest}->{buss});
 
-                    # Update src -> buss
-                    update (\@signal, $positions{buss}, $buss{$src});
-                    #say "src -> buss";
-                    #say "pos: " . join (",", @{$positions{buss}});
-                    #say "val: " . $buss{$src};
-
-                    # Update buss -> dest
-                    update (\@signal, $positions{$dest}, $registers{$dest}->{buss});
-                    #say "buss -> dest";
-                    #say "pos: " . join (",", @{$positions{$dest}});
-                    #say "val: " . $registers{$dest}->{buss};
-
-                    # Comment as src -> buss, buss -> dest
-                    push (@comments, "$src -> buss");
-                    push (@comments, "buss -> $dest");
+                # load if ALU
+                if ($dest =~ /^ALU/) {
+                    my $op = "load";
+                    update (\@signal, $positions{ALU}, $ALU{$op});
+                    $alu_err = 1 if $alu_op && $alu_op ne $op;
                 }
-                else {
-                    #say "Couldn't find src -> buss";
-                    push (@comments, "(? $cmd)");
+
+                # Check if mem_addr will get set
+                if ($dest eq "mem_addr") {
+                    $mem_err = 1 if $curr_mem_addr && $curr_mem_addr ne $src;
+                    $curr_mem_addr = $src;
                 }
+
+                # Comment as src -> buss, buss -> dest
+                push (@comments, "$src -> buss");
+                push (@comments, "buss -> $dest");
             }
             else {
-                #say "Couldn't find buss -> dest";
-                push (@comments, "(? $cmd)");
+                push (@comments, "? $cmd ?");
             }
         }
-        # var = l op r
-        elsif ($cmd =~ /(\S+)            # Assigned variable
-                        \s*=\s*
-                        (\S+)            # left
-                        \s+(\S)\s+       # op
-                        (\S+)            # right
-                       /x)
-        {
-            my ($res, $l, $op, $r) = ($1, $2, $3, $4);
+        # ALUx += src or ALUx -= src
+        elsif ($cmd =~ /^(ALU[12])\s*(\+|-)=\s*(\S+)$/) {
+            my ($alu, $op, $src) = ($1, $2, $3);
 
-            #say "$res = $l $op $r";
-            push (@comments, "(? $cmd)");
+            # Check direct connection
+            if (exists $registers{$alu}->{$src}) {
+
+                $alu_err = 1 if $alu_op && $alu_op ne $op;
+                $alu_op = $op;
+
+                # Update data
+                update (\@signal, $positions{$alu}, $registers{$alu}->{$src});
+
+                # Update alu action
+                update (\@signal, $positions{ALU}, $ALU{$op});
+
+                push (@comments, $cmd);
+            }
+            # Try to route through buss
+            elsif (exists $registers{$alu}->{buss} && exists $buss{$src}) {
+
+                $buss_used++;
+                $alu_err = 1 if $alu_op && $alu_op ne $op;
+                $alu_op = $op;
+
+                # Update src -> buss
+                update (\@signal, $positions{buss}, $buss{$src});
+
+                # Update buss -> alu
+                update (\@signal, $positions{$alu}, $registers{$alu}->{buss});
+
+                # load ALU
+                update (\@signal, $positions{ALU}, $ALU{$op});
+
+                push (@comments, $cmd);
+            }
+            else {
+                push (@comments, "? $cmd ?");
+            }
         }
         # var = stuff eg uPC = 0, uCount = 0, uPC_addr = AB or 10101011 (will truncate/fill)
         elsif ($cmd =~ /(\S+)\s*=\s*(\S+)/) {
             my ($var, $res) = ($1, $2);
 
-            #say "var = $var, res = $res";
-
+            # Convert hex and stuff for addr jumping, can do relative eg +2 or absolute 0f
             if ($var eq 'uPC_addr') {
-                my $bin;
 
-                if ($res =~ /^[01]+$/) {
-                    $bin = $res;
+                $res =~ /^([+-])?(.*)/;
+                my $op = $1 // "";
+                my $val = $2;
+
+                my $bin;
+                if ($val =~ /^[01]+$/) {
+                    $bin = $val;
                 }
-                elsif ($res =~ /^[0123456789ABCDEF]+$/i) {
-                    $bin = hex2bin($res);
+                elsif ($val =~ /^[0123456789ABCDEF]+$/i) {
+                    $bin = hex2bin($val);
                 }
                 else {
-                    push (@comments, "(? $cmd)");
+                    push (@comments, "? $cmd ?");
                     next;
                 }
+
+                if ($op =~ /^[+-]$/) {
+                    my $curr_row = $codeline - 1;
+                    my $off = bin2dec ($bin);
+                    my $abs = $op eq "+" ? $curr_row + $off : $curr_row - $off;
+                    my $new_bin = dec2bin ($abs);
+                    my $new_hex = dec2hex ($abs);
+
+                    my $currhex = dec2hex ($curr_row);
+                    say "$curr_row($currhex) $op $off = $abs($new_hex) -> $new_bin" if $debug;
+
+                    $bin = $new_bin;
+                }
+
 
                 # Force to length 8
                 if (length($bin) < 8) {
@@ -333,24 +466,47 @@ while (my $line = <$in>) {
 
                 push (@comments, $cmd);
             }
-            else {
+            # Check special eg uPC = 0
+            elsif (exists $registers{$var} && exists $registers{$var}->{$res}) {
+                update (\@signal, $positions{$var}, $registers{$var}->{$res});
+
                 push (@comments, $cmd);
+            }
+            else {
+                push (@comments, "? $cmd ?");
             }
         }
         else {
-            push (@comments, "(? $cmd)");
+            push (@comments, "? $cmd ?");
         }
+    }
+
+    # Can only address all memory with one address at a time
+    if ($mem_err) {
+        push (@comments, "! 2x -> mem_addr !");
+    }
+    # Check that we're only using our buss once
+    if ($buss_used > 1) {
+        push (@comments, "! 2x -> buss !");
+    }
+    # Check only one operation for the alu
+    if ($alu_err) {
+        push (@comments, "! 2x alu op !");
     }
 
     # Output verbose mode, for humans
     if ($verbose) {
         # Output verbose output, format lines like this with the occassional help header
 
-        # Need to display this more than once
-        if ($codeline == 1) {
-            # Take into account line numbering
+        if (!$header_shown || $rows_since_help > $lines_until_header && !$last_was_code) {
             say "    $h";
+
+            $header_shown = 1;
+            $rows_since_help = 0;
         }
+
+        $last_was_code = 1;
+        $rows_since_help++;
 
         my $result = "";
         my $last = 0;
@@ -382,8 +538,7 @@ while (my $line = <$in>) {
             $last += $l;
         }
 
-        my $hexline = sprintf ("%x", $codeline);
-        $hexline = "0".$hexline if length ($hexline) < 2;
+        my $hexline = dec2hex ($codeline - 1);
 
         say "$hexline  $result ; " . join (", ", @comments);
     }
@@ -394,13 +549,26 @@ while (my $line = <$in>) {
     }
 }
 
+sub dec2hex {   # Force at least length 2
+    my $d = shift;
+    my $h = sprintf ("%x", $d);
+    $h = "0$h" if length ($h) < 2;
+    return $h;
+}
 sub hex2bin {
     my $h = shift;
     my $hlen = length($h);
     my $blen = $hlen * 4;
     return unpack("B$blen", pack("H$hlen", $h));
 }
-
+sub dec2bin {
+    my $str = unpack("B32", pack("N", shift));
+    $str =~ s/^0+(?=\d)//;   # otherwise you'll get leading zeros
+    return $str;
+}
+sub bin2dec {
+    return unpack("N", pack("B32", substr("0" x 32 . shift, -32)));
+}
 sub trim
 {
     my $string = shift;

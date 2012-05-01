@@ -82,7 +82,7 @@ begin
             elsif alu_operation="10" then
                 alu1_register <= alu1_register+alu1_operand; -- ALU1 += OP1
             else
-                alu1_register <= alu1_register-alu1_operand; -- ALU1 -= OP1
+                alu1_register <= alu1_register-alu1_operand; -- alu1_register + not ( alu1_operand -1); -- ALU1 -= OP1, now with 2-compliments numbers!
                 
                 
             end if;
@@ -95,7 +95,7 @@ begin
             elsif alu_operation="10" then
                 alu2_register <= alu2_register+alu2_operand; -- ALU2 += OP2
             else
-                alu2_register <= alu2_register-alu2_operand; -- ALU2 -= OP2
+                alu2_register <= alu2_register-alu2_operand; -- alu2_register + not ( alu2_operand -1); -- ALU2 -= OP2
             end if;
 
         end if;

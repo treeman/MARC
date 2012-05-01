@@ -13,7 +13,9 @@ architecture behavior of MARC_test is
 
             tmp_buss : in std_logic_vector(12 downto 0);
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
-            tmp_gpu_data : out std_logic_vector(7 downto 0)
+            tmp_gpu_data : out std_logic_vector(7 downto 0);
+
+            tmp_IN : in std_logic_vector(12 downto 0)
         );
     end component;
 
@@ -26,6 +28,7 @@ architecture behavior of MARC_test is
     signal tmp_buss : std_logic_vector(12 downto 0);
     signal tmp_gpu_adr : std_logic_vector(12 downto 0);
     signal tmp_gpu_data : std_logic_vector(7 downto 0);
+    signal tmp_IN : std_logic_vector(12 downto 0);
 
     -- Clock period definitions
     constant clk_period : time := 1 us;
@@ -38,7 +41,8 @@ begin
         reset_a => reset_a,
         tmp_buss => tmp_buss,
         tmp_gpu_adr => tmp_gpu_adr,
-        tmp_gpu_data => tmp_gpu_data
+        tmp_gpu_data => tmp_gpu_data,
+        tmp_IN => tmp_IN
     );
 
     clk_process :process
@@ -59,6 +63,12 @@ begin
         tmp_gpu_adr <= "0000000000000";
 
         tmp_buss <= "0000000000000";
+
+        tmp_IN <= "XXXXXUUXXUUXX",
+            "0000010101010" after 1.5 us,
+            "0000010111011" after 3.5 us,
+            "0000011001100" after 5.5 us,
+            "XXXXXXXXXXXXX" after 7.5 us;
 
         wait;
     end process;

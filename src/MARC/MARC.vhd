@@ -8,9 +8,14 @@ entity MARC is
     Port (  clk : in std_logic;
             reset_a : in std_logic;
 
+            -- Temporary shit
             tmp_buss : in std_logic_vector(12 downto 0);
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
-            tmp_gpu_data : out std_logic_vector(7 downto 0)
+            tmp_gpu_data : out std_logic_vector(7 downto 0);
+
+            tmp_IN : in std_logic_vector(12 downto 0);
+				
+				fbart_out : in std_logic
     );
 end MARC;
 
@@ -48,7 +53,11 @@ architecture Behavioral of MARC is
                 M2_code : out std_logic_vector(1 downto 0);
 
                 ADR1_code : out std_logic_vector(1 downto 0);
-                ADR2_code : out std_logic_vector(1 downto 0)
+                ADR2_code : out std_logic_vector(1 downto 0);
+
+                Z : in std_logic;
+                new_IN : in std_logic;
+                game_started : in std_logic
         );
     end component;
 
@@ -97,8 +106,17 @@ architecture Behavioral of MARC is
                 read_gpu : in std_logic
         );
     end component;
-
-
+-- dirr
+    component FBART_Controller
+		Port ( 	request_next_data : in  STD_LOGIC;
+					reset : in  STD_LOGIC;
+					clk : in  STD_LOGIC;
+					control_signals : out  STD_LOGIC_VECTOR (2 downto 0);
+					buss_out : out  STD_LOGIC_VECTOR (12 downto 0);
+					has_next_data : out  STD_LOGIC;
+					rxd              : in std_logic); 
+	 end component;
+	 
     -------------------------------------------------------------------------
     -- DATA SIGNALS
     -------------------------------------------------------------------------
@@ -118,17 +136,9 @@ architecture Behavioral of MARC is
     signal memory2_data_in : std_logic_vector(12 downto 0);
     signal memory3_data_in : std_logic_vector(12 downto 0);
 
-    signal memory1_data_out : std_logic_vector(7 downto 0);
-    signal memory2_data_out : std_logic_vector(12 downto 0);
-    signal memory3_data_out : std_logic_vector(12 downto 0);
-
     -- Combined to one for now
     signal memory_address_in : std_logic_vector(12 downto 0);
-
-    -- Need to reroute back if we want to keep the value
-    signal memory1_address_out : std_logic_vector(12 downto 0);
-    signal memory2_address_out : std_logic_vector(12 downto 0); -- Not used as of now?! Will everything implode?
-    signal memory3_address_out : std_logic_vector(12 downto 0); -- Not used as of now?!
+    signal memory_address : std_logic_vector(12 downto 0);
 
     signal memory1_address_gpu : std_logic_vector(12 downto 0); -- Unsynced!
     signal memory1_data_gpu : std_logic_vector(7 downto 0); -- Unsynced!
@@ -147,6 +157,12 @@ architecture Behavioral of MARC is
     signal ADR1 : std_logic_vector(12 downto 0);
     signal ADR2 : std_logic_vector(12 downto 0);
 
+    -- Memory outputs register values
+    signal OP : std_logic_vector(7 downto 0);
+    signal M1 : std_logic_vector(12 downto 0);
+    signal M2 : std_logic_vector(12 downto 0);
+
+    signal IN_reg : std_logic_vector(12 downto 0);
 
     -------------------------------------------------------------------------
     -- CONTROL SIGNALS
@@ -187,18 +203,28 @@ architecture Behavioral of MARC is
     -- Status signals
     signal Z : std_logic := '0';
     signal active_player : std_logic_vector(1 downto 0);
-
-    -- Other stuff
+    signal game_started : std_logic := '1';
+    signal new_IN : std_logic := '0';
     signal reset : std_logic := '0';
 
     -- TODO connect these modules later
     signal fifo_out : std_logic_vector(12 downto 0) := "0010XXXXXXXXX";
-    signal IN_out : std_logic_vector(12 downto 0) := "0001XXXXXXXXX";
 
+    -- Crap
     signal tmp_gpu_read : STD_LOGIC := '0';
     signal tmp_gpu_adr_sync : STD_LOGIC_VECTOR(12 downto 0) := "0000000000000";
     signal tmp_gpu_data_sync : STD_LOGIC_VECTOR(7 downto 0);
+	 
 
+	 
+	 
+	 -------------------------------------------------------------------------
+    -- FBART SIGNALS
+    -------------------------------------------------------------------------
+	 signal fbart_request_next_data :  STD_LOGIC;			-- Generate this when we read from FBART into BUSS
+    signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
+	-- signal fbart_out : std_logic;
+    --signal fbart_has_next_data :   STD_LOGIC;
 begin
 
     -------------------------------------------------------------------------
@@ -232,7 +258,11 @@ begin
                     M2_code => M2_code,
 
                     ADR1_code => ADR1_code,
-                    ADR2_code => ADR2_code
+                    ADR2_code => ADR2_code,
+
+                    Z => Z,
+                    new_IN => new_IN,
+                    game_started => game_started
         );
 
     alus: ALU
@@ -250,10 +280,10 @@ begin
         port map (  clk => clk,
                     read => memory1_read,
                     address_in => memory_address_in,
-                    address_out => memory1_address_out,
+                    address_out => memory_address,
                     write => memory1_write,
                     data_in => memory1_data_in,
-                    data_out => memory1_data_out,
+                    data_out => OP,
                     data_gpu => memory1_data_gpu,
                     read_gpu => memory1_read_gpu,
                     address_gpu => memory1_address_gpu,
@@ -264,20 +294,32 @@ begin
         port map (  clk => clk,
                     read => memory2_read,
                     address_in => memory_address_in,
-                    address_out => memory2_address_out,
+                    --address_out => memory2_address_out,
                     write => memory2_write,
                     data_in => memory2_data_in,
-                    data_out => memory2_data_out
+                    data_out => M1
         );
 
     memory3: Memory_Cell
         port map (  clk => clk,
                     read => memory3_read,
                     address_in => memory_address_in,
-                    address_out => memory3_address_out,
+                    --address_out => memory3_address_out,
                     write => memory3_write,
                     data_in => memory3_data_in,
-                    data_out => memory3_data_out
+                    data_out => M2
+        );
+		  
+		  
+		  
+	fbart: FBART_Controller
+        port map (  clk => clk,
+						  request_next_data  => fbart_request_next_data,
+						  reset => reset,
+                    control_signals => fbart_control_signals,
+						  buss_out => IN_reg,
+                    has_next_data => new_IN,
+						  rxd	=> fbart_out
         );
 
     -------------------------------------------------------------------------
@@ -310,21 +352,25 @@ begin
                 PC <= main_buss;
             elsif PC_code = "10" then
                 PC <= PC + 1;
+            elsif PC_code = "11" then
+                PC <= (others => '0');
             end if;
 
             case ADR1_code is
                 when "01" => ADR1 <= main_buss;
-                when "10" => ADR1 <= memory2_data_out;
+                when "10" => ADR1 <= M1;
                 when "11" => ADR1 <= ALU1_out;
                 when others => ADR1 <= ADR1;
             end case;
 
             case ADR2_code is
                 when "01" => ADR2 <= main_buss;
-                when "10" => ADR2 <= memory3_data_out;
+                when "10" => ADR2 <= M2;
                 when "11" => ADR2 <= ALU2_out;
                 when others => ADR2 <= ADR2;
             end case;
+
+            --IN_reg <= tmp_IN;
 
         end if;
     end process;
@@ -340,24 +386,23 @@ begin
                              ALU1_out when "010",
                              ALU2_out when "011",
                              ADR1 when "100",
-                             ADR2 when "101",
-                             memory1_address_out when others;
+                             ADR2 when others;
 
     with OP_code select
         memory1_data_in <= main_buss(7 downto 0) when '1',
-                           memory1_data_out when others;
+                           OP when others;
 
     with M1_code select
         memory2_data_in <= main_buss when "01",
                            ALU1_out when "10",
                            ALU2_out when "11",
-                           memory2_data_out when others;
+                           M1 when others;
 
     with M2_code select
         memory3_data_in <= main_buss when "01",
                            ALU1_out when "10",
                            ALU2_out when "11",
-                           memory3_data_out when others;
+                           M2 when others;
 
     -------------------------------------------------------------------------
     -- ALU MULTIPLEXERS
@@ -388,14 +433,14 @@ begin
 
     alu1_operand <= "0000000000000" when ALU_code = "110" else -- zero?
                     "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
-                    memory2_data_out when ALU1_code = "00" else
-                    memory3_data_out when ALU1_code = "10" else
+                    M1 when ALU1_code = "00" else
+                    M2 when ALU1_code = "10" else
                     main_buss;
 
     alu2_operand <= "0000000000000" when ALU_code = "110" else -- zero?
                     "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
-                    memory2_data_out when ALU2_code = '0' else
-                    memory3_data_out;
+                    M1 when ALU2_code = '0' else
+                    M2;
 
     -- 00 hold
     -- 01 load main buss
@@ -414,12 +459,16 @@ begin
 
     with buss_code select
         main_buss <= PC when "000",
-                    "00000" & memory1_data_out when "001",
-                    ALU1_out when "010",
-                    fifo_out when "011",
-                    IN_out when others;
+                    "00000" & OP when "001",
+                    M1 when "010",
+                    M2 when "011",
+                    ALU1_out when "100",
+                    fifo_out when "101",
+                    IN_reg when others;
+
 
     memory1_read_gpu <= tmp_gpu_read;
+
 
 end Behavioral;
 

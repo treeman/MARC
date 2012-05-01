@@ -39,7 +39,12 @@ entity Microcontroller is
         M2_code : out std_logic_vector(1 downto 0);
 
         ADR1_code : out std_logic_vector(1 downto 0);
-        ADR2_code : out std_logic_vector(1 downto 0)
+        ADR2_code : out std_logic_vector(1 downto 0);
+
+        -- Status signals
+        Z : in std_logic;
+        new_IN : in std_logic;
+        game_started : in std_logic
     );
 end Microcontroller;
 
@@ -49,45 +54,25 @@ architecture Behavioral of Microcontroller is
     subtype DataLine is std_logic_vector(42 downto 0);
     type Data is array (0 to 255) of DataLine;
 
-
-    -- IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uCount uPC  uPC adr
-    -- 0   00  00   0  00 00  00   00   00    000     00   0   000 000  00 00     000  00000000
+    -- IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uCount uPC  uPC_addr
+    -- 0   00  00   0  00 00  00   00   00    000     00   0   000 000  00   0    0000 00000000
 
     signal mem : Data := (
-        "1000000000000000000000000000100000000000000", -- PC -> IR, PC++
+        --  Load some operations into mem with test bench
+        "0000010101000000000000000110000000000000000", -- IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
+        "0000000000101010000000000000100000000000000", -- OP -> mem, M1 -> mem, M2 -> mem, PC++
+        "0000010101000000000000000110000000000000000", -- IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
+        "0000000000101010000000000000100000000000000", -- OP -> mem, M1 -> mem, M2 -> mem, PC++
+        "0000010101000000000000000110000000000000000", -- IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
+        "0000000000101010000000000000100000000000000", -- OP -> mem, M1 -> mem, M2 -> mem, PC++
 
-        "0000010000000000000000000000000000000000000", -- PC -> OP
-        "0000000000100000000000000000000000000000000", -- OP -> mem1
-        -- mem1(1) = 1
+        --  Reset
+        "0000000000000000000000000000110000000000000", -- PC = 0
 
-        -- PC = 1
-        "0000000000000000000010000100000000000000000", -- PC -> AR 1
-        "0000000000000000000000010000100000000000000", -- ALU1 +1, PC++
-        -- AR1 = 2, PC = 2
-
-        "0000000000000000000010001000000000000000000", -- ALU1 = ALU1 + PC
-        -- AR1 = 4
-
-        "0000000000000000000010001100000000000000000", -- ALU1 = ALU1 - PC
-        "0000000000000000000000010100000000000000000", -- ALU1--
-        "0000000000000000000000010100000000000000000", -- ALU1--
-        -- AR1 = 0, Z = 1
-
-        -- OP -> IR
-
-        -- Test stuff
-        "1000000000000000000000000000100000000000000", -- PC -> IR; PC++
-        "1000000000000000000000000000000000000000000", -- PC -> IR
-        "0000000000000000000000000000100000000000000", -- PC++
-        "0000000100000000000000000000000000000000000", -- PC -> M1
-        "0000000000001000000000000000000000000000000", -- M1 -> mem2
-        "0000000000000000000000000000000000000000000", -- nothing
-        "0000000000000000000000000000010000011110000", -- +1 PC
-        "0000000000000000000000000000000100000001111", -- set Z if uCounter >= limit
-        "0000000000000000000000000000000010100000110", -- jmpz to line 6
-        "0000000000000000000000000000001100000000000", -- reset uCounter
-        "0000000000000000000000000000000011100000000", -- Never gonna happen
-        "0000000000000000000000000000000011111111111", -- line 6, reset uPC
+        --  Fetch instruction
+        "0000000000000000000000000000001000000000000", -- PC -> mem_addr, uCount = 0
+        "0000000000010000000000000000000000000000000", -- mem -> OP
+        "1000000000000000000000000001000000000000000", -- OP -> buss, buss -> IR
 
         others => (others => '0')
     );
@@ -100,7 +85,7 @@ architecture Behavioral of Microcontroller is
 
     -- Controll the behavior of next uPC value
     signal uPC_addr : std_logic_vector(7 downto 0) := "XXXXXXXX";
-    signal uPC_code : std_logic_vector(2 downto 0);
+    signal uPC_code : std_logic_vector(3 downto 0);
 
     signal IR_code : std_logic;
 
@@ -108,19 +93,25 @@ architecture Behavioral of Microcontroller is
     -- when in delay must output zero signals
     signal uCounter : std_logic_vector(7 downto 0) := "00000000";
     signal uCount_limit : std_logic_vector(7 downto 0) := "00000000";
-    signal uCount_code : std_logic_vector(1 downto 0) := "00";
+    signal uCount_code : std_logic := '0';
 
     -- Registers
     signal IR : std_logic_vector(7 downto 0);
     signal uPC : std_logic_vector(7 downto 0) := "00000000";
 
-    -- OP code decodings
-    signal op_addr : std_logic_vector(7 downto 0);
-    signal A_addr : std_logic_vector(7 downto 0);
-    signal B_addr : std_logic_vector(7 downto 0);
+    -- Split up IR
+    alias OP_field is IR(7 downto 4);
+    alias A_field is IR(3 downto 2);
+    alias B_field is IR(1 downto 0);
 
-    -- TODO Z should not lieve here!
-    signal Z : std_logic := '0';
+    -- Instruction code decodings
+    signal op_addr : std_logic_vector(7 downto 0);
+    signal A_imm : std_logic;
+    signal A_dir : std_logic;
+    signal A_pre : std_logic;
+    signal B_imm : std_logic;
+    signal B_dir : std_logic;
+    signal B_pre : std_logic;
 begin
 
     -------------------------------------------------------------------------
@@ -128,8 +119,8 @@ begin
     -------------------------------------------------------------------------
 
     uPC_addr <= signals(7 downto 0);
-    uPC_code <= signals(10 downto 8);
-    uCount_code <= signals(12 downto 11);
+    uPC_code <= signals(11 downto 8);
+    uCount_code <= signals(12);
 
     PC_code <= signals(14 downto 13);
     buss_code <= signals(17 downto 15);
@@ -165,23 +156,18 @@ begin
     -- TODO proper address encodings
 
     -- OP code address decoding
-    with IR(7 downto 4) select
+    with OP_field select
         op_addr <= "00000000" when "0000",
                    "11001110" when "0101",
                    "11111111" when others;
 
-    -- A a-mod address decoding
-    with IR(3 downto 2) select
-        A_addr <= "00000000" when "00",
-                  "00000001" when "01",
-                  "00000010" when others;
+    A_imm <= '1' when A_field = "00" else '0';
+    A_dir <= '1' when A_field = "01" else '0';
+    A_pre <= '1' when A_field = "11" else '0';
 
-    -- B a-mod address decoding
-    with IR(1 downto 0) select
-        B_addr <= "00000011" when "00",
-                  "00000100" when "01",
-                  "00000101" when others;
-
+    B_imm <= '1' when B_field = "00" else '0';
+    B_dir <= '1' when B_field = "01" else '0';
+    B_pre <= '1' when B_field = "11" else '0';
 
     -------------------------------------------------------------------------
     -- ON CLOCK EVENT
@@ -197,13 +183,6 @@ begin
                 reset <= '0';
             end if;
 
-            -- Update current micro controls
-            if reset_a = '1' then
-                signals <= (others => '0');
-            else
-                signals <= mem(conv_integer(uPC));
-            end if;
-
             -------------------------------------------------------------------------
             -- SIGNAL MULTIPLEXERS
             -------------------------------------------------------------------------
@@ -211,34 +190,45 @@ begin
             -- Update uPC
             if reset_a = '1' then
                 uPC <= "00000000";
-            elsif uPC_code = "000" then
+            elsif uPC_code = "0000" then
                 uPC <= uPC + 1;
-            elsif uPC_code = "001" then
+
+            elsif uPC_code = "0001" then
                 uPC <= op_addr;
-            elsif uPC_code = "010" then
-                uPC <= A_addr;
-            elsif uPC_code = "011" then
-                uPC <= B_addr;
-            elsif uPC_code = "100" then
+            elsif uPC_code = "0010" then
                 uPC <= uPC_addr;
-            elsif uPC_code = "101" and Z = '1' then
+            elsif uPC_code = "0011" and Z = '1' then
                 uPC <= uPC_addr;
-            elsif uPC_code = "111" then
+            elsif uPC_code = "0100" and new_IN = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "0101" and uCounter >= uCount_limit then
+                uPC <= uPC_addr;
+            elsif uPC_code = "0110" and game_started = '1' then
+                uPC <= uPC_addr;
+
+            elsif uPC_code = "1000" and A_imm = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1001" and A_dir = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1010" and A_pre = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1011" and B_imm = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1100" and B_dir = '1' then
+                uPC <= uPC_addr;
+            elsif uPC_code = "1101" and B_pre = '1' then
+                uPC <= uPC_addr;
+
+            elsif uPC_code = "1111" then
                 uPC <= "00000000";
             end if;
 
             -- Update uCounter
             if reset_a = '1' then
                 uCounter <= "00000000";
-            elsif uCount_code = "00" then
+            elsif uCount_code = '0' then
                 uCounter <= uCounter + 1;
-            elsif uCount_code = "01" then
-                if uCount_limit <= uCounter then
-                    Z <= '1';
-                else
-                    Z <= '0';
-                end if;
-            elsif uCount_code = "11" then
+            elsif uCount_code = '1' then
                 uCounter <= "00000000";
             end if;
 
@@ -247,6 +237,8 @@ begin
             elsif IR_code = '1' then
                 IR <= buss_in;
             end if;
+
+            signals <= mem(conv_integer(uPC));
 
         end if;
     end process;

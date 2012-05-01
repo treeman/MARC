@@ -1,42 +1,47 @@
-; Super test codez!
-; T.T
+; Load some operations into mem with test bench
+IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
+OP -> mem, M1 -> mem, M2 -> mem, PC++
+IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
+OP -> mem, M1 -> mem, M2 -> mem, PC++
+IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
+OP -> mem, M1 -> mem, M2 -> mem, PC++
 
-PC -> IR, PC++
-PC -> OP
-OP -> mem1
+; Reset
+PC = 0
 
-PC -> AR1
-ALU1 + 1, PC++
+; Fetch instruction
+PC -> mem_addr, uCount = 0
+mem -> OP
+OP -> IR
 
-ALU1 = ALU1 + PC
+; Calculate adress
 
-ALU1 = ALU1 - PC
-ALU1--
-ALU1--
+; Examine A-field
+; if immediate, we're done
+; otherwise A-field += PC
+; if direct, we're done
+; otherwise the B-field of this direct memory location is read into the A-field
+; if predecrement, then the value just read is decremented and written back
+;   to the memory location from whence it came
+;   A-field += PC
+;
+; do the same for the B-field...
+; now examine and do code!
+;
+; finally, if no branch and instr not a DAT
+; PC++ and insert into fifo
+;
+; We need:
+; A and B-fields check
+; is immediate?
+; is direct?
+; is predecrement?
 
-uPC_addr = 0
-uPC_addr = 1
-uPC_addr = a
-uPC_addr = ab
-uPC_addr = abab
-uPC_addr = 010
-uPC_addr = 0011111111
-uPC_addr = jonas
-
-PC -> IR, PC++
-PC -> OP
-OP -> mem1
-; mem1(1) = 1
-
-; PC = 1
-PC -> AR1
-ALU++, PC++
-; AR1 = 2, PC = 2
-
-ALU1 = ALU1 + PC
-; AR1 = 4
-
-ALU1 = ALU1 - PC, bork = 0
-ALU--, bork -> borker
-ALU--, bork
+; Check memory for correctness
+; PC -> mem_addr
+; mem -> OP, PC++
+; PC -> mem_addr
+; mem -> OP, PC++
+; PC -> mem_addr
+; mem -> OP
 

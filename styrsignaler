@@ -1,36 +1,45 @@
-
 Styrsignaler:
 
 uPC
-    000     +1
-    001     op addr
-    010     A a-mod addr
-    011     B a-mod addr
-    100     jmp
-    101     jmp on Z
-    111     0
+    0000    +1
+    0001    op addr
+
+    0010    jmp
+    0011    jmp on Z                    (jmpZ)
+    0100    jmp on new IN               (jmpIN)
+    0101    jmp if uCounter >= limit    (jmpC)
+    0110    jmp if game started         (jmpS)
+
+    1000    jmp if A immediate          (jmpAimm)
+    1001    jmp if A direct             (jmpAdir)
+    1010    jmp if A predecrement       (jmpApre)
+    1011    jmp if B immediate          (jmpBimm)
+    1100    jmp if B direct             (jmpBdir)
+    1101    jmp if B predecrement       (jmpBpre)
+
+    1111    = 0
+
+uCount
+    0       uCounter + 1
+    1       uCounter = 0
 
 PC
     00      PC (nothing)
     01      load from buss
     10      +1
+    11      = 0
 
 IR
     0       hold
     1       load from OP (or buss)
 
-uCount
-    00      uCounter + 1
-    01      Z = uCounter >= limit
-    11      uCounter = 0
-
 mem address
-    000   PC
-    001   buss
-    010   AR 1
-    011   AR 2
-    100   ADR 1
-    101   ADR 2
+    000     PC
+    001     buss
+    010     AR 1
+    011     AR 2
+    100     ADR 1
+    101     ADR 2
 
 mem1
     00      nothing
@@ -66,9 +75,9 @@ M2
 to buss
     000     PC
     001     OP
-    010     M1  (not implemented in MARC)
-    011     M2  (not implemented in MARC)
-    100     AR 1
+    010     M1
+    011     M2
+    100     ALU 1
     101     FIFO
     110     IN
 
@@ -103,11 +112,6 @@ ADR2
 
 Totalt
 
-    35
-    + 8 bit hoppaddress
-
-    = 43 signaler uMinnet
-
 FIXME!
 Kontrollera signalerna under
 FIXME!
@@ -135,4 +139,18 @@ FIFO
     1bit
         change player
         nothing
+
+FBART:
+    IN:
+        1 bit next_address (we have writen our data to the memory, now we want the next data to write).
+        1 bit reset (global)
+
+    OUT signals (to µComputer):
+        1 bit has_data (we have recived 13 (16) bits of data and are ready to put them on the main_buss)
+        3 bits control_signals (The 3 first bits of the first reciving (used for special commands))
+
+    Control Signals commands:
+        000 Noting special
+        001 First transmission, start at top of memory (maybe not needed).
+        010 End of transmission, quit recieving loop and wait for the player to start the game.
 
