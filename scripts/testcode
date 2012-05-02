@@ -86,3 +86,12 @@ PC -> M1, OP -> ALU1
 PC -> ALU2
 IR -> OP
 
+; Labels etc
+uPC_addr = $LBL, jmp
+:LBL PC++
+PC++
+uPC_addr = $LBL, jmp
+jmp 0
+jmp +1
+jmpS $LBL
+

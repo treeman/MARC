@@ -208,26 +208,73 @@ my $rows_since_help = 0;
 my $last_was_code = 0;
 my $header_shown = 0;
 
-# Process and write
+# Collect output here for postprocessing  etc
+my @output;
+
+# Push lines here after first read through
+my @lines;
+
+# Labels with their line of code
+my %labels;
+
+# Search for labels and log their address
 while (my $line = <$in>) {
     chomp $line;
+
+
+    # Ignore comments
+    if ($line =~ /^;/) {
+        push (@lines, $line);
+    }
+    # And empty lines
+    elsif ($line =~ /^\s*$/) {
+        push (@lines, $line);
+    }
+    # It's a line of code!
+    else {
+        # If we have a label somewhere
+        if ($line =~ /^:([A-Z]+)/) {
+            # Store it's address (start with 0)
+            $labels{$1} = $codeline;
+        }
+
+        $codeline++;
+        push (@lines, $line);
+    }
+}
+
+# List labels
+if ($debug) {
+    say "Labels:";
+    for my $k (keys %labels) {
+        say "labels{$k} = " . dec2hex ($labels{$k});
+    }
+}
+
+$codeline = 0;
+
+# Process and write
+for my $line (@lines) {
 
     # Comments
     if ($line =~ /^;(.*)/) {
         # If we're in verbose, simply output comments
         if ($verbose) {
-            say $line;
+            #say $line;
+            push (@output, $line);
         }
         # Otherwise transform into vhdl comments
         else {
-            say "-- $1";
+            #say "-- $1";
+            push (@output, "-- $1");
         }
         $last_was_code = 0;
         next;
     }
     # Simply output empty lines
     elsif ($line =~ /^\s*$/) {
-        say $line;
+        #say $line;
+        push (@output, $line);
         $last_was_code = 0;
         next;
     }
@@ -248,11 +295,14 @@ while (my $line = <$in>) {
 
     for my $cmd (split /\s*,\s*/, $line)
     {
+        # Don't process label definitions
+        if ($cmd =~ /^:/) {
+            push (@comments, $cmd);
+        }
         # Grab single word affixes eg PC++, ALU--
-        if ($cmd =~ /^(\S+?)(\+{2}|-{2})$/) {
+        elsif ($cmd =~ /^(\S+?)(\+{2}|-{2})$/) {
             my ($reg, $op) = ($1, $2);
 
-            #say "$reg $op";
             if (exists $registers{$reg}->{$op}) {
                 update (\@signal, $positions{$reg}, $registers{$reg}->{$op});
 
@@ -416,16 +466,114 @@ while (my $line = <$in>) {
                 push (@comments, "? $cmd ?");
             }
         }
+        # TODO all jumps does not have addresses?
+        # Handle jumps eg jmp, jmp 0, jmp +1, jmpS -1, jmpIN
+        elsif ($cmd =~ /^(jmp\S*)\s+(\S+)/) {
+            my ($jmp, $where) = ($1, $2);
+
+            # Check that uPC has support for this jump
+            if (exists $registers{uPC}->{$jmp}) {
+
+                # Check to see if we have a relative absolute address
+                $where =~ /^([+-])?(.*)/;
+                my $op = $1 // "";
+                my $val = $2;
+
+                my $label = "";
+
+                # Convert label def
+                if ($val =~ /^\$([A-Z]+)/) {
+                    $label = $1;
+
+                    if (exists $labels{$label}) {
+                        $val = $labels{$label};
+                    }
+                    else {
+                        push (@comments, "? $cmd ?");
+                        next;
+                    }
+                }
+
+                my $bin;
+                if ($val =~ /^[01]+$/) {
+                    $bin = $val;
+                }
+                elsif ($val =~ /^[0123456789ABCDEF]+$/i) {
+                    $bin = hex2bin ($val);
+                }
+                else {
+                    push (@comments, "? $cmd ?");
+                    next;
+                }
+
+                if ($op =~ /^[+-]$/) {
+                    my $curr_row = $codeline - 1;
+                    my $off = bin2dec ($bin);
+                    my $abs = $op eq "+" ? $curr_row + $off : $curr_row - $off;
+                    my $new_bin = dec2bin ($abs);
+                    my $new_hex = dec2hex ($abs);
+
+                    my $currhex = dec2hex ($curr_row);
+
+                    push (@output, "$curr_row($currhex) $op $off = $abs($new_hex) -> $new_bin") if $debug;
+
+                    $bin = $new_bin;
+                }
+
+                # Force to length 8
+                if (length($bin) < 8) {
+                    $bin = '0' x (8 - length($bin)) . $bin;
+                }
+                elsif (length($bin) > 8) {
+                    # Truncate from the back so 00 1111 1111 -> 1111 1111
+                    $bin = substr $bin, -8;
+                }
+
+                # Set jump address
+                update (\@signal, $positions{uPC_addr}, $bin);
+                # Set jump
+                update (\@signal, $positions{uPC}, $registers{uPC}->{$jmp});
+
+                # Include label name in comment
+                if ($label) {
+                    my $addr = dec2hex ($labels{$label});
+                    push (@comments, "$jmp $label($addr)");
+                }
+                else {
+                    push (@comments, $cmd);
+                }
+
+            }
+            else {
+                push (@comments, "? $cmd ?");
+            }
+        }
         # var = stuff eg uPC = 0, uCount = 0, uPC_addr = AB or 10101011 (will truncate/fill)
         elsif ($cmd =~ /(\S+)\s*=\s*(\S+)/) {
             my ($var, $res) = ($1, $2);
 
+            # TODO delete this???????
             # Convert hex and stuff for addr jumping, can do relative eg +2 or absolute 0f
             if ($var eq 'uPC_addr') {
 
                 $res =~ /^([+-])?(.*)/;
                 my $op = $1 // "";
                 my $val = $2;
+
+                my $label = "";
+
+                # Convert label def
+                if ($val =~ /^\$([A-Z]+)/) {
+                    $label = $1;
+
+                    if (exists $labels{$label}) {
+                        $val = $labels{$label};
+                    }
+                    else {
+                        push (@comments, "? $cmd ?");
+                        next;
+                    }
+                }
 
                 my $bin;
                 if ($val =~ /^[01]+$/) {
@@ -447,11 +595,11 @@ while (my $line = <$in>) {
                     my $new_hex = dec2hex ($abs);
 
                     my $currhex = dec2hex ($curr_row);
-                    say "$curr_row($currhex) $op $off = $abs($new_hex) -> $new_bin" if $debug;
+                    #say "$curr_row($currhex) $op $off = $abs($new_hex) -> $new_bin" if $debug;
+                    push (@output, "$curr_row($currhex) $op $off = $abs($new_hex) -> $new_bin") if $debug;
 
                     $bin = $new_bin;
                 }
-
 
                 # Force to length 8
                 if (length($bin) < 8) {
@@ -464,7 +612,14 @@ while (my $line = <$in>) {
 
                 update (\@signal, $positions{$var}, $bin);
 
-                push (@comments, $cmd);
+                # Include label name in comment
+                if ($label) {
+                    my $addr = dec2hex ($labels{$label});
+                    push (@comments, "$var = $label($addr)");
+                }
+                else {
+                    push (@comments, $cmd);
+                }
             }
             # Check special eg uPC = 0
             elsif (exists $registers{$var} && exists $registers{$var}->{$res}) {
@@ -499,7 +654,8 @@ while (my $line = <$in>) {
         # Output verbose output, format lines like this with the occassional help header
 
         if (!$header_shown || $rows_since_help > $lines_until_header && !$last_was_code) {
-            say "    $h";
+            #say "    $h";
+            push (@output, "    $h");
 
             $header_shown = 1;
             $rows_since_help = 0;
@@ -540,14 +696,20 @@ while (my $line = <$in>) {
 
         my $hexline = dec2hex ($codeline - 1);
 
-        say "$hexline  $result ; " . join (", ", @comments);
+        #say "$hexline  $result ; " . join (", ", @comments);
+        push (@output, "$hexline  $result ; " . join (", ", @comments));
     }
     # Output for vhdl copy paste
     else {
         my $res = '"' . join ("", @signal) . '", -- ' . join (", ", @comments);
-        say $res;
+        #say $res;
+        push (@output, $res);
     }
 }
+
+# Print output
+my $txt = join ("\n", @output);
+say $txt;
 
 sub dec2hex {   # Force at least length 2
     my $d = shift;
@@ -569,8 +731,7 @@ sub dec2bin {
 sub bin2dec {
     return unpack("N", pack("B32", substr("0" x 32 . shift, -32)));
 }
-sub trim
-{
+sub trim {
     my $string = shift;
     $string =~ s/^\s+//;
     $string =~ s/\s+$//;
