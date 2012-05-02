@@ -5,7 +5,6 @@ use autodie;
 
 use Modern::Perl;
 use Getopt::Long;
-use File::Slurp;
 
 # Command line options
 my $help;

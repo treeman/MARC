@@ -1,0 +1,108 @@
+#!/usr/bin/perl -w
+
+use utf8;
+use autodie;
+
+use Modern::Perl;
+use Getopt::Long;
+
+# Command line options
+my $help;
+my $dest;
+my $verbose;
+my $debug;
+
+GetOptions(
+    'help|h' => \$help,
+    'destination|d=s' => \$dest,
+    'verbose|v' => \$verbose,
+    'debug' => \$debug,
+);
+
+# Not used atm
+$dest = "code_output" if !$dest;
+my $src = $ARGV[0];
+
+if ($help || !$src) {
+    say "Simple assembler";
+    say "   options:";
+    say "   -h --help       Show this screen.";
+    say "   -v --verbose    Verbose output signals in a human readable format.";
+    exit;
+}
+
+my %constants;
+my %labels;
+
+my $linenum = 0;
+my $codeline = 0;
+
+open my $in, '<', $src;
+
+while (my $line = <$in>) {
+    chomp $line;
+
+    $linenum++;
+
+    # Ignore empty lines
+    if ($line =~ /^\s*$/) {
+        say $line if $verbose;
+        next;
+    }
+
+    # Remove comments, will always match
+    my ($code, $comment) = $line =~ /^([^;]*);?(.*)/;
+
+    # Don't parse a full comment line
+    if (!$code) {
+        say " ; $comment" if $verbose && $comment;
+        next;
+    }
+
+    # Match up a line of redcode
+    if ($code =~ /^(?:
+                    ([A-Z0-9]+)?        # Label, not necessary
+                    \s+
+                  )?
+                  ([A-Z0-9]{3})         # 3 letter mnemonic
+                  \s+
+                  ([^,]+)               # A operand
+                  ,
+                  ([^,]+)               # B operand
+                 /xi)
+    {
+        my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
+
+        # Insert label
+        if ($label) {
+            $labels{$label} = $codeline;
+            say "L: $label = $codeline";
+        }
+        $codeline++;
+
+        say "C: $instr, $a_op, $b_op";
+    }
+    # Match a label
+    elsif ($code =~ /^
+                     ([A-Z0-9]+)        # Label
+                     \s+
+                     equ                # Constant instr mnemonic
+                     \s+
+                     (.+)               # Definition
+                    /xi)
+    {
+        my ($label, $def) = ($1, $2);
+
+        say "L: $label = $def";
+    }
+    # Match end
+    elsif ($code =~ /^\s*end/) {
+        say "end found!";
+        last;
+    }
+    else {
+        say "'$code' does not match!";
+        die "Syntax error line $linenum";
+    }
+}
+
