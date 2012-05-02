@@ -28,3 +28,17 @@ Net "blu<0>" LOC = R7 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L46P, sc
 Net "blu<1>" LOC = T7 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L46N, sch name = BLU2
 Net "HS" LOC = N6 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = *IO_L47P, sch name = HSYNC
 Net "VS" LOC = P7 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = *IO_L47N, sch name = VSYNC
+
+
+######################################
+# INPUT signals             #
+######################################
+##
+Net "colorpix<0>" LOC = T10 | IOSTANDARD = LVCMOS33;
+Net "colorpix<1>" LOC = T9 | IOSTANDARD = LVCMOS33;
+Net "colorpix<2>" LOC = V9 | IOSTANDARD = LVCMOS33;
+Net "colorpix<3>" LOC = M8 | IOSTANDARD = LVCMOS33;
+Net "colorpix<4>" LOC = N8 | IOSTANDARD = LVCMOS33;
+Net "colorpix<5>" LOC = U8 | IOSTANDARD = LVCMOS33;
+Net "colorpix<6>" LOC = V8 | IOSTANDARD = LVCMOS33;
+Net "colorpix<7>" LOC = T5 | IOSTANDARD = LVCMOS33;
