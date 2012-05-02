@@ -30,16 +30,14 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity FBARTController is
-    Port ( request_next_data_a : in  STD_LOGIC;
-           reset_a : in  STD_LOGIC;
+    Port ( request_next_data : in  STD_LOGIC;
+           reset : in  STD_LOGIC;
            clk : in  STD_LOGIC;
-		   rxd              : in std_logic;
+			  rxd              : in std_logic;
            control_signals : out  STD_LOGIC_VECTOR (2 downto 0);
            buss_out : out  STD_LOGIC_VECTOR (12 downto 0);
-		   
-		   out_switch : in STD_LOGIC;
-		   
-		   out_display : out STD_LOGIC_VECTOR( 7 downto 0);
+		     --out_switch : in STD_LOGIC;
+		     --out_display : out STD_LOGIC_VECTOR( 7 downto 0);
 		   
            has_next_data : out  STD_LOGIC);
 end FBARTController;
@@ -59,8 +57,8 @@ architecture Behavioral of FBARTController is
 	signal register2 	: STD_LOGIC_VECTOR(7 downto 0);
 	signal state		: STD_LOGIC_VECTOR(2 downto 0);
 	
-	signal request_next_data : STD_LOGIC := '0';
-	signal reset : STD_LOGIC := '0';
+	--signal request_next_data : STD_LOGIC := '0';
+	--signal reset : STD_LOGIC := '0';
 	
 	--signal clk        : std_logic;     -- System clock input
 	--signal reset      : std_logic;     -- System reset input
@@ -73,18 +71,19 @@ architecture Behavioral of FBARTController is
 begin
 
 	buss_out <= register1 & register2(4 downto 0);
+	control_signals <= register2(7 downto 5);
   --inverted_reset <= not(reset);
   
-  out_display <=  register1 when out_switch = '1' else register2;
+   -- out_display <=  register1 when out_switch = '1' else register2;
 
- control_signals<= state;
+   --control_signals<= state;
   
 	process(clk)
 	begin
 		if rising_edge(clk) then
 		
-			request_next_data <= request_next_data_a; -- and not(request_next_data);
-			reset <= reset_a;
+			--request_next_data <= request_next_data_a; -- and not(request_next_data);
+			--reset <= reset_a;
 		
 		  
 			if (reset='1') then

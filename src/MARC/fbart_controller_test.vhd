@@ -45,6 +45,7 @@ ARCHITECTURE behavior OF fbart_controller_test IS
          reset : IN  std_logic;
          clk : IN  std_logic;
          rxd : IN  std_logic;
+         --TxD : IN  std_logic;
          control_signals : OUT  std_logic_vector(2 downto 0);
          buss_out : OUT  std_logic_vector(12 downto 0);
          has_next_data : OUT  std_logic
