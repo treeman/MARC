@@ -107,7 +107,7 @@ architecture Behavioral of MARC is
         );
     end component;
 -- dirr
-    component FBART_Controller
+    component FBARTController
 		Port ( 	request_next_data : in  STD_LOGIC;
 					reset : in  STD_LOGIC;
 					clk : in  STD_LOGIC;
@@ -221,7 +221,7 @@ architecture Behavioral of MARC is
 	 -------------------------------------------------------------------------
     -- FBART SIGNALS
     -------------------------------------------------------------------------
-	 signal fbart_request_next_data :  STD_LOGIC;			-- Generate this when we read from FBART into BUSS
+	 signal fbart_request_next_data :  STD_LOGIC := '0';			-- Generate this when we read from FBART into BUSS
     signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
 	-- signal fbart_out : std_logic;
     --signal fbart_has_next_data :   STD_LOGIC;
@@ -312,13 +312,13 @@ begin
 		  
 		  
 		  
-	fbart: FBART_Controller
+	fbart: FBARTController
         port map (  clk => clk,
 						  request_next_data  => fbart_request_next_data,
 						  reset => reset,
-                    control_signals => fbart_control_signals,
+						  control_signals => fbart_control_signals,
 						  buss_out => IN_reg,
-                    has_next_data => new_IN,
+						  has_next_data => new_IN,
 						  rxd	=> fbart_out
         );
 
@@ -329,6 +329,13 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
+		  
+				-- Generating fbart_request_next_data when we read the buss.
+				if buss_code = "110" then
+					fbart_request_next_data <= '1';
+				else
+					fbart_request_next_data <= '0';
+				end if;
 
             -- Sync reset
             if reset_a = '1' then
@@ -464,7 +471,8 @@ begin
                     M2 when "011",
                     ALU1_out when "100",
                     fifo_out when "101",
-                    IN_reg when others;
+                    IN_reg when "110",
+						  "0000000000000" when others;
 
 
     memory1_read_gpu <= tmp_gpu_read;
