@@ -31,8 +31,41 @@ if ($help || !$src) {
     exit;
 }
 
-my %constants;
-my %labels;
+our %labels;
+
+# Evaluate an operator statement, like val*2+1
+sub evaluate {
+    my ($def) = @_;
+
+    my @pieces = split /[-+*\/]/, $def;
+
+    for my $piece (@pieces) {
+
+        # Remove whitespace
+        $piece = trim ($piece);
+
+        # Ignore empty and all numbers
+        next if $piece =~ /^\d*$/;
+
+        # Read a label
+        if ($piece =~ /^([A-Z0-9]{0,8})[A-Z0-9]*$/i) {
+            my $label = $1;
+
+            die "Compile error, no label '$label' in scope." if !exists $labels{$label};
+
+            # Substitute the label with it's value
+            $def =~ s/$piece/$labels{$label}/;
+        }
+        else {
+            die "Syntax error, label expected ner '$piece'";
+        }
+    }
+
+    my $value = eval $def;
+    die "Error: Malformed operator '$def' $@" if $@;
+
+    return $value;
+}
 
 my $linenum = 0;
 my $codeline = 0;
@@ -61,39 +94,84 @@ while (my $line = <$in>) {
 
     # Match up a line of redcode
     if ($code =~ /^(?:
-                    ([A-Z0-9]+)?        # Label, not necessary
-                    \s+
-                  )?
-                  ([A-Z0-9]{3})         # 3 letter mnemonic
-                  \s+
-                  ([^,]+)               # A operand
-                  ,
-                  ([^,]+)               # B operand
+                      ([A-Z0-9]{0,8})?      # Label, not necessary
+                      [A-Z0-9]*             # Only catch first 8 chars
+                      \s+
+                   )?
+                   ([A-Z0-9]{3})            # 3 letter mnemonic
+                   (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
+                   \s+
+                   ([^,]+)                  # A operand
+                   \s*,\s*                  # , delimited
+                   ([^,]+)                  # B operand
                  /xi)
     {
         my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
 
-        # Insert label
+        # Log label
         if ($label) {
             $labels{$label} = $codeline;
             say "L: $label = $codeline";
         }
         $codeline++;
 
-        say "C: $instr, $a_op, $b_op";
+        #say "C: $instr, $a_op, $b_op";
+
+        # TODO should produce object code or something later
+        my %types = (
+            '#' => "immediate",
+            '@' => "indirect",
+            '<' => "pre-decrement",
+        );
+
+        # Default
+        #my $a_mod = "direct";
+        #my $b_mod = "direct";
+
+        my $a_mod = "";
+        my $b_mod = "";
+
+        # Fetch adress modes
+        if ($a_op =~ /^([#@<])(.*)/) {
+            my ($op, $rest) = ($1, $2);
+
+            #$a_mod = $types{$op};
+            $a_mod = $op;
+            $a_op = $rest;
+        }
+
+        if ($b_op =~ /^([#@<])(.*)/) {
+            my ($op, $rest) = ($1, $2);
+
+            #$b_mod = $types{$op};
+            $b_mod = $op;
+            $b_op = $rest;
+        }
+
+        my $a_val = evaluate $a_op;
+        my $b_val = evaluate $b_op;
+
+        say "I: $instr $a_mod $b_mod $a_val $b_val";
     }
-    # Match a label
+    # Match a constant
     elsif ($code =~ /^
-                     ([A-Z0-9]+)        # Label
+                     ([A-Z0-9]{0,8})        # Label necessary
+                     [A-Z0-9]*              # Only catch first 8 chars
                      \s+
-                     equ                # Constant instr mnemonic
+                     equ                    # Constant instr mnemonic
                      \s+
-                     (.+)               # Definition
+                     ([-+*\/A-Z0-9\s+]+)    # Definition
                     /xi)
     {
         my ($label, $def) = ($1, $2);
 
-        say "L: $label = $def";
+        # Evaluate
+        my $value = evaluate $def;
+
+        # And insert
+        $labels{$label} = $value;
+
+        say "L: $label = $def ($value)";
     }
     # Match end
     elsif ($code =~ /^\s*end/) {
@@ -104,5 +182,12 @@ while (my $line = <$in>) {
         say "'$code' does not match!";
         die "Syntax error line $linenum";
     }
+}
+
+sub trim {
+    my $string = shift;
+    $string =~ s/^\s+//;
+    $string =~ s/\s+$//;
+    return $string;
 }
 
