@@ -29,7 +29,7 @@
         jmpBimm $INSTR              ; If immediate we're done
         M2 -> ALU1                  ; Relative address, add PC
         ALU1 += PC
-        ALU1 -> M1
+        ALU1 -> M2
         jmpBdir $INSTR              ; If direct, we're done
         M2 -> mem_addr
         mem -> M2                   ; Check B operand of the address
