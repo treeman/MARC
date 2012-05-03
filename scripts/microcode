@@ -1,9 +1,9 @@
 ; Fetch instruction
         PC -> mem_addr, uCount = 0
         mem -> OP, mem -> M1, mem -> M2
-        OP -> IR
+        OP -> IR, jmp $AMOD
 
-; Calculate adress
+; Calculate adress mode for A operand
 :AMOD   jmpAimm $BMOD               ; If immediate we're done
         M1 -> ALU1                  ; Address is a relative offset
         ALU1 += PC                  ; so add PC
@@ -20,12 +20,43 @@
 :APRE   M1 -> ALU1                  ; Decr
         ALU--
         ALU1 -> M1, ALU1 -> M2
-        M2 -> mem                   ; write it back where it came from
-        jmp $AOFF                   ; continue
+        M2 -> mem                   ; Write it back where it came from
+        jmp $AOFF                   ; Continue
 
-:BMOD   jmpBimm $END
+; Calculate adress mode for B operand
+:BMOD   PC -> mem_addr              ; Retrieve data
+        mem -> M2
+        jmpBimm $INSTR              ; If immediate we're done
+        M2 -> ALU1                  ; Relative address, add PC
+        ALU1 += PC
+        ALU1 -> M1
+        jmpBdir $INSTR              ; If direct, we're done
+        M2 -> mem_addr
+        mem -> M2                   ; Check B operand of the address
+        jmpBpre $BPRE
+:BOFF   M2 -> ALU1                  ; Relative offset, add PC
+        ALU1 += PC
+        ALU1 -> M2
+        jmp $INSTR                  ; We're done
 
-:END    PC++, uPC = 0
+:BPRE   M2 -> ALU1                  ; Decr
+        ALU--
+        ALU1 -> M2
+        M2 -> mem                   ; Write it back where it came from
+        jmp $BOFF                   ; Continue
+
+; Execute instruction
+;
+; M1 (A operand) and M2 (B operand) contain either (should we move it to ADR1 and ADR2 instead?)
+; Data if it's immediate
+; Or absolute address to a memory location
+;
+
+:INSTR jmp $END
+
+:END    PC++
+:DELAY  jmpC 0                      ; Start over when we've spent enough time
+        jmp $DELAY
 
 ; Examine A-field
 ; if immediate, we're done

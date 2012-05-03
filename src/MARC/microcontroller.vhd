@@ -64,28 +64,30 @@ architecture Behavioral of Microcontroller is
         "1000000000000000000000000001000000000000000", -- OP -> buss, buss -> IR
 
         --  Calculate adress
-        "0000000000000000000000000000000100000100000", -- jmpAimm BMOD(14)
-        "0000001000000000000000000000000000000000000", -- M1 -> ALU1
+        "0000000000000000000000000000000100000010100", -- jmpAimm BMOD(14)
+        "0000000000000000000000001000000000000000000", -- M1 -> ALU1
         "0000000000000000000010010000000000000000000", -- ALU1 += PC
-        "0000000000000000000000000000000000000000000", -- ALU1 -> M1
-        "0000000000000000000000000000000100100100000", -- jmpAdir BMOD(14)
+        "0000001000000000000000000000000000000000000", -- ALU1 -> M1
+        "0000000000000000000000000000000100100010100", -- jmpAdir BMOD(14)
         "0000000000000001001000000010000000000000000", -- M1 -> buss, buss -> mem_addr, mem -> M2
         "0000000100000000000000000011000000000000000", -- M2 -> buss, buss -> M1
-        "0000000000000000000000000000000101000010101", -- jmpApre APRE(0f)
-        "0000001000000000000000000000000000000000000", -- M1 -> ALU1
+        "0000000000000000000000000000000101000001111", -- jmpApre APRE(0f)
+        "0000000000000000000000001000000000000000000", -- M1 -> ALU1
         "0000000000000000000010010000000000000000000", -- ALU1 += PC
-        "0000000000000000000000000000000000000000000", -- ALU1 -> M1
-        "0000000000000000000000000000000001000100000", -- jmp BMOD(14)
+        "0000001000000000000000000000000000000000000", -- ALU1 -> M1
+        "0000000000000000000000000000000001000010100", -- jmp BMOD(14)
 
-        "0000001000000000000000000000000000000000000", -- M1 -> ALU1
+        "0000000000000000000000001000000000000000000", -- M1 -> ALU1
         "0000000000000000000000101000000000000000000", -- ALU--
-        "0000000000000000000100000000000000000000000", -- ALU1 -> M1, ALU1 -> M2
+        "0000001010000000000000000000000000000000000", -- ALU1 -> M1, ALU1 -> M2
         "0000000000000010000000000000000000000000000", -- M2 -> mem
-        "0000000000000000000000000000000001000000011", -- jmp AOFF(0b)
+        "0000000000000000000000000000000001000001011", -- jmp AOFF(0b)
 
-        "0000000000000000000000000000000101100100001", -- jmpBimm END(15)
+        "0000000000000000000000000000000101100010101", -- jmpBimm END(15)
 
-        "0000000000000000000000000000100111100000000", -- PC++, uPC = 0
+        "0000000000000000000000000000100000000000000", -- PC++
+        "0000000000000000000000000000000010100000000", -- jmpC 0
+        "0000000000000000000000000000000001000010110", -- jmp DELAY(16)
 
         others => (others => '0')
     );
@@ -97,20 +99,20 @@ architecture Behavioral of Microcontroller is
     signal signals : DataLine;
 
     -- Controll the behavior of next uPC value
-    signal uPC_addr : std_logic_vector(7 downto 0) := "XXXXXXXX";
+    signal uPC_addr : std_logic_vector(7 downto 0);
     signal uPC_code : std_logic_vector(3 downto 0);
 
     signal IR_code : std_logic;
 
-    -- TODO
-    -- when in delay must output zero signals
-    signal uCounter : std_logic_vector(7 downto 0) := "00000000";
+    signal uCounter : std_logic_vector(7 downto 0);
+
+    -- TODO connect or change this for delay
     signal uCount_limit : std_logic_vector(7 downto 0) := "00000000";
     signal uCount_code : std_logic := '0';
 
     -- Registers
     signal IR : std_logic_vector(7 downto 0);
-    signal uPC : std_logic_vector(7 downto 0) := "00000000";
+    signal uPC : std_logic_vector(7 downto 0);
 
     -- Split up IR
     alias OP_field is IR(7 downto 4);
@@ -130,6 +132,8 @@ begin
     -------------------------------------------------------------------------
     -- RETRIEVE SIGNALS
     -------------------------------------------------------------------------
+
+    signals <= mem(conv_integer(uPC));
 
     uPC_addr <= signals(7 downto 0);
     uPC_code <= signals(11 downto 8);
@@ -203,8 +207,6 @@ begin
             -- Update uPC
             if reset_a = '1' then
                 uPC <= "00000000";
-            elsif uPC_code = "0000" then
-                uPC <= uPC + 1;
 
             elsif uPC_code = "0001" then
                 uPC <= op_addr;
@@ -234,6 +236,8 @@ begin
 
             elsif uPC_code = "1111" then
                 uPC <= "00000000";
+            else
+                uPC <= uPC + 1;
             end if;
 
             -- Update uCounter
@@ -250,8 +254,6 @@ begin
             elsif IR_code = '1' then
                 IR <= buss_in;
             end if;
-
-            signals <= mem(conv_integer(uPC));
 
         end if;
     end process;

@@ -56,11 +56,10 @@ architecture Behavioral of Memory_Cell_DualPort is
 
     -- Testing purposes!
     signal ram_block_0 : ram_block_type := (
-        -- All a-mods direct
-        "00000101XXXXXXXX", -- DAT
-        "00010101XXXXXXXX", -- MOV
-        "00100101XXXXXXXX", -- ADD
-        "00110101XXXXXXXX", -- SUB
+        --"00000001XXXXXXXX", -- DAT
+        "00010000XXXXXXXX", -- MOV
+        "00101100XXXXXXXX", -- ADD
+        "00110000XXXXXXXX", -- SUB
         "01000101XXXXXXXX", -- JMP
         "01010101XXXXXXXX", -- JMPZ
         "01100101XXXXXXXX", -- JMN

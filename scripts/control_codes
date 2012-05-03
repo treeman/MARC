@@ -336,7 +336,7 @@ for my $line (@lines) {
 
             push (@comments, $cmd);
         }
-        # dest -> src
+        # src -> dest
         elsif ($cmd =~ /(\S+)\s*[=-]>\s*(\S+)/) {
             my ($src, $dest) = ($1, $2);
 
@@ -377,11 +377,18 @@ for my $line (@lines) {
                 }
             }
             # Handle special assignments
-            elsif (exists $registers{$src}->{$dest}) {
-                update (\@signal, $positions{$src}, $registers{$src}->{$dest});
+            #elsif (exists $registers{$src}->{$dest}) {
+                #update (\@signal, $positions{$src}, $registers{$src}->{$dest});
 
-                push (@comments, $cmd);
-            }
+                ## load if ALU
+                #if ($dest =~ /^ALU/) {
+                    #my $op = "load";
+                    #update (\@signal, $positions{ALU}, $ALU{$op});
+                    #$alu_err = 1 if $alu_op && $alu_op ne $op;
+                #}
+
+                #push (@comments, $cmd);
+            #}
             # Handle direct
             elsif (exists $registers{$dest}->{$src}) {
                 update (\@signal, $positions{$dest}, $registers{$dest}->{$src});
@@ -513,8 +520,6 @@ for my $line (@lines) {
                     push (@comments, "? $cmd ?");
                     next;
                 }
-
-                say "$val => $bin";
 
                 if ($op =~ /^[+-]$/) {
                     my $curr_row = $codeline - 1;
