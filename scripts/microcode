@@ -1,20 +1,14 @@
-; Load some operations into mem with test bench
-IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
-OP -> mem, M1 -> mem, M2 -> mem, PC++
-IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
-OP -> mem, M1 -> mem, M2 -> mem, PC++
-IN -> buss, buss -> OP, buss -> M1, buss -> M2, PC -> mem_addr
-OP -> mem, M1 -> mem, M2 -> mem, PC++
-
-; Reset
-PC = 0
-
 ; Fetch instruction
-PC -> mem_addr, uCount = 0
-mem -> OP
-OP -> IR
+        PC -> mem_addr, uCount = 0
+        mem -> OP, mem -> M1, mem -> M2
+        OP -> IR
 
 ; Calculate adress
+:Amod
+
+:Bmod
+
+:END    PC++, uPC = 0
 
 ; Examine A-field
 ; if immediate, we're done

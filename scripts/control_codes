@@ -231,14 +231,19 @@ while (my $line = <$in>) {
     }
     # It's a line of code!
     else {
-        # If we have a label somewhere
-        if ($line =~ /^:([A-Z]+)/) {
+        # If we have a label
+        if ($line =~ /^:([A-Z]+)\s+(.*)/) {
             # Store it's address (start with 0)
             $labels{$1} = $codeline;
+
+            # Remove label and push it
+            push (@lines, $2);
+        }
+        else {
+            push (@lines, $line);
         }
 
         $codeline++;
-        push (@lines, $line);
     }
 }
 
@@ -294,6 +299,8 @@ for my $line (@lines) {
 
     for my $cmd (split /\s*,\s*/, $line)
     {
+        $cmd = trim ($cmd);
+
         # Don't process label definitions
         if ($cmd =~ /^:/) {
             push (@comments, $cmd);
@@ -696,11 +703,11 @@ for my $line (@lines) {
         my $hexline = dec2hex ($codeline - 1);
 
         #say "$hexline  $result ; " . join (", ", @comments);
-        push (@output, "$hexline  $result ; " . join (", ", @comments));
+        push (@output, "$hexline  $result ; " . trim (join (", ", @comments)));
     }
     # Output for vhdl copy paste
     else {
-        my $res = '"' . join ("", @signal) . '", -- ' . join (", ", @comments);
+        my $res = '"' . join ("", @signal) . '", -- ' . trim (join (", ", @comments));
         #say $res;
         push (@output, $res);
     }
