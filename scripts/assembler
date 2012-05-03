@@ -119,7 +119,7 @@ while (my $line = <$in>) {
         # Log label
         if ($label) {
             $labels{$label} = $codeline;
-            say "L: $label = $codeline";
+            say "L: $label = $codeline" if $debug;
         }
         $codeline++;
 
@@ -169,41 +169,71 @@ for my $code (@code) {
 
         $codeline++; # Not doing anything here atm though
 
-        # TODO should produce object code or something later
         my %types = (
-            '#' => "immediate",
-            '@' => "indirect",
-            '<' => "pre-decrement",
+            '#' => "00",    # Immediate
+            '@' => "10",    # Indirect
+            '<' => "11",    # Pre-decrement indirect
         );
 
         # Default
-        #my $a_mod = "direct";
-        #my $b_mod = "direct";
+        my $a_mod = "01";   # Direct
+        my $b_mod = "01";
 
-        my $a_mod = "";
-        my $b_mod = "";
+        my $a_type = "";
+        my $b_type = "";
 
         # Fetch adress modes
         if ($a_op =~ /^([#@<])(.*)/) {
             my ($op, $rest) = ($1, $2);
 
-            #$a_mod = $types{$op};
-            $a_mod = $op;
+            $a_mod = $types{$op};
+            $a_type = $op;
             $a_op = $rest;
         }
-
         if ($b_op =~ /^([#@<])(.*)/) {
             my ($op, $rest) = ($1, $2);
 
-            #$b_mod = $types{$op};
-            $b_mod = $op;
+            $b_mod = $types{$op};
+            $b_type = $op;
             $b_op = $rest;
         }
 
         my $a_val = evaluate $a_op, $codeline;
         my $b_val = evaluate $b_op, $codeline;
 
-        say "I: $instr $a_mod $b_mod $a_val $b_val";
+        my $a_bin = dec2bin ($a_val, 16);
+        my $b_bin = dec2bin ($b_val, 16);
+
+        my %instr_codes = (
+            DAT => '0000',
+            MOV => '0001',
+            ADD => '0010',
+            SUB => '0011',
+            JMP => '0100',
+            JMPZ=> '0101',
+            JMN => '0110',
+            CMP => '0111',
+            SLT => '1000',
+            DJN => '1001',
+            SPL => '1010',
+        );
+
+        die "Instr '$instr' does not exist!" if !exists $instr_codes{uc($instr)};
+
+        my $instr_code = $instr_codes{uc($instr)};
+
+        # Output
+        if ($debug) {
+            say "I: $instr $a_mod $b_mod $a_val $b_val";
+        }
+
+        if ($verbose) {
+            say "$instr_code $a_mod $b_mod $a_bin $b_bin ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)";
+        }
+
+        if (!$debug && !$verbose) {
+            say "$instr_code$a_mod$b_mod$a_bin$b_bin";
+        }
     }
     # Match a constant
     elsif ($code =~ /^
@@ -223,7 +253,7 @@ for my $code (@code) {
         # And insert
         $constants{$label} = $value;
 
-        say "L: $label = $def ($value)";
+        say "C: $label = $def ($value)" if $debug;
     }
     # Match end
     elsif ($code =~ /^\s*end/) {
@@ -239,5 +269,28 @@ sub trim {
     $string =~ s/^\s+//;
     $string =~ s/\s+$//;
     return $string;
+}
+# With a specified length
+sub dec2bin {
+    my ($dec, $l) = @_;
+    my $bin = unpack("B32", pack("N", $dec));
+    #$str =~ s/^0+(?=\d)//;   # otherwise you'll get leading zeros
+
+    # Force to length
+    if (length($bin) < $l) {
+        $bin = '0' x ($l - length($bin)) . $bin;
+    }
+    elsif (length($bin) > $l) {
+        # Truncate from the back so 00 1111 1111 -> 1111 1111
+        $bin = substr $bin, -$l;
+    }
+
+    return $bin;
+}
+sub dec2hex {   # Force at least length 2
+    my $d = shift;
+    my $h = sprintf ("%x", $d);
+    $h = "0$h" if length ($h) < 2;
+    return $h;
 }
 
