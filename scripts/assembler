@@ -8,26 +8,32 @@ use Getopt::Long;
 
 # Command line options
 my $help;
-my $dest;
 my $verbose;
 my $debug;
+my $obj_out = "";
+my $raw;
 
 GetOptions(
     'help|h' => \$help,
-    'destination|d=s' => \$dest,
+    'obj|o=s' => \$obj_out,
     'verbose|v' => \$verbose,
     'debug' => \$debug,
+    'raw|r' => \$raw,
 );
 
-# Not used atm
-$dest = "code_output" if !$dest;
 my $src = $ARGV[0];
 
-if ($help || !$src) {
+if ($help || !$src || (!$debug && !$verbose && !$raw && !$obj_out)) {
+    my ($name) = $0 =~ /([^\/]+$)/;
+
     say "Simple assembler";
-    say "   options:";
+    say "  usage:";
+    say "   $name [option]... [file]";
+    say "  options:";
     say "   -h --help       Show this screen.";
+    say "   -o --obj=FILE   Generate binary file output.";
     say "   -v --verbose    Verbose output signals in a human readable format.";
+    say "   -r --raw        Outputs raw binary data.";
     exit;
 }
 
@@ -84,6 +90,12 @@ sub evaluate {
 my $codeline = 0;
 
 open my $in, '<', $src;
+
+my $out;
+if ($obj_out) {
+    open $out, '>', $obj_out;
+    binmode $out;
+}
 
 # Store line of code here when processing
 my @code;
@@ -227,12 +239,27 @@ for my $code (@code) {
             say "I: $instr $a_mod $b_mod $a_val $b_val";
         }
 
-        if ($verbose) {
-            say "$instr_code $a_mod $b_mod $a_bin $b_bin ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)";
+        if ($raw) {
+            say "$instr_code$a_mod$b_mod$a_bin$b_bin";
+        }
+        elsif ($verbose) {
+            # Ugly hack to truncate hex
+            my $ophex = substr (bin2hex ($instr_code), 0, 1);
+            my $modhex = substr (bin2hex ($a_mod.$b_mod), 0, 1);
+
+            my $ahex = bin2hex ($a_bin);
+            my $bhex = bin2hex ($b_bin);
+
+            say "$instr_code $a_mod $b_mod $a_bin $b_bin   $ophex$modhex "
+            . substr ($ahex, 0, 2) ." ". substr ($ahex, 2) ." "
+            . substr ($bhex, 0, 2) ." ". substr ($bhex, 2)
+            . "  ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)";
         }
 
-        if (!$debug && !$verbose) {
-            say "$instr_code$a_mod$b_mod$a_bin$b_bin";
+        if ($obj_out) {
+            my $what = "$instr_code$a_mod$b_mod$a_bin$b_bin";
+            my $val = pack ("B40", $what);
+            print $out $val;
         }
     }
     # Match a constant
@@ -264,6 +291,13 @@ for my $code (@code) {
     }
 }
 
+
+if ($obj_out) {
+    close $out;
+    my $size = (stat $obj_out)[7];
+    say "Wrote $size bytes to $obj_out";
+}
+
 sub trim {
     my $string = shift;
     $string =~ s/^\s+//;
@@ -274,7 +308,6 @@ sub trim {
 sub dec2bin {
     my ($dec, $l) = @_;
     my $bin = unpack("B32", pack("N", $dec));
-    #$str =~ s/^0+(?=\d)//;   # otherwise you'll get leading zeros
 
     # Force to length
     if (length($bin) < $l) {
@@ -287,10 +320,19 @@ sub dec2bin {
 
     return $bin;
 }
-sub dec2hex {   # Force at least length 2
+sub dec2hex {
     my $d = shift;
     my $h = sprintf ("%x", $d);
-    $h = "0$h" if length ($h) < 2;
     return $h;
+}
+sub hex2bin {
+    my $h = shift;
+    my $hlen = length($h);
+    my $blen = $hlen * 4;
+    return unpack("B$blen", pack("H$hlen", $h));
+}
+sub bin2hex {
+    my $b = shift;
+    return unpack("H*", pack("B*", $b));
 }
 
