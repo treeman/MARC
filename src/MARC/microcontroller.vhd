@@ -161,12 +161,12 @@ begin
                    "11001110" when "0101",
                    "11111111" when others;
 
-    A_imm <= '1' when A_field = "00" else '0';
-    A_dir <= '1' when A_field = "01" else '0';
+    A_dir <= '1' when A_field = "00" else '0';
+    A_imm <= '1' when A_field = "01" else '0';
     A_pre <= '1' when A_field = "11" else '0';
 
-    B_imm <= '1' when B_field = "00" else '0';
-    B_dir <= '1' when B_field = "01" else '0';
+    B_dir <= '1' when B_field = "00" else '0';
+    B_imm <= '1' when B_field = "01" else '0';
     B_pre <= '1' when B_field = "11" else '0';
 
     -------------------------------------------------------------------------

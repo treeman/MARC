@@ -15,8 +15,8 @@ SPL         1010
 
 # Adressing Modes
 
-Immediate               00
-Direct                  01
+Direct                  00
+Immediate               01
 Indirect                10
 pre-decrement indirect  11
 

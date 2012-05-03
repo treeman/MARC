@@ -182,14 +182,14 @@ for my $code (@code) {
         $codeline++; # Not doing anything here atm though
 
         my %types = (
-            '#' => "00",    # Immediate
+            '#' => "01",    # Immediate
             '@' => "10",    # Indirect
             '<' => "11",    # Pre-decrement indirect
         );
 
         # Default
-        my $a_mod = "01";   # Direct
-        my $b_mod = "01";
+        my $a_mod = "00";   # Direct
+        my $b_mod = "00";
 
         my $a_type = "";
         my $b_type = "";

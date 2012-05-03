@@ -1,5 +1,5 @@
 onerror {resume}
-virtual type { immediate direct indirect pre-decr} mod_type
+virtual type { direct immediate indirect pre-decr} mod_type
 virtual type { DAT MOV ADD SUB JMP JMPZ JMN CMP SLT DJN SPL} instr_type
 quietly virtual signal -install /marc_test/uut/micro {/marc_test/uut/micro/A_field  } A_field_bus
 quietly virtual function -install /marc_test/uut/micro -env /marc_test/uut/micro { (mod_type)A_field_bus} A_field_
