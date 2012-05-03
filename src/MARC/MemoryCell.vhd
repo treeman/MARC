@@ -47,7 +47,28 @@ architecture Behavioral of memory_cell is
 
     type ram_block_type is array (0 to 1023) of std_logic_vector(12 downto 0);
 
-    signal ram_block_0 : ram_block_type := (others => (others => '0'));
+    --signal ram_block_0 : ram_block_type := (others => (others => '0'));
+
+    -- Testing purposes!
+    signal ram_block_0 : ram_block_type := (
+        "0000000000000",
+        "0000000000001",
+        "0000000000010",
+        "0000000000011",
+        "0000000000100",
+        "0000000000101",
+        "0000000000110",
+        "0000000001000",
+        "0000000001001",
+        "0000000001010",
+        "0000000001011",
+        "0000000001100",
+        "0000000001101",
+        "0000000001110",
+        "0000000001111",
+
+        others => (others => '0')
+    );
     signal ram_block_1 : ram_block_type := (others => (others => '0'));
     signal ram_block_2 : ram_block_type := (others => (others => '0'));
     signal ram_block_3 : ram_block_type := (others => (others => '0'));

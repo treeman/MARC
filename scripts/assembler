@@ -118,7 +118,7 @@ while (my $line = <$in>) {
                       [A-Z0-9]*             # Only catch first 8 chars
                       \s+
                    )?
-                   ([A-Z0-9]{3})            # 3 letter mnemonic
+                   ([A-Z0-9]+)              # Mnemonic
                    (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
                    \s+
                    ([^,]+)                  # A operand
@@ -169,7 +169,7 @@ for my $code (@code) {
                       [A-Z0-9]*             # Only catch first 8 chars
                       \s+
                    )?
-                   ([A-Z0-9]{3})            # 3 letter mnemonic
+                   ([A-Z0-9]+)              # Mnemonic
                    (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
                    \s+
                    ([^,]+)                  # A operand
@@ -213,8 +213,8 @@ for my $code (@code) {
         my $a_val = evaluate $a_op, $codeline;
         my $b_val = evaluate $b_op, $codeline;
 
-        my $a_bin = dec2bin ($a_val, 16);
-        my $b_bin = dec2bin ($b_val, 16);
+        my $a_bin = dec2bin ($a_val, 13);
+        my $b_bin = dec2bin ($b_val, 13);
 
         my %instr_codes = (
             DAT => '0000',
@@ -258,7 +258,7 @@ for my $code (@code) {
 
         if ($obj_out) {
             my $what = "$instr_code$a_mod$b_mod$a_bin$b_bin";
-            my $val = pack ("B40", $what);
+            my $val = pack ("B34", $what);
             print $out $val;
         }
     }

@@ -52,7 +52,25 @@ architecture Behavioral of Memory_Cell_DualPort is
 
     type ram_block_type is array (0 to 1023) of std_logic_vector(15 downto 0);
 
-    signal ram_block_0 : ram_block_type := (others => (others => '0'));
+    --signal ram_block_0 : ram_block_type := (others => (others => '0'));
+
+    -- Testing purposes!
+    signal ram_block_0 : ram_block_type := (
+        -- All a-mods direct
+        "00000101XXXXXXXX", -- DAT
+        "00010101XXXXXXXX", -- MOV
+        "00100101XXXXXXXX", -- ADD
+        "00110101XXXXXXXX", -- SUB
+        "01000101XXXXXXXX", -- JMP
+        "01010101XXXXXXXX", -- JMPZ
+        "01100101XXXXXXXX", -- JMN
+        "01110101XXXXXXXX", -- CMP
+        "10000101XXXXXXXX", -- SLT
+        "10010101XXXXXXXX", -- DJN
+        "10100101XXXXXXXX", -- SPL
+
+        others => (others => '0')
+    );
     signal ram_block_1 : ram_block_type := (others => (others => '0'));
     signal ram_block_2 : ram_block_type := (others => (others => '0'));
     signal ram_block_3 : ram_block_type := (others => (others => '0'));
@@ -66,11 +84,11 @@ begin
     data_out <= data_sync;
 
     -- This determines the color depending on what player put what there and what kind of OP code it is (data / non data)
-    calculated_color <=     "00000000" when active_player = "00" else                                               -- Black when no player
-                                "11000000" when active_player = "10" and data_sync(7 downto 4) = "0000" else        -- Weak red when player 1 and data
-                                "00001000" when active_player = "01" and data_sync(7 downto 4) = "0000" else        -- Weak blue when player 2 and data
-                                "11100000" when active_player = "10" else                                               -- Red when player 1 and code
-                                "00011000";                                                                                     -- Blue when player 2 and code
+    calculated_color <=     "00000000" when active_player = "00" else                                       -- Black when no player
+                            "11000000" when active_player = "10" and data_sync(7 downto 4) = "0000" else    -- Weak red when player 1 and data
+                            "00001000" when active_player = "01" and data_sync(7 downto 4) = "0000" else    -- Weak blue when player 2 and data
+                            "11100000" when active_player = "10" else                                       -- Red when player 1 and code
+                            "00011000";                                                                     -- Blue when player 2 and code
 
     PROCESS(clk) begin
         if(rising_edge(clk)) then
