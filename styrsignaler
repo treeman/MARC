@@ -19,7 +19,7 @@ uPC
 
     1111    = 0
 
-uCount
+uCount      (Could be removed! Check when uPC = 0 and do the same here)
     0       uCounter + 1
     1       uCounter = 0
 
