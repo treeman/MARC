@@ -220,7 +220,6 @@ my %labels;
 while (my $line = <$in>) {
     chomp $line;
 
-
     # Ignore comments
     if ($line =~ /^;/) {
         push (@lines, $line);
@@ -231,8 +230,11 @@ while (my $line = <$in>) {
     }
     # It's a line of code!
     else {
+        # Remove comments
+        my ($code) = $line =~ /^([^;]*)/;
+
         # If we have a label
-        if ($line =~ /^:([A-Z]+)\s+(.*)/) {
+        if ($code =~ /^:([A-Z]+)\s+(.*)/) {
             # Store it's address (start with 0)
             $labels{$1} = $codeline;
 
@@ -240,7 +242,7 @@ while (my $line = <$in>) {
             push (@lines, $2);
         }
         else {
-            push (@lines, $line);
+            push (@lines, $code);
         }
 
         $codeline++;
@@ -492,7 +494,7 @@ for my $line (@lines) {
                     $label = $1;
 
                     if (exists $labels{$label}) {
-                        $val = $labels{$label};
+                        $val = dec2hex ($labels{$label});
                     }
                     else {
                         push (@comments, "? $cmd ?");
@@ -511,6 +513,8 @@ for my $line (@lines) {
                     push (@comments, "? $cmd ?");
                     next;
                 }
+
+                say "$val => $bin";
 
                 if ($op =~ /^[+-]$/) {
                     my $curr_row = $codeline - 1;
@@ -554,81 +558,17 @@ for my $line (@lines) {
                 push (@comments, "? $cmd ?");
             }
         }
-        # var = stuff eg uPC = 0, uCount = 0, uPC_addr = AB or 10101011 (will truncate/fill)
+        # var = stuff eg uPC = 0, uCount = 0
         elsif ($cmd =~ /(\S+)\s*=\s*(\S+)/) {
             my ($var, $res) = ($1, $2);
 
-            # TODO delete this???????
-            # Convert hex and stuff for addr jumping, can do relative eg +2 or absolute 0f
-            if ($var eq 'uPC_addr') {
-
-                $res =~ /^([+-])?(.*)/;
-                my $op = $1 // "";
-                my $val = $2;
-
-                my $label = "";
-
-                # Convert label def
-                if ($val =~ /^\$([A-Z]+)/) {
-                    $label = $1;
-
-                    if (exists $labels{$label}) {
-                        $val = $labels{$label};
-                    }
-                    else {
-                        push (@comments, "? $cmd ?");
-                        next;
-                    }
-                }
-
-                my $bin;
-                if ($val =~ /^[01]+$/) {
-                    $bin = $val;
-                }
-                elsif ($val =~ /^[0123456789ABCDEF]+$/i) {
-                    $bin = hex2bin($val);
-                }
-                else {
-                    push (@comments, "? $cmd ?");
-                    next;
-                }
-
-                if ($op =~ /^[+-]$/) {
-                    my $curr_row = $codeline - 1;
-                    my $off = bin2dec ($bin);
-                    my $abs = $op eq "+" ? $curr_row + $off : $curr_row - $off;
-                    my $new_bin = dec2bin ($abs);
-                    my $new_hex = dec2hex ($abs);
-
-                    my $currhex = dec2hex ($curr_row);
-                    #say "$curr_row($currhex) $op $off = $abs($new_hex) -> $new_bin" if $debug;
-                    push (@output, "$curr_row($currhex) $op $off = $abs($new_hex) -> $new_bin") if $debug;
-
-                    $bin = $new_bin;
-                }
-
-                # Force to length 8
-                if (length($bin) < 8) {
-                    $bin = '0' x (8 - length($bin)) . $bin;
-                }
-                elsif (length($bin) > 8) {
-                    # Truncate from the back so 00 1111 1111 -> 1111 1111
-                    $bin = substr $bin, -8;
-                }
-
-                update (\@signal, $positions{$var}, $bin);
-
-                # Include label name in comment
-                if ($label) {
-                    my $addr = dec2hex ($labels{$label});
-                    push (@comments, "$var = $label($addr)");
-                }
-                else {
-                    push (@comments, $cmd);
-                }
+            if ($var eq "uPC_addr") {
+                push (@comments, "? $cmd ?");
+                next;
             }
+
             # Check special eg uPC = 0
-            elsif (exists $registers{$var} && exists $registers{$var}->{$res}) {
+            if (exists $registers{$var} && exists $registers{$var}->{$res}) {
                 update (\@signal, $positions{$var}, $registers{$var}->{$res});
 
                 push (@comments, $cmd);

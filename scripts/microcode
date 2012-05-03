@@ -4,9 +4,26 @@
         OP -> IR
 
 ; Calculate adress
-:Amod
+:AMOD   jmpAimm $BMOD               ; If immediate we're done
+        M1 -> ALU1                  ; Address is a relative offset
+        ALU1 += PC                  ; so add PC
+        ALU1 -> M1
+        jmpAdir $BMOD               ; If direct, we're done
+        M1 -> mem_addr, mem -> M2   ; Check B address
+        M2 -> M1                    ; Move it to A's place
+        jmpApre $APRE               ; If pre-decr decr and come back
+:AOFF   M1 -> ALU1                  ; Relative offset, add PC
+        ALU1 += PC
+        ALU1 -> M1
+        jmp $BMOD                   ; Do the same for the B operand
 
-:Bmod
+:APRE   M1 -> ALU1                  ; Decr
+        ALU--
+        ALU1 -> M1, ALU1 -> M2
+        M2 -> mem                   ; write it back where it came from
+        jmp $AOFF                   ; continue
+
+:BMOD   jmpBimm $END
 
 :END    PC++, uPC = 0
 
@@ -25,17 +42,16 @@
 ; finally, if no branch and instr not a DAT
 ; PC++ and insert into fifo
 ;
-; We need:
-; A and B-fields check
-; is immediate?
-; is direct?
-; is predecrement?
-
-; Check memory for correctness
-; PC -> mem_addr
-; mem -> OP, PC++
-; PC -> mem_addr
-; mem -> OP, PC++
-; PC -> mem_addr
-; mem -> OP
+;
+;   Direct (default)
+; The value is an offset to the memory location.
+;
+; # Immediate
+; The value is the data
+;
+; @ Indirect
+; Offset to a memory location. B operand of that is an offset to another memory location.
+;
+; < Pre-decrement indirect
+; Offset to a memory location. B operand there, B--, inserted again. That is then used as an offset to another memory location.
 
