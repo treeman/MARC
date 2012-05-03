@@ -15,7 +15,9 @@ architecture behavior of MARC_test is
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
             tmp_gpu_data : out std_logic_vector(7 downto 0);
 
-            tmp_IN : in std_logic_vector(12 downto 0)
+            tmp_IN : in std_logic_vector(12 downto 0);
+
+            fbart_in : in std_logic
         );
     end component;
 
@@ -23,6 +25,7 @@ architecture behavior of MARC_test is
     signal clk : std_logic := '0';
     signal reset_a : std_logic := '0';
     signal tst : std_logic := '0';
+    signal fbart_in : std_logic := '0';
 
     -- Outputs
     signal tmp_buss : std_logic_vector(12 downto 0);
@@ -42,7 +45,8 @@ begin
         tmp_buss => tmp_buss,
         tmp_gpu_adr => tmp_gpu_adr,
         tmp_gpu_data => tmp_gpu_data,
-        tmp_IN => tmp_IN
+        tmp_IN => tmp_IN,
+        fbart_in => fbart_in
     );
 
     clk_process :process
