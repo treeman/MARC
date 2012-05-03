@@ -22,6 +22,9 @@ comp    cmp   val, stuff
         djn   scan,<LEVEL+2*val-3
 ONLYREALLYFIRSTEIGHT add 1,2
 
+        add   bomb,1
+bomb    mov   <2,@scan
+
 
 ; End
 end

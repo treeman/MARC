@@ -67,30 +67,24 @@ sub evaluate {
     return $value;
 }
 
-my $linenum = 0;
 my $codeline = 0;
 
 open my $in, '<', $src;
 
+# Store line of code here when processing
+my @code;
+
 while (my $line = <$in>) {
     chomp $line;
 
-    $linenum++;
-
     # Ignore empty lines
-    if ($line =~ /^\s*$/) {
-        say $line if $verbose;
-        next;
-    }
+    next if $line =~ /^\s*$/;
 
     # Remove comments, will always match
     my ($code, $comment) = $line =~ /^([^;]*);?(.*)/;
 
     # Don't parse a full comment line
-    if (!$code) {
-        say " ; $comment" if $verbose && $comment;
-        next;
-    }
+    next if !$code;
 
     # Match up a line of redcode
     if ($code =~ /^(?:
@@ -115,7 +109,50 @@ while (my $line = <$in>) {
         }
         $codeline++;
 
-        #say "C: $instr, $a_op, $b_op";
+        push (@code, $code);
+    }
+    # Match a constant
+    elsif ($code =~ /^
+                     ([A-Z0-9]{0,8})        # Label necessary
+                     [A-Z0-9]*              # Only catch first 8 chars
+                     \s+
+                     equ                    # Constant instr mnemonic
+                     \s+
+                     ([-+*\/A-Z0-9\s+]+)    # Definition
+                    /xi)
+    {
+        push (@code, $code);
+    }
+    # Match end
+    elsif ($code =~ /^\s*end/) {
+        last;
+    }
+    else {
+        die "Syntax error.";
+    }
+}
+
+$codeline = 0;
+
+for my $code (@code) {
+
+    # Match up a line of redcode
+    if ($code =~ /^(?:
+                      ([A-Z0-9]{0,8})?      # Label, not necessary
+                      [A-Z0-9]*             # Only catch first 8 chars
+                      \s+
+                   )?
+                   ([A-Z0-9]{3})            # 3 letter mnemonic
+                   (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
+                   \s+
+                   ([^,]+)                  # A operand
+                   \s*,\s*                  # , delimited
+                   ([^,]+)                  # B operand
+                 /xi)
+    {
+        my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
+
+        $codeline++; # Not doing anything here atm though
 
         # TODO should produce object code or something later
         my %types = (
@@ -175,12 +212,10 @@ while (my $line = <$in>) {
     }
     # Match end
     elsif ($code =~ /^\s*end/) {
-        say "end found!";
         last;
     }
     else {
-        say "'$code' does not match!";
-        die "Syntax error line $linenum";
+        die "Syntax error.";
     }
 }
 
