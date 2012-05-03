@@ -22,9 +22,12 @@ comp    cmp   val, stuff
         djn   scan,<LEVEL+2*val-3
 ONLYREALLYFIRSTEIGHT add 1,2
 
+; Relative
         add   bomb,1
 bomb    mov   <2,@scan
-
+a       add   bomb,2
+b       add   bomb,2
+self    add   self,100
 
 ; End
 end

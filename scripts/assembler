@@ -32,10 +32,11 @@ if ($help || !$src) {
 }
 
 our %labels;
+our %constants;
 
 # Evaluate an operator statement, like val*2+1
 sub evaluate {
-    my ($def) = @_;
+    my ($def, $linenum) = @_;
 
     my @pieces = split /[-+*\/]/, $def;
 
@@ -51,10 +52,23 @@ sub evaluate {
         if ($piece =~ /^([A-Z0-9]{0,8})[A-Z0-9]*$/i) {
             my $label = $1;
 
-            die "Compile error, no label '$label' in scope." if !exists $labels{$label};
+            if (exists $labels{$label}) {
 
-            # Substitute the label with it's value
-            $def =~ s/$piece/$labels{$label}/;
+                # Substitute the label with it's value
+                #$def =~ s/$piece/$labels{$label}/;
+
+                # Addresses to labels are relative to the line of code
+                my $relative = $labels{$label} - $linenum;
+                $def =~ s/$piece/$relative/;
+            }
+            elsif (exists $constants{$label}) {
+
+                # Substitute the label with it's value
+                $def =~ s/$piece/$constants{$label}/;
+            }
+            else {
+                die "Compile error, no label '$label' in scope.";
+            }
         }
         else {
             die "Syntax error, label expected ner '$piece'";
@@ -132,7 +146,8 @@ while (my $line = <$in>) {
     }
 }
 
-$codeline = 0;
+# We'll incr in the beginning but we still want to start with 0
+$codeline = -1;
 
 for my $code (@code) {
 
@@ -185,8 +200,8 @@ for my $code (@code) {
             $b_op = $rest;
         }
 
-        my $a_val = evaluate $a_op;
-        my $b_val = evaluate $b_op;
+        my $a_val = evaluate $a_op, $codeline;
+        my $b_val = evaluate $b_op, $codeline;
 
         say "I: $instr $a_mod $b_mod $a_val $b_val";
     }
@@ -203,10 +218,10 @@ for my $code (@code) {
         my ($label, $def) = ($1, $2);
 
         # Evaluate
-        my $value = evaluate $def;
+        my $value = evaluate $def, $codeline;
 
         # And insert
-        $labels{$label} = $value;
+        $constants{$label} = $value;
 
         say "L: $label = $def ($value)";
     }
