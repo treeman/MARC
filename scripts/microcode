@@ -45,17 +45,42 @@
         M2 -> mem                   ; Write it back where it came from
         jmp $BOFF                   ; Continue
 
+
+; Load up instruction
+:INSTR  M1 -> ADR1, M2 -> ADR2      ; A operand is now in ADR1 and B in ADR2 (if immediate ignore these)
+        op_addr -> uPC
+
+
 ; Execute instruction
 ;
-; M1 (A operand) and M2 (B operand) contain either (should we move it to ADR1 and ADR2 instead?)
-; Data if it's immediate
-; Or absolute address to a memory location
+; ADR1 is now the absolute address for the A operand
+; ADR2 is for the B operand
 ;
+; If immediate, the data is instead in M1 or M2
 
-:INSTR jmp $END
+; DAT  Executing data will eat up the PC
+:DAT    jmp $END
 
-:END    PC++
-:DELAY  jmpC 0                      ; Start over when we've spent enough time
+; MOV  Move A to B
+:MOV    jmpAimm $IMOV                       ; Handle A immediate special case
+        ADR1 -> mem_addr                    ; Peek at memory from A absolute addr
+        mem -> OP, mem -> M1, mem -> M2
+        ADR2 -> mem_addr                    ; Copy it to B absolute addr
+        OP -> mem, M1 -> mem, M2 -> mem
+        jmp $ADDPC                          ; Keep using our PC
+
+; If A immediate, move A to B op specified by B mem address
+:IMOV   ADR2 -> mem_addr, M1 -> M2          ; Examine B's absolute address
+        M2 -> mem                           ; Move A op there
+        jmp $ADDPC                          ; We want to keep our PC
+
+
+; Keep the PC for next round
+:ADDPC  PC++
+;       PC -> FIFO
+
+:END    jmp $DELAY
+:DELAY  jmpC 0                              ; Start over when we've spent enough time
         jmp $DELAY
 
 ; Examine A-field

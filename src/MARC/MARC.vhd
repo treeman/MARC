@@ -386,12 +386,13 @@ begin
     -------------------------------------------------------------------------
 
     with memory_addr_code select
-        memory_address_in <= PC when "000",
-                             main_buss when "001",
+        memory_address_in <= main_buss when "001",
                              ALU1_out when "010",
                              ALU2_out when "011",
                              ADR1 when "100",
-                             ADR2 when others;
+                             ADR2 when "101",
+                             PC when "110",
+                             memory_address when others;
 
     with OP_code select
         memory1_data_in <= main_buss(7 downto 0) when '1',

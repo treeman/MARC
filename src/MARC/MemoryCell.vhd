@@ -51,7 +51,6 @@ architecture Behavioral of memory_cell is
 
     -- Testing purposes!
     signal ram_block_0 : ram_block_type := (
-        --"0000000000000",
         "0000000000001",
         "0000000000010",
         "0000000000011",

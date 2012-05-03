@@ -11,27 +11,28 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate /marc_test/clk
 add wave -noupdate /marc_test/reset_a
 add wave -noupdate /marc_test/uut/reset
-add wave -noupdate -expand -group IR /marc_test/uut/micro/IR
-add wave -noupdate -expand -group IR /marc_test/uut/micro/instr
-add wave -noupdate -expand -group IR -color {Cadet Blue} -radix hexadecimal /marc_test/uut/micro/op_addr
-add wave -noupdate -expand -group IR /marc_test/uut/micro/A_field_
-add wave -noupdate -expand -group IR /marc_test/uut/micro/A_imm
-add wave -noupdate -expand -group IR /marc_test/uut/micro/A_dir
-add wave -noupdate -expand -group IR /marc_test/uut/micro/A_pre
-add wave -noupdate -expand -group IR /marc_test/uut/micro/B_field_
-add wave -noupdate -expand -group IR /marc_test/uut/micro/B_imm
-add wave -noupdate -expand -group IR /marc_test/uut/micro/B_dir
-add wave -noupdate -expand -group IR /marc_test/uut/micro/B_pre
-add wave -noupdate -expand -group IR -color {Cadet Blue} /marc_test/uut/micro/IR_code
-add wave -noupdate -group uPC -color {Medium Aquamarine} -radix hexadecimal /marc_test/uut/micro/uPC
-add wave -noupdate -group uPC /marc_test/uut/micro/uPC_addr
-add wave -noupdate -group uPC -color Orchid /marc_test/uut/micro/uPC_code
-add wave -noupdate -group uPC -radix hexadecimal /marc_test/uut/micro/uCounter
-add wave -noupdate -group uPC -radix hexadecimal /marc_test/uut/micro/uCount_limit
+add wave -noupdate -color Brown -radix hexadecimal /marc_test/uut/PC
+add wave -noupdate -color {Medium Orchid} /marc_test/uut/micro/instr
+add wave -noupdate -group IR /marc_test/uut/micro/IR
+add wave -noupdate -group IR /marc_test/uut/micro/instr
+add wave -noupdate -group IR -color {Cadet Blue} -radix hexadecimal /marc_test/uut/micro/op_addr
+add wave -noupdate -group IR /marc_test/uut/micro/A_field_
+add wave -noupdate -group IR /marc_test/uut/micro/A_imm
+add wave -noupdate -group IR /marc_test/uut/micro/A_dir
+add wave -noupdate -group IR /marc_test/uut/micro/A_pre
+add wave -noupdate -group IR /marc_test/uut/micro/B_field_
+add wave -noupdate -group IR /marc_test/uut/micro/B_imm
+add wave -noupdate -group IR /marc_test/uut/micro/B_dir
+add wave -noupdate -group IR /marc_test/uut/micro/B_pre
+add wave -noupdate -group IR -color {Cadet Blue} /marc_test/uut/micro/IR_code
+add wave -noupdate -expand -group uPC -color {Medium Aquamarine} -radix hexadecimal /marc_test/uut/micro/uPC
+add wave -noupdate -expand -group uPC /marc_test/uut/micro/uPC_addr
+add wave -noupdate -expand -group uPC -color Orchid /marc_test/uut/micro/uPC_code
+add wave -noupdate -expand -group uPC -radix hexadecimal /marc_test/uut/micro/uCounter
+add wave -noupdate -expand -group uPC -radix hexadecimal /marc_test/uut/micro/uCount_limit
 add wave -noupdate -radix hexadecimal /marc_test/uut/memory_address
 add wave -noupdate -radix hexadecimal /marc_test/uut/ADR1
 add wave -noupdate -radix hexadecimal /marc_test/uut/ADR2
-add wave -noupdate -radix hexadecimal /marc_test/uut/PC
 add wave -noupdate -radix hexadecimal /marc_test/uut/OP
 add wave -noupdate -radix hexadecimal /marc_test/uut/M1
 add wave -noupdate -radix hexadecimal /marc_test/uut/M2
@@ -61,18 +62,21 @@ add wave -noupdate -group mem1 -radix hexadecimal /marc_test/uut/memory1/data_ou
 add wave -noupdate -group mem1 /marc_test/uut/memory1_read
 add wave -noupdate -group mem1 /marc_test/uut/memory1_write
 add wave -noupdate -group mem1 -radix hexadecimal /marc_test/uut/memory_address_in
+add wave -noupdate -group mem1 -radix hexadecimal /marc_test/uut/memory1/address_out
 add wave -noupdate -group mem2 -radix hexadecimal /marc_test/uut/memory2_data_in
 add wave -noupdate -group mem2 -radix hexadecimal /marc_test/uut/memory2/data_out
 add wave -noupdate -group mem2 /marc_test/uut/memory2_read
 add wave -noupdate -group mem2 /marc_test/uut/memory2_write
 add wave -noupdate -group mem2 -radix hexadecimal /marc_test/uut/memory_address_in
+add wave -noupdate -group mem2 -radix hexadecimal /marc_test/uut/memory2/address_out
 add wave -noupdate -group mem3 -radix hexadecimal /marc_test/uut/memory3_data_in
 add wave -noupdate -group mem3 -radix hexadecimal /marc_test/uut/memory3/data_out
 add wave -noupdate -group mem3 /marc_test/uut/memory3_read
 add wave -noupdate -group mem3 /marc_test/uut/memory3_write
 add wave -noupdate -group mem3 -radix hexadecimal /marc_test/uut/memory_address_in
+add wave -noupdate -group mem3 -radix hexadecimal -childformat {{/marc_test/uut/memory3/address_out(12) -radix hexadecimal} {/marc_test/uut/memory3/address_out(11) -radix hexadecimal} {/marc_test/uut/memory3/address_out(10) -radix hexadecimal} {/marc_test/uut/memory3/address_out(9) -radix hexadecimal} {/marc_test/uut/memory3/address_out(8) -radix hexadecimal} {/marc_test/uut/memory3/address_out(7) -radix hexadecimal} {/marc_test/uut/memory3/address_out(6) -radix hexadecimal} {/marc_test/uut/memory3/address_out(5) -radix hexadecimal} {/marc_test/uut/memory3/address_out(4) -radix hexadecimal} {/marc_test/uut/memory3/address_out(3) -radix hexadecimal} {/marc_test/uut/memory3/address_out(2) -radix hexadecimal} {/marc_test/uut/memory3/address_out(1) -radix hexadecimal} {/marc_test/uut/memory3/address_out(0) -radix hexadecimal}} -subitemconfig {/marc_test/uut/memory3/address_out(12) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(11) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(10) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(9) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(8) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(7) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(6) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(5) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(4) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(3) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(2) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(1) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(0) {-height 15 -radix hexadecimal}} /marc_test/uut/memory3/address_out
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {5500 ns} 0}
+WaveRestoreCursors {{Cursor 1} {17799 ns} 0}
 configure wave -namecolwidth 252
 configure wave -valuecolwidth 101
 configure wave -justifyvalue left
@@ -87,4 +91,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {1333 ns} {20983 ns}
+WaveRestoreZoom {0 ns} {31500 ns}

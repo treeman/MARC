@@ -59,7 +59,7 @@ architecture Behavioral of Microcontroller is
 
     signal mem : Data := (
         --  Fetch instruction
-        "0000000000000000000000000000001000000000000", -- PC -> mem_addr, uCount = 0
+        "0000000000000000110000000000001000000000000", -- PC -> mem_addr, uCount = 0
         "0000000000010101000000000000000000000000000", -- mem -> OP, mem -> M1, mem -> M2
         "1000000000000000000000000001000001000000011", -- OP -> buss, buss -> IR, jmp AMOD(03)
 
@@ -82,8 +82,9 @@ architecture Behavioral of Microcontroller is
         "0000001010000000000000000000000000000000000", -- ALU1 -> M1, ALU1 -> M2
         "0000000000000010000000000000000000000000000", -- M2 -> mem
         "0000000000000000000000000000000001000001011", -- jmp AOFF(0b)
+
         --  Calculate adress mode for B operand
-        "0000000000000000000000000000000000000000000", -- PC -> mem_addr
+        "0000000000000000110000000000000000000000000", -- PC -> mem_addr
         "0000000000000001000000000000000000000000000", -- mem -> M2
         "0000000000000000000000000000000101100100111", -- jmpBimm INSTR(27)
         "0000000000000000000100001000000000000000000", -- M2 -> ALU1
@@ -104,17 +105,43 @@ architecture Behavioral of Microcontroller is
         "0000000000000010000000000000000000000000000", -- M2 -> mem
         "0000000000000000000000000000000001000011110", -- jmp BOFF(1e)
 
+
+        --  Load up instruction
+        "0101000000000000000000000000000000000000000", -- M1 -> ADR1, M2 -> ADR2
+        "0000000000000000000000000000000000100000000", -- op_addr -> uPC
+
+
         --  Execute instruction
         --
-        --  M1 (A operand) and M2 (B operand) contain either (should we move it to ADR1 and ADR2 instead?)
-        --  Data if it's immediate
-        --  Or absolute address to a memory location
+        --  ADR1 is now the absolute address for the A operand
+        --  ADR2 is for the B operand
         --
-        "0000000000000000000000000000000001000101000", -- jmp END(28)
+        --  If immediate, the data is instead in M1 or M2
 
+        --  DAT  Executing data will eat up the PC
+        "0000000000000000000000000000000001000110100", -- jmp END(34)
+
+        --  MOV  Move A to B
+        "0000000000000000000000000000000100000110000", -- jmpAimm IMOV(30)
+        "0000000000000000100000000000000000000000000", -- ADR1 -> mem_addr
+        "0000000000010101000000000000000000000000000", -- mem -> OP, mem -> M1, mem -> M2
+        "0000000000000000101000000000000000000000000", -- ADR2 -> mem_addr
+        "0000000000101010000000000000000000000000000", -- OP -> mem, M1 -> mem, M2 -> mem
+        "0000000000000000000000000000000001000110011", -- jmp ADDPC(33)
+
+        --  If A immediate, move A to B op specified by B mem address
+        "0000000001000000101000000010000000000000000", -- ADR2 -> mem_addr, M1 -> buss, buss -> M2
+        "0000000000000010000000000000000000000000000", -- M2 -> mem
+        "0000000000000000000000000000000001000110011", -- jmp ADDPC(33)
+
+
+        --  Keep the PC for next round
         "0000000000000000000000000000100000000000000", -- PC++
+        --        PC -> FIFO
+
+        "0000000000000000000000000000000001000110101", -- jmp DELAY(35)
         "0000000000000000000000000000000010100000000", -- jmpC 0
-        "0000000000000000000000000000000001000101001", -- jmp DELAY(29)
+        "0000000000000000000000000000000001000110101", -- jmp DELAY(35)
 
         others => (others => '0')
     );
@@ -201,7 +228,8 @@ begin
 
     -- OP code address decoding
     with OP_field select
-        op_addr <= "00000000" when "0000",
+        op_addr <= "00101000" when "0000", -- DAT
+                   "00101010" when "0001", -- MOV
                    "11001110" when "0101",
                    "11111111" when others;
 

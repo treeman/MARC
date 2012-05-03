@@ -34,12 +34,13 @@ IR
     1       load from OP (or buss)
 
 mem address
-    000     PC
+    000     hold
     001     buss
     010     AR 1
     011     AR 2
     100     ADR 1
     101     ADR 2
+    110     PC
 
 mem1
     00      nothing
