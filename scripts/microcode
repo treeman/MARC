@@ -146,16 +146,31 @@
 :CMPOP  OP -> ALU1
         mem -> OP
         ALU1 -= OP
-        jmpZ $SCMP                          ; If eq, skip next instr
+        jmpZ $SKIP                          ; If eq, skip next instr
         jmp $ADDPC                          ; Else continue as normal
 
 :ICMP   ADR2 -> mem_addr                    ; Fetch B op
         mem -> M2, M1 -> ALU1
         ALU1 -= M2                          ; Compare
-        jmpZ $SCMP                          ; If eq, skip next instr
+        jmpZ $SKIP                          ; If eq, skip next instr
         jmp $ADDPC                          ; Else continue as normal
 
-:SCMP  PC++, jmp $ADDPC
+
+; SLT if A is less than B skip next instr
+:SLT    jmpAimm $ISLT
+        ADR1 -> mem_addr                    ; Fetch B field spec by A
+        mem -> M2
+        M2 -> ALU1
+:SLTCMP ADR2 -> mem_addr                    ; Fetch B field spec by B
+        mem -> M2
+        ALU1 < M2                           ; Compare A < B
+        jmpZ $SKIP                          ; Skip next instr if A < B
+        jmp $ADDPC                          ; Else continue
+
+:ISLT   M1 -> ALU1, jmp $SLTCMP             ; Place A in ALU for comparison, rest is the same
+
+
+:SKIP   PC++, jmp $ADDPC
 
 ; Keep the PC for next round
 :ADDPC  PC++

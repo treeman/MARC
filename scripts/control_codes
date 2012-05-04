@@ -43,6 +43,7 @@ my %ALU = (
     '++' =>"100",
     '--' => "101",
     cmp => "110",
+    '<' => "111",
 );
 
 my %buss = (
@@ -309,7 +310,7 @@ for my $line (@lines) {
             push (@comments, $cmd);
         }
         # Grab single word affixes eg PC++, ALU--
-        elsif ($cmd =~ /^(\S+?)(\+{2}|-{2})$/) {
+        elsif ($cmd =~ /^(\S+?)([-+<]+)$/) {
             my ($reg, $op) = ($1, $2);
 
             if (exists $registers{$reg}->{$op}) {
@@ -337,8 +338,48 @@ for my $line (@lines) {
 
             push (@comments, $cmd);
         }
+        # Check ALU1 < src
+        elsif ($cmd =~ /^ALU1\s+<\s+(\S+)/) {
+            my ($src) = ($1);
+
+            # Check direct
+            if (exists $registers{ALU1}->{$src}) {
+
+                # Update code
+                update (\@signal, $positions{ALU1}, $registers{ALU1}->{$src});
+
+                # Update ALU operation
+                update (\@signal, $positions{ALU}, $ALU{'<'});
+
+                $alu_err = 1 if $alu_op;
+                $alu_op = '<';
+
+                push (@comments, $cmd);
+            }
+            elsif (exists $registers{ALU1}->{buss} && exists $buss{$src}) {
+
+                $buss_used++;
+
+                # Update src -> buss
+                update (\@signal, $positions{buss}, $buss{$src});
+
+                # Update buss -> alu
+                update (\@signal, $positions{ALU1}, $registers{ALU1}->{buss});
+
+                # Update ALU operation
+                update (\@signal, $positions{ALU}, $ALU{'<'});
+
+                $alu_err = 1 if $alu_op;
+                $alu_op = '<';
+
+                push (@comments, $cmd);
+            }
+            else {
+                push (@comments, "? $cmd ?");
+            }
+        }
         # Special case ALU compare
-        elsif ($cmd =~ /^ALU\s+cmp\s+(\S*)\s+(\S*)/) {
+        elsif ($cmd =~ /^ALU\s+cmp\s+(\S+)\s+(\S+)/) {
             my ($src1, $src2) = ($1, $2);
 
             my $alu1;

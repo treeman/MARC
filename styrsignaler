@@ -90,6 +90,7 @@ ALU
     100     +1
     101     -1
     110     cmp (sub on both ALU's, and Z if both registers are 0)
+    111     <   (Z = ALU1 < ALU2)
 
 ALU1
     00      M1

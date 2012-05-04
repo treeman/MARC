@@ -64,7 +64,7 @@ architecture Behavioral of MARC is
     component ALU
         Port (  clk : in std_logic;
 
-                alu_operation : in std_logic_vector(1 downto 0);
+                alu_operation : in std_logic_vector(2 downto 0);
                 alu1_zeroFlag : out std_logic;
                 alu2_zeroFlag : out std_logic;
 
@@ -127,11 +127,12 @@ architecture Behavioral of MARC is
     signal ALU1_out : std_logic_vector(12 downto 0);
     signal ALU2_out : std_logic_vector(12 downto 0);
 
-    signal ALU_operation : std_logic_vector(1 downto 0);
-    -- 00 hold
-    -- 01 load main buss
-    -- 10 +
-    -- xx -
+    signal ALU_operation : std_logic_vector(2 downto 0);
+    -- 000 hold
+    -- 001 load main buss
+    -- 010 +
+    -- 011 -
+    -- 100 <
 
     signal memory1_data_in : std_logic_vector(7 downto 0);
     signal memory2_data_in : std_logic_vector(12 downto 0);
@@ -447,17 +448,19 @@ begin
                     M1 when ALU2_code = '0' else
                     M2;
 
-    -- 00 hold
-    -- 01 load main buss
-    -- 10 +
-    -- xx -
-    ALU_operation <= "01" when ALU_code = "001" else -- load
-                     "10" when ALU_code = "010" else -- +
-                     "11" when ALU_code = "011" else -- -
-                     "10" when ALU_code = "100" else -- +1
-                     "11" when ALU_code = "101" else -- -1
-                     "11" when ALU_code = "110" else -- cmp
-                     "00"; -- hold
+    -- 000 hold
+    -- 001 load main buss
+    -- 010 +
+    -- 011 -
+    -- 100 <
+    ALU_operation <= "001" when ALU_code = "001" else -- load
+                     "010" when ALU_code = "010" else -- +
+                     "011" when ALU_code = "011" else -- -
+                     "010" when ALU_code = "100" else -- +1
+                     "011" when ALU_code = "101" else -- -1
+                     "011" when ALU_code = "110" else -- cmp
+                     "100" when ALU_code = "111" else -- <
+                     "000"; -- hold
 
     -- Update Z when a change has occured in ALU, so we can keep big cmp status
     Z <= ALU1_Z and ALU2_Z when ALU_code = "110" else

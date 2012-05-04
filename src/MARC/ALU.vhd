@@ -35,11 +35,12 @@ entity ALU is
     Port (  clk : in std_logic;
 
             -- ALU Control
-            alu_operation : in STD_LOGIC_VECTOR(1 downto 0);
-            -- 00 hold
-            -- 01 load main buss
-            -- 10 +
-            -- xx -
+            alu_operation : in STD_LOGIC_VECTOR(2 downto 0);
+            -- 000 hold
+            -- 001 load main buss
+            -- 010 +
+            -- 011 -
+            -- 100 <
 
             alu1_zeroFlag : out STD_LOGIC;
             alu2_zeroFlag : out STD_LOGIC;
@@ -57,41 +58,43 @@ architecture Behavioral of ALU is
     signal alu1_register : STD_LOGIC_VECTOR (12 downto 0);
     signal alu2_register : STD_LOGIC_VECTOR (12 downto 0);
 
+    -- 2 complements comparison of alu1_register < alu2_register
+    signal comp : STD_LOGIC;
+
 begin
 
-    alu1_zeroFlag <= not(alu1_register(0) or alu1_register(1) or alu1_register(2) or alu1_register(3) or alu1_register(4) or alu1_register(5) or alu1_register(6) or alu1_register(7) or alu1_register(8) or alu1_register(9) or alu1_register(10) or alu1_register(11) or alu1_register(12));
+    -- Compare 2-complement
+    comp <= '1' when alu1_register(12) = alu1_operand(12)
+                     and conv_integer(alu1_register) < conv_integer(alu1_operand) else
+            '1' when alu1_register(12) = '1' and alu1_operand(12) = '0' else
+            '0';
 
-    alu2_zeroFlag <= not(alu2_register(0) or alu2_register(1) or alu2_register(2) or alu2_register(3) or alu2_register(4) or alu2_register(5) or alu2_register(6) or alu2_register(7) or alu2_register(8) or alu2_register(9) or alu2_register(10) or alu2_register(11) or alu2_register(12));
+    alu1_zeroFlag <= comp when alu_operation = "100" else
+                     '1' when alu1_register = "0000000000000" else
+                     '0';
+
+    alu2_zeroFlag <= '1' when alu2_register = "0000000000000" else
+                     '0';
 
     alu1_out <= alu1_register;
     alu2_out <= alu2_register;
 
     process(clk)
-        variable z: std_logic := '0';
     begin
         if rising_edge(clk) then
 
-            if alu_operation="00" then
+            if alu_operation="000" then
                 alu1_register <= alu1_register; -- ALU1 = ALU1
-            elsif alu_operation="01" then
-                alu1_register <= alu1_operand; -- ALU1 = OP1
-            elsif alu_operation="10" then
-                alu1_register <= alu1_register+alu1_operand; -- ALU1 += OP1
-            else
-                alu1_register <= alu1_register-alu1_operand; -- alu1_register + not ( alu1_operand -1); -- ALU1 -= OP1, now with 2-compliments numbers!
-
-
-            end if;
-
-
-            if alu_operation="00" then
                 alu2_register <= alu2_register; -- ALU2 = ALU2
-            elsif alu_operation="01" then
+            elsif alu_operation="001" then
+                alu1_register <= alu1_operand; -- ALU1 = OP1
                 alu2_register <= alu2_operand; -- ALU1 = OP1
-            elsif alu_operation="10" then
+            elsif alu_operation="010" then
+                alu1_register <= alu1_register+alu1_operand; -- ALU1 += OP1
                 alu2_register <= alu2_register+alu2_operand; -- ALU2 += OP2
-            else
-                alu2_register <= alu2_register-alu2_operand; -- alu2_register + not ( alu2_operand -1); -- ALU2 -= OP2
+            elsif alu_operation="011" then
+                alu1_register <= alu1_register-alu1_operand; -- ALU1 -= OP1
+                alu2_register <= alu2_register-alu2_operand; -- ALU2 -= OP2
             end if;
 
         end if;

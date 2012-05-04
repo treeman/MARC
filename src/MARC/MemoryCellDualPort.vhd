@@ -65,11 +65,11 @@ architecture Behavioral of Memory_Cell_DualPort is
         --"00010010XXXXXXXX", -- MOV
         --"00100010XXXXXXXX", -- ADD
         --"00110100XXXXXXXX", -- SUB
-        --"01000000XXXXXXXX", -- jmp
+        --"01000000XXXXXXXX", -- JMP
         --"01010000XXXXXXXX", -- JMPZ
         --"01100000XXXXXXXX", -- JMN
         "01110000XXXXXXXX", -- CMP
-        "10000101XXXXXXXX", -- SLT
+        "10000000XXXXXXXX", -- SLT
         "10010101XXXXXXXX", -- DJN
         "10100101XXXXXXXX", -- SPL
 
