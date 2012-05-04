@@ -2,15 +2,15 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   16:49:59 04/26/2012
+-- Create Date:   18:03:50 05/04/2012
 -- Design Name:   
--- Module Name:   E:/vhdl_project/vga_blockbox/bench.vhd
--- Project Name:  vga_blockbox
+-- Module Name:   E:/vga_fpga/colorTSB.vhd
+-- Project Name:  vga_fpga
 -- Target Device:  
 -- Tool versions:  
 -- Description:   
 -- 
--- VHDL Test Bench Created by ISE for module: vga_controller
+-- VHDL Test Bench Created by ISE for module: colorpixSender
 -- 
 -- Dependencies:
 -- 
@@ -32,60 +32,45 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
-ENTITY bench IS
-END bench;
+ENTITY colorTSB IS
+END colorTSB;
  
-ARCHITECTURE behavior OF bench IS 
+ARCHITECTURE behavior OF colorTSB IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
-    COMPONENT vga_controller
+    COMPONENT colorpixSender
     PORT(
-         colorpix : IN  std_logic_vector(7 downto 0);
          rst : IN  std_logic;
          clk : IN  std_logic;
-         HS : OUT  std_logic;
-         VS : OUT  std_logic;
-         red : OUT  std_logic_vector(2 downto 0);
-         grn : OUT  std_logic_vector(2 downto 0);
-         blu : OUT  std_logic_vector(1 downto 0);
-         row : OUT  std_logic_vector(9 downto 0);
-         column : OUT  std_logic_vector(9 downto 0)
+         indata : IN  std_logic_vector(7 downto 0);
+         colorpix : OUT  std_logic_vector(7 downto 0);
+         address : OUT  std_logic_vector(12 downto 0)
         );
     END COMPONENT;
     
 
    --Inputs
-   signal colorpix : std_logic_vector(7 downto 0) := (others => '0');
    signal rst : std_logic := '0';
    signal clk : std_logic := '0';
+   signal indata : std_logic_vector(7 downto 0) := (others => '0');
 
  	--Outputs
-   signal HS : std_logic;
-   signal VS : std_logic;
-   signal red : std_logic_vector(2 downto 0);
-   signal grn : std_logic_vector(2 downto 0);
-   signal blu : std_logic_vector(1 downto 0);
-   signal row : std_logic_vector(9 downto 0);
-   signal column : std_logic_vector(9 downto 0);
+   signal colorpix : std_logic_vector(7 downto 0);
+   signal address : std_logic_vector(12 downto 0);
 
    -- Clock period definitions
-   constant clk_period : time := 10 ns; -- 100 MHz
+   constant clk_period : time := 10 ns;
  
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: vga_controller PORT MAP (
-          colorpix => colorpix,
+   uut: colorpixSender PORT MAP (
           rst => rst,
           clk => clk,
-          HS => HS,
-          VS => VS,
-          red => red,
-          grn => grn,
-          blu => blu,
-          row => row,
-          column => column
+          indata => indata,
+          colorpix => colorpix,
+          address => address
         );
 
    -- Clock process definitions
@@ -102,13 +87,11 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-      wait for 100 ns;	
-
+      wait for 10 ns;	
       -- insert stimulus here 
-		rst <= '1' after 20 ns, '0' after 50 ns;
- 	   colorpix <= "10101010" after 70 ns, "01010101" after 110 ns;
-      
-		wait;
+		rst <= '1' after 20 ns, '0' after 30 ns;
+		indata <= "11111111" after 50 ns, "00000000" after 250 ns, "11111111" after 450 ns, "00000000" after 650 ns, "11111111" after 850 ns, "00000000" after 1050 ns, "11111111" after 1250 ns;
+      wait;
    end process;
 
 END;
