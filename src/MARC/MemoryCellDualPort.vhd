@@ -63,11 +63,11 @@ architecture Behavioral of Memory_Cell_DualPort is
     signal ram_block_0 : ram_block_type := (
         --"00000001XXXXXXXX", -- DAT
         --"00010010XXXXXXXX", -- MOV
-        "00100010XXXXXXXX", -- ADD  1 1
-        "00110000XXXXXXXX", -- SUB  2 2
-        "01000101XXXXXXXX", -- JMP  3 3
-        "01010101XXXXXXXX", -- JMPZ 4 4
-        "01100101XXXXXXXX", -- JMN
+        --"00100010XXXXXXXX", -- ADD
+        "00110100XXXXXXXX", -- SUB  1 1
+        "01000101XXXXXXXX", -- JMP  2 2
+        "01010101XXXXXXXX", -- JMPZ 3 3
+        "01100101XXXXXXXX", -- JMN  4 4
         "01110101XXXXXXXX", -- CMP
         "10000101XXXXXXXX", -- SLT
         "10010101XXXXXXXX", -- DJN

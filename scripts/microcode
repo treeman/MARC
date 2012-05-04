@@ -92,6 +92,24 @@
         M2 -> mem                           ; Write it back
         jmp $ADDPC                          ; Continue
 
+; SUB  Sub A from B
+:SUB    jmpAimm $ISUB
+        ADR2 -> mem_addr                    ; Examine B address
+        mem -> M1, mem -> M2
+        ADR1 -> mem_addr, M1 -> ALU1, M2 -> ALU2
+        mem -> M1, mem -> M2                ; Examine A address
+        ALU1 -= M1, ALU2 -= M2              ; Sub them
+        ALU1 -> M1, ALU2 -> M2, ADR2 -> mem_addr
+        M1 -> mem, M2 -> mem                ; And write back
+        jmp $ADDPC                          ; Continue
+
+:ISUB   ADR2 -> mem_addr                    ; Alter in B's absolute address
+        mem -> M2                           ; Load B op
+        M2 -> ALU1                          ; Sub A op
+        ALU1 -= M1
+        ALU1 -> M2
+        M2 -> mem                           ; Write it back
+        jmp $ADDPC                          ; Continue
 
 ; Keep the PC for next round
 :ADDPC  PC++

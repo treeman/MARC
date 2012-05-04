@@ -272,8 +272,7 @@ for my $line (@lines) {
         }
         # Otherwise transform into vhdl comments
         else {
-            #say "-- $1";
-            push (@output, "-- $1");
+            push (@output, "-- " . trim ($1));
         }
         $last_was_code = 0;
         next;
@@ -377,19 +376,6 @@ for my $line (@lines) {
                     push (@comments, "? $cmd ?");
                 }
             }
-            # Handle special assignments
-            #elsif (exists $registers{$src}->{$dest}) {
-                #update (\@signal, $positions{$src}, $registers{$src}->{$dest});
-
-                ## load if ALU
-                #if ($dest =~ /^ALU/) {
-                    #my $op = "load";
-                    #update (\@signal, $positions{ALU}, $ALU{$op});
-                    #$alu_err = 1 if $alu_op && $alu_op ne $op;
-                #}
-
-                #push (@comments, $cmd);
-            #}
             # Handle direct
             elsif (exists $registers{$dest}->{$src}) {
                 update (\@signal, $positions{$dest}, $registers{$dest}->{$src});
