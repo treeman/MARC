@@ -6,7 +6,19 @@ Todo
 * FIFO
 * input via fbart
 * microcode for instructions
+    Immediate for jumps.
+
+    Non-working functions:
+        CMP
+        SLT
+        DJN
+        SPL
+
+    Need support for FIFO in microcode.
+    Need to test FIFO + input via microcode.
+
 * handle reset/upstart
+    Might be doable in microcode
 
 Schema
 ------

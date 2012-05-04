@@ -66,6 +66,7 @@ architecture Behavioral of MARC is
 
                 alu_operation : in std_logic_vector(1 downto 0);
                 alu1_zeroFlag : out std_logic;
+                alu2_zeroFlag : out std_logic;
 
                 alu1_operand : in STD_LOGIC_VECTOR(12 downto 0);
                 alu2_operand : in STD_LOGIC_VECTOR(12 downto 0);
@@ -207,6 +208,9 @@ architecture Behavioral of MARC is
     signal new_IN : std_logic := '0';
     signal reset : std_logic := '0';
 
+    signal ALU1_Z : std_logic;
+    signal ALU2_Z : std_logic;
+
     -- TODO connect these modules later
     signal fifo_out : std_logic_vector(12 downto 0) := "0010XXXXXXXXX";
 
@@ -265,7 +269,8 @@ begin
         port map (  clk => clk,
 
                     alu_operation => ALU_operation,
-                    alu1_zeroFlag => Z,     -- TODO not direct mapped
+                    alu1_zeroFlag => ALU1_Z,
+                    alu2_zeroFlag => ALU2_Z,
                     alu1_operand => alu1_operand,
                     alu2_operand => alu2_operand,
                     alu1_out => ALU1_out,
@@ -457,7 +462,11 @@ begin
                      "11" when ALU_code = "011" else -- -
                      "10" when ALU_code = "100" else -- +1
                      "11" when ALU_code = "101" else -- -1
+                     "11" when ALU_code = "110" else -- cmp
                      "00"; -- hold
+
+    Z <= ALU1_Z and ALU2_Z when ALU_code = "110" else
+         ALU1_Z;
 
     -------------------------------------------------------------------------
     -- BUSS MEGA-MULTIPLEXER
@@ -471,7 +480,7 @@ begin
                     ALU1_out when "100",
                     fifo_out when "101",
                     IN_reg when "110",
-                          "0000000000000" when others;
+                    "0000000000000" when others;
 
 
     memory1_read_gpu <= tmp_gpu_read;
