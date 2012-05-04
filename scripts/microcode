@@ -133,6 +133,30 @@
         jmpZ $ADDPC                         ; If zero no jump
         jmp $JMP                            ; Else do a jump
 
+; CMP If A eq B skip next instr
+:CMP    jmpAimm $ICMP
+        ADR2 -> mem_addr                    ; Fetch mem operands +OP spec by B op
+        mem -> OP, mem -> M1, mem -> M2
+        ADR1 -> mem_addr, M1 -> ALU1, M2 -> ALU2
+        mem -> M1, mem -> M2                ; Fetch mem operands spec by A op
+        ALU cmp M1 M2                       ; Compare
+        jmpZ $CMPOP                         ; If eq compare OP as well
+        jmp $ADDPC                          ; Else continue with next instr
+
+:CMPOP  OP -> ALU1
+        mem -> OP
+        ALU1 -= OP
+        jmpZ $SCMP                          ; If eq, skip next instr
+        jmp $ADDPC                          ; Else continue as normal
+
+:ICMP   ADR2 -> mem_addr                    ; Fetch B op
+        mem -> M2, M1 -> ALU1
+        ALU1 -= M2                          ; Compare
+        jmpZ $SCMP                          ; If eq, skip next instr
+        jmp $ADDPC                          ; Else continue as normal
+
+:SCMP  PC++, jmp $ADDPC
+
 ; Keep the PC for next round
 :ADDPC  PC++
         PC -> FIFO
@@ -141,22 +165,7 @@
 :DELAY  jmpC 0                              ; Start over when we've spent enough time
         jmp $DELAY
 
-; Examine A-field
-; if immediate, we're done
-; otherwise A-field += PC
-; if direct, we're done
-; otherwise the B-field of this direct memory location is read into the A-field
-; if predecrement, then the value just read is decremented and written back
-;   to the memory location from whence it came
-;   A-field += PC
-;
-; do the same for the B-field...
-; now examine and do code!
-;
-; finally, if no branch and instr not a DAT
-; PC++ and insert into fifo
-;
-;
+
 ;   Direct (default)
 ; The value is an offset to the memory location.
 ;

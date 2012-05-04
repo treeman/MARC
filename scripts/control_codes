@@ -42,6 +42,7 @@ my %ALU = (
     '-' =>"011",
     '++' =>"100",
     '--' => "101",
+    cmp => "110",
 );
 
 my %buss = (
@@ -333,6 +334,66 @@ for my $line (@lines) {
             my $reg = $singles{$cmd};
 
             update (\@signal, $positions{$reg}, $registers{$reg}->{$cmd});
+
+            push (@comments, $cmd);
+        }
+        # Special case ALU compare
+        elsif ($cmd =~ /^ALU\s+cmp\s+(\S*)\s+(\S*)/) {
+            my ($src1, $src2) = ($1, $2);
+
+            my $alu1;
+            my $alu2;
+
+            # Check connection to ALU2
+            if (exists $registers{ALU2}->{$src1}) {
+                $alu2 = $src1;
+                $alu1 = $src2;
+            }
+            elsif (exists $registers{ALU2}->{$src2}) {
+                $alu2 = $src2;
+                $alu1 = $src1;
+            }
+            else {
+                push (@comments, "? $cmd ?");
+                next;
+            }
+
+            # Check connection to ALU1
+            if (exists $registers{ALU1}->{$alu1}) {
+                # Hmmm..... ^^
+            }
+            # Try to route through buss
+            elsif (exists $registers{ALU1}->{buss} && exists $buss{$alu1}) {
+                $alu1 = "buss";
+            }
+            else {
+                push (@comments, "? $cmd ?");
+                next;
+            }
+
+            # Update to ALU2
+            update (\@signal, $positions{ALU2}, $registers{ALU2}->{$alu2});
+
+            # Update to ALU1
+            if ($alu1 eq "buss") {
+
+                $buss_used++;
+
+                # Update src -> buss
+                update (\@signal, $positions{buss}, $buss{$alu1});
+
+                # Update buss -> alu
+                update (\@signal, $positions{ALU1}, $registers{ALU1}->{buss});
+            }
+            else {
+                update (\@signal, $positions{ALU1}, $registers{ALU1}->{$alu1});
+            }
+
+            # Update ALU operation
+            update (\@signal, $positions{ALU}, $ALU{cmp});
+
+            $alu_err = 1 if $alu_op;
+            $alu_op = 'cmp';
 
             push (@comments, $cmd);
         }

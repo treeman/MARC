@@ -67,8 +67,8 @@ architecture Behavioral of Memory_Cell_DualPort is
         --"00110100XXXXXXXX", -- SUB
         --"01000000XXXXXXXX", -- jmp
         --"01010000XXXXXXXX", -- JMPZ
-        "01100000XXXXXXXX", -- JMN
-        "01110101XXXXXXXX", -- CMP
+        --"01100000XXXXXXXX", -- JMN
+        "01110000XXXXXXXX", -- CMP
         "10000101XXXXXXXX", -- SLT
         "10010101XXXXXXXX", -- DJN
         "10100101XXXXXXXX", -- SPL
@@ -89,8 +89,8 @@ begin
 
     -- This determines the color depending on what player put what there and what kind of OP code it is (data / non data)
     calculated_color <=     "00000000" when active_player = "00" else                                       -- Black when no player
-                            "11000000" when active_player = "10" and data_sync(7 downto 4) = "0000" else    -- Weak red when player 1 and data
-                            "00001000" when active_player = "01" and data_sync(7 downto 4) = "0000" else    -- Weak blue when player 2 and data
+                            "11000000" when active_player = "01" and data_sync(7 downto 4) = "0000" else    -- Weak red when player 1 and data
+                            "00001000" when active_player = "10" and data_sync(7 downto 4) = "0000" else    -- Weak blue when player 2 and data
                             "11100000" when active_player = "10" else                                       -- Red when player 1 and code
                             "00011000";                                                                     -- Blue when player 2 and code
 
