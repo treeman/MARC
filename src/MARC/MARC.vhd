@@ -215,14 +215,12 @@ architecture Behavioral of MARC is
     signal tmp_gpu_adr_sync : STD_LOGIC_VECTOR(12 downto 0) := "0000000000000";
     signal tmp_gpu_data_sync : STD_LOGIC_VECTOR(7 downto 0);
 
-
-
-
-     -------------------------------------------------------------------------
+    -------------------------------------------------------------------------
     -- FBART SIGNALS
     -------------------------------------------------------------------------
     signal fbart_request_next_data :  STD_LOGIC := '0';         -- Generate this when we read from FBART into BUSS
     signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
+
 begin
 
     -------------------------------------------------------------------------
