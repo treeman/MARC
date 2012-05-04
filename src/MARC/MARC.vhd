@@ -432,6 +432,7 @@ begin
     -- 00      M1
     -- 01      buss
     -- 10      M2
+    -- 11      mem_addr
 
     -- This will be ignored when ALU is set to +1, -1 or zero?
 
@@ -441,6 +442,7 @@ begin
                     "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
                     M1 when ALU1_code = "00" else
                     M2 when ALU1_code = "10" else
+                    memory_address when ALU1_code = "11" else
                     main_buss;
 
     alu2_operand <= "0000000000000" when ALU_code = "110" else -- zero?

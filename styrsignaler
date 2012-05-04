@@ -94,6 +94,7 @@ ALU1
     00      M1
     01      buss
     10      M2
+    11      mem_addr
 
 ALU2
     0       M1

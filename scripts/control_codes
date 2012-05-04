@@ -128,6 +128,7 @@ my %registers = (
         M1 => "00",
         buss => "01",
         M2 => "10",
+        mem_addr => "11",
     },
     ALU2 => {
         M1 => "0",

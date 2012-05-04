@@ -12,8 +12,8 @@
         M1 -> mem_addr, mem -> M2   ; Check B address
         M2 -> M1                    ; Move it to A's place
         jmpApre $APRE               ; If pre-decr decr and come back
-:AOFF   M1 -> ALU1                  ; Relative offset, add PC
-        ALU1 += PC
+:AOFF   M1 -> ALU1                  ; Relative offset, add mem_addr
+        ALU1 += mem_addr
         ALU1 -> M1
         jmp $BMOD                   ; Do the same for the B operand
 
@@ -34,8 +34,8 @@
         M2 -> mem_addr
         mem -> M2                   ; Check B operand of the address
         jmpBpre $BPRE
-:BOFF   M2 -> ALU1                  ; Relative offset, add PC
-        ALU1 += PC
+:BOFF   M2 -> ALU1                  ; Relative offset, add mem_addr
+        ALU1 += mem_addr
         ALU1 -> M2
         jmp $INSTR                  ; We're done
 
@@ -73,6 +73,24 @@
 :IMOV   ADR2 -> mem_addr, M1 -> M2          ; Examine B's absolute address
         M2 -> mem                           ; Move A op there
         jmp $ADDPC                          ; We want to keep our PC
+
+; ADD  Add A to B
+:ADD    jmpAimm $IADD                       ; A immediate special case
+        ADR1 -> mem_addr                    ; Examine A address
+        mem -> M1, mem -> M2
+        ADR2 -> mem_addr, M1 -> ALU1, M2 -> ALU2
+        mem -> M1, mem -> M2                ; Examine B address
+        ALU1 += M1, ALU2 += M2              ; Add them
+        ALU1 -> M1, ALU2 -> M2              ; And write back
+        M1 -> mem, M2 -> mem
+        jmp $ADDPC                          ; Continue
+
+:IADD   ADR2 -> mem_addr                    ; Alter in B's absolute address
+        M1 -> ALU1, mem -> M2               ; Add A to B op
+        ALU1 += M2
+        ALU1 -> M2
+        M2 -> mem                           ; Write it back
+        jmp $ADDPC                          ; Continue
 
 
 ; Keep the PC for next round
