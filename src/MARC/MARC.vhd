@@ -311,16 +311,14 @@ begin
                     data_out => M2
         );
 
-
-
     fbart: FBARTController
         port map (  clk => clk,
-                          request_next_data  => fbart_request_next_data,
-                          reset => reset,
-                          control_signals => fbart_control_signals,
-                          buss_out => IN_reg,
-                          has_next_data => new_IN,
-                          rxd => fbart_in
+                    request_next_data  => fbart_request_next_data,
+                    reset => reset,
+                    control_signals => fbart_control_signals,
+                    buss_out => IN_reg,
+                    has_next_data => new_IN,
+                    rxd => fbart_in
         );
 
     -------------------------------------------------------------------------
@@ -377,8 +375,6 @@ begin
                 when "11" => ADR2 <= ALU2_out;
                 when others => ADR2 <= ADR2;
             end case;
-
-            --IN_reg <= tmp_IN;
 
         end if;
     end process;
@@ -441,15 +437,13 @@ begin
 
     -- Also, do we want to be able to set something else, maybe a memory location, to 0? Should a 0 be produced here then?
 
-    alu1_operand <= "0000000000000" when ALU_code = "110" else -- zero?
-                    "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
+    alu1_operand <= "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
                     M1 when ALU1_code = "00" else
                     M2 when ALU1_code = "10" else
                     memory_address when ALU1_code = "11" else
                     main_buss;
 
-    alu2_operand <= "0000000000000" when ALU_code = "110" else -- zero?
-                    "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
+    alu2_operand <= "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
                     M1 when ALU2_code = '0' else
                     M2;
 
@@ -465,8 +459,9 @@ begin
                      "11" when ALU_code = "110" else -- cmp
                      "00"; -- hold
 
+    -- Update Z when a change has occured in ALU, so we can keep big cmp status
     Z <= ALU1_Z and ALU2_Z when ALU_code = "110" else
-         ALU1_Z;
+         ALU1_Z when ALU_code /= "000";
 
     -------------------------------------------------------------------------
     -- BUSS MEGA-MULTIPLEXER
