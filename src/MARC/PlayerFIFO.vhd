@@ -34,7 +34,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity PlayerFIFO is
 	 Port ( current_pc_in : in  STD_LOGIC_VECTOR (12 downto 0);
 			  current_pc_out : out  STD_LOGIC_VECTOR (12 downto 0);
-			  current_player_out : out STD_LOGIC;
+			  current_player_out : out STD_LOGIC_VECTOR (1 downto 0);
 			  game_over_out : out STD_LOGIC;
 			  next_pc : in  STD_LOGIC;
 			  write_pc : in STD_LOGIC;
@@ -54,7 +54,7 @@ architecture Behavioral of PlayerFIFO is
 	signal p1_block : pc_block_type := (others => (others => '0'));
 	signal p2_block : pc_block_type := (others => (others => '0'));
 	
-	signal current_player : STD_LOGIC := '0';
+	signal current_player : STD_LOGIC_VECTOR (1 downto 0) := "00";
 	
 		
 --	signal current_pc_in :  STD_LOGIC_VECTOR (12 downto 0);
@@ -77,7 +77,7 @@ begin
 
   current_player_out <= current_player;
   
-	current_pc_out <= 	--"XXXXXXXXXXXXX" when game_over = '1' else
+	current_pc_out <= 	--"0000000000000" when game_over = '1' else
 								p1_head_pc when block_to_read = '0' else
 								p2_head_pc when block_to_read = '1';
 								
@@ -101,7 +101,7 @@ begin
 			--current_pc_out_a <= current_pc_out;
 		  
 			  if (reset = '1') then
-					current_player <= '1';
+					current_player <= "00";
 					--game_over <= '1';
 					
 					p1_head <= "0000000";
@@ -118,14 +118,14 @@ begin
 					
 			  
 					if next_pc = '1' then
-						if (current_player = '0') then
-							if (p1_head /= p1_tail) then
+						if (current_player = "01") then
+							if (p1_head /= p1_tail) then			-- Read player 1 PC
 								p1_head_pc <= p1_block(to_integer(unsigned(p1_head)));
 								p1_head <= p1_head + 1;
 								block_to_read <= '0';
 							end if;
-						else
-							if (p2_head /= p2_tail) then
+						elsif (current_player = "10") then 
+							if (p2_head /= p2_tail) then			-- Read player 2 PC
 								p2_head_pc <= p2_block(to_integer(unsigned(p2_head)));
 								p2_head <= p2_head + 1;
 								block_to_read <= '1';
@@ -133,14 +133,14 @@ begin
 						end if;
 						
 					elsif (write_pc = '1') then
-						if (current_player = '1') then					-- Current player 2
+						if (current_player = "10") then					-- Current player 2
 							if (p2_tail + 1 /= p2_head) then
 								p2_block(to_integer(unsigned(p2_tail))) <= current_pc_in;	-- Increase tail and write current_pc_in
 								p2_tail <= p2_tail + 1;
 								
 							end if;
 						
-						else												-- Current player 1
+						elsif (current_player = "01") then				-- Current player 1
 							if (p1_tail + 1 /= p1_head) then
 								p1_block(to_integer(unsigned(p1_tail))) <= current_pc_in;	-- Increase tail and write current_pc_in
 								p1_tail <= p1_tail + 1;
@@ -150,7 +150,11 @@ begin
 					end if;
 					
 					if change_player = '1' then
-						current_player <= not current_player;
+						if current_player = "01" then
+							current_player <= "10";
+						else
+							current_player <= "01";
+						end if;
 					end if;
 					
 			  end if;
