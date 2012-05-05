@@ -1,5 +1,5 @@
 ; Fetch instruction
-        PC -> mem_addr, uCount = 0
+        PC -> mem_addr, change_player
         mem -> OP, mem -> M1, mem -> M2
         OP -> IR, jmp $AMOD
 

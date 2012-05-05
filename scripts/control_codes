@@ -12,6 +12,7 @@ my $dest;
 my $lines_until_header = 20;
 my $verbose;
 my $debug;
+my $vhdl;
 
 GetOptions(
     'help|h' => \$help,
@@ -19,6 +20,7 @@ GetOptions(
     'header|l=i' => \$lines_until_header,
     'verbose|v' => \$verbose,
     'debug' => \$debug,
+    'vhdl' => \$vhdl,
 );
 
 $dest = "code_output" if !$dest;
@@ -29,12 +31,13 @@ if ($help || !$src) {
     say "   options:";
     say "   -h --help       Show this screen.";
     say "   -v --verbose    Verbose output signals in a human readable format.";
+    say "   -vhdl           Makes my life easier.";
     exit;
 }
 
 # Ouput format
-my $h = "IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uCount uPC  uPC_addr";
-my $c = "0   00  00   0  00 00  00   00   00    000     00   0   000 000  00   0    0000 00000000";
+my $h = "FIFO IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uPC  uPC_addr";
+my $c = " 00  0   00  00   0  00 00  00   00   00    000     00   0   000 000  00 0000 00000000";
 
 my %ALU = (
     load => "001",
@@ -82,6 +85,7 @@ my %singles = (
     jmpBimm => "uPC",
     jmpBdir => "uPC",
     jmpBpre => "uPC",
+    change_player => "FIFO",
 );
 
 my %registers = (
@@ -103,10 +107,6 @@ my %registers = (
         jmpBpre => "1101",
 
         '0' => "1111",
-    },
-    uCount => {
-        '++' => '0',
-        '0' => '1',
     },
     PC => {
         buss => "01",
@@ -157,6 +157,10 @@ my %registers = (
         ADR2 => "101",
         PC => "110",
     },
+    FIFO => {
+        buss => "01",
+        change_player => "10",
+    },
 );
 
 # Positions for our subsignals in the grand control scheme
@@ -169,16 +173,34 @@ my @codechunks = split (/\s+/, trim($c));
 my $signallength = length (join "", @codechunks);
 my $l = $signallength - 1;
 
+my @vhdl_output;
+
 for my $chunk (@codechunks) {
     my $r = $l - length ($chunk) + 1;
 
     my $name = shift @namechunks;
 
-    say "$name has $r .. $l" if $debug;
+    # Output vhdl shortcut for signals
+    if ($vhdl) {
+        if ($l == $r) {
+            push (@vhdl_output, "${name}_code <= signals($l);");
+        }
+        else {
+            push (@vhdl_output, "${name}_code <= signals($l downto $r);");
+        }
+    }
+
+    say "$name $l .. $r" if $debug;
+
 
     $positions{$name} = [$r .. $l];
 
     $l = $r - 1;
+}
+
+if ($vhdl) {
+    say $_ for (reverse @vhdl_output);
+    say "";
 }
 
 say "" if $debug;
@@ -258,6 +280,42 @@ if ($debug) {
     for my $k (keys %labels) {
         say "labels{$k} = " . dec2hex ($labels{$k});
     }
+}
+
+if ($vhdl) {
+    my %instructions = (
+        DAT => "0000",
+        MOV => "0001",
+        ADD => "0010",
+        SUB => "0011",
+        JMP => "0100",
+        JMPZ => "0101",
+        JMPN => "0110",
+        CMP => "0111",
+        SLT => "1000",
+        DJN => "1001",
+        SPL => "1010",
+    );
+
+    # Create a sorted pair instr -> code
+    my @pairs = sort { $a->[1] cmp $b->[1] }
+                map { [ $_ => $instructions{$_} ] } keys %instructions;
+
+    for (@pairs) {
+        my ($instr, $code) = (@$_);
+
+        die "No $instr label!" if !exists $labels{$instr};
+
+        my $pos = dec2bin ($labels{$instr});
+        $pos = '0' x (8 - length($pos)) . $pos;
+
+        my $hpos = dec2hex ($labels{$instr});
+
+        say "\"$pos\" when \"$code\", -- $instr $hpos";
+    }
+    say '"11111111" when others;';
+
+    exit;
 }
 
 $codeline = 0;
@@ -652,7 +710,7 @@ for my $line (@lines) {
                 push (@comments, "? $cmd ?");
             }
         }
-        # var = stuff eg uPC = 0, uCount = 0
+        # var = stuff eg uPC = 0
         elsif ($cmd =~ /(\S+)\s*=\s*(\S+)/) {
             my ($var, $res) = ($1, $2);
 

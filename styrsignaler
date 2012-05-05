@@ -19,10 +19,6 @@ uPC
 
     1111    = 0
 
-uCount      (Could be removed! Check when uPC = 0 and do the same here)
-    0       uCounter + 1
-    1       uCounter = 0
-
 PC
     00      PC (nothing)
     01      load from buss
@@ -114,37 +110,18 @@ ADR2
     10     M2
     11     AR 2
 
+FIFO
+    00      nothing
+    01      buss (insert PC from main buss)
+    10      change player
+
 Totalt
 
 FIXME!
 Kontrollera signalerna under
 FIXME!
 
-FIFO
-    2bit
-        read
-        write
-        nothing
-
-    3 bit P1 function
-        incr read
-        zero read
-        incr write
-        zero write
-        nothing
-
-    3 bit P2 function
-        incr read
-        zero read
-        incr write
-        zero write
-        nothing
-
-    1bit
-        change player
-        nothing
-
-FBART:
+FBART: (nothing needed as control signals)
     IN:
         1 bit next_address (we have writen our data to the memory, now we want the next data to write).
         1 bit reset (global)

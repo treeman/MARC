@@ -55,6 +55,8 @@ architecture Behavioral of MARC is
                 ADR1_code : out std_logic_vector(1 downto 0);
                 ADR2_code : out std_logic_vector(1 downto 0);
 
+                FIFO_code : out std_logic_vector(1 downto 0);
+
                 Z : in std_logic;
                 new_IN : in std_logic;
                 game_started : in std_logic
@@ -107,7 +109,7 @@ architecture Behavioral of MARC is
                 read_gpu : in std_logic
         );
     end component;
--- dirr
+
     component FBARTController
         Port (  request_next_data : in  STD_LOGIC;
                 reset : in  STD_LOGIC;
@@ -115,7 +117,8 @@ architecture Behavioral of MARC is
                 control_signals : out  STD_LOGIC_VECTOR (2 downto 0);
                 buss_out : out  STD_LOGIC_VECTOR (12 downto 0);
                 has_next_data : out  STD_LOGIC;
-                rxd : in std_logic);
+                rxd : in std_logic
+            );
      end component;
 
      component PlayerFIFO is
@@ -127,7 +130,8 @@ architecture Behavioral of MARC is
                 write_pc : in STD_LOGIC;
                 change_player : in STD_LOGIC;
                 clk : in std_logic;
-                reset : in std_logic);
+                reset : in std_logic
+            );
      end component;
 
     -------------------------------------------------------------------------
@@ -210,6 +214,8 @@ architecture Behavioral of MARC is
     signal ADR1_code : std_logic_vector(1 downto 0);
     signal ADR2_code : std_logic_vector(1 downto 0);
 
+    signal FIFO_code : std_logic_vector(1 downto 0);
+
     -------------------------------------------------------------------------
     -- MISC JUNK
     -------------------------------------------------------------------------
@@ -281,6 +287,8 @@ begin
 
                     ADR1_code => ADR1_code,
                     ADR2_code => ADR2_code,
+
+                    FIFO_code => FIFO_code,
 
                     Z => Z,
                     new_IN => new_IN,
@@ -498,6 +506,16 @@ begin
     -- Update Z when a change has occured in ALU, so we can keep big cmp status
     Z <= ALU1_Z and ALU2_Z when ALU_code = "110" else
          ALU1_Z when ALU_code /= "000";
+
+    -------------------------------------------------------------------------
+    -- FIFO Handling
+    -------------------------------------------------------------------------
+
+    fifo_write_pc <= '1' when FIFO_code = "01" else
+                     '0';
+
+    fifo_next_pc <= '1' when buss_code = "101" else
+                    '0';
 
     -------------------------------------------------------------------------
     -- BUSS MEGA-MULTIPLEXER
