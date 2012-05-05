@@ -11,6 +11,8 @@ architecture behavior of MARC_test is
             clk : in std_logic;
             reset_a : in std_logic;
 
+            uCount_limit : in std_logic_vector(7 downto 0);
+
             tmp_buss : in std_logic_vector(12 downto 0);
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
             tmp_gpu_data : out std_logic_vector(7 downto 0);
@@ -24,6 +26,7 @@ architecture behavior of MARC_test is
     -- Inputs
     signal clk : std_logic := '0';
     signal reset_a : std_logic := '0';
+    signal uCount_limit : std_logic_vector(7 downto 0) := "00000000";
     signal tst : std_logic := '0';
     signal fbart_in : std_logic := '0';
 
@@ -42,6 +45,8 @@ begin
     uut: MARC Port map (
         clk => clk,
         reset_a => reset_a,
+        uCount_limit => uCount_limit,
+
         tmp_buss => tmp_buss,
         tmp_gpu_adr => tmp_gpu_adr,
         tmp_gpu_data => tmp_gpu_data,
