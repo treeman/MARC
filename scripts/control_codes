@@ -99,13 +99,15 @@ my %registers = (
         jmpIN => "0100",
         jmpC => "0101",
         jmpS => "0110",
+        jmpN => "0111",
+        jmpE => "1000",
 
-        jmpAimm => "1000",
-        jmpAdir => "1001",
-        jmpApre => "1010",
-        jmpBimm => "1011",
-        jmpBdir => "1100",
-        jmpBpre => "1101",
+        jmpAimm => "1001",
+        jmpAdir => "1010",
+        jmpApre => "1011",
+        jmpBimm => "1100",
+        jmpBdir => "1101",
+        jmpBpre => "1110",
 
         '0' => "1111",
     },
@@ -387,7 +389,7 @@ for my $line (@lines) {
                 push (@comments, $cmd);
             }
             else {
-                push (@comments, "(? $cmd)");
+                die "Unknown command: $cmd";
             }
         }
         # We have a single shorthand notation
@@ -395,106 +397,6 @@ for my $line (@lines) {
             my $reg = $singles{$cmd};
 
             update (\@signal, $positions{$reg}, $registers{$reg}->{$cmd});
-
-            push (@comments, $cmd);
-        }
-        # Check ALU1 < src
-        elsif ($cmd =~ /^ALU1\s+<\s+(\S+)/) {
-            my ($src) = ($1);
-
-            # Check direct
-            if (exists $registers{ALU1}->{$src}) {
-
-                # Update code
-                update (\@signal, $positions{ALU1}, $registers{ALU1}->{$src});
-
-                # Update ALU operation
-                update (\@signal, $positions{ALU}, $ALU{'<'});
-
-                $alu_err = 1 if $alu_op;
-                $alu_op = '<';
-
-                push (@comments, $cmd);
-            }
-            elsif (exists $registers{ALU1}->{buss} && exists $buss{$src}) {
-
-                $buss_used++;
-
-                # Update src -> buss
-                update (\@signal, $positions{buss}, $buss{$src});
-
-                # Update buss -> alu
-                update (\@signal, $positions{ALU1}, $registers{ALU1}->{buss});
-
-                # Update ALU operation
-                update (\@signal, $positions{ALU}, $ALU{'<'});
-
-                $alu_err = 1 if $alu_op;
-                $alu_op = '<';
-
-                push (@comments, $cmd);
-            }
-            else {
-                push (@comments, "? $cmd ?");
-            }
-        }
-        # Special case ALU compare
-        elsif ($cmd =~ /^ALU\s+cmp\s+(\S+)\s+(\S+)/) {
-            my ($src1, $src2) = ($1, $2);
-
-            my $alu1;
-            my $alu2;
-
-            # Check connection to ALU2
-            if (exists $registers{ALU2}->{$src1}) {
-                $alu2 = $src1;
-                $alu1 = $src2;
-            }
-            elsif (exists $registers{ALU2}->{$src2}) {
-                $alu2 = $src2;
-                $alu1 = $src1;
-            }
-            else {
-                push (@comments, "? $cmd ?");
-                next;
-            }
-
-            # Check connection to ALU1
-            if (exists $registers{ALU1}->{$alu1}) {
-                # Hmmm..... ^^
-            }
-            # Try to route through buss
-            elsif (exists $registers{ALU1}->{buss} && exists $buss{$alu1}) {
-                $alu1 = "buss";
-            }
-            else {
-                push (@comments, "? $cmd ?");
-                next;
-            }
-
-            # Update to ALU2
-            update (\@signal, $positions{ALU2}, $registers{ALU2}->{$alu2});
-
-            # Update to ALU1
-            if ($alu1 eq "buss") {
-
-                $buss_used++;
-
-                # Update src -> buss
-                update (\@signal, $positions{buss}, $buss{$alu1});
-
-                # Update buss -> alu
-                update (\@signal, $positions{ALU1}, $registers{ALU1}->{buss});
-            }
-            else {
-                update (\@signal, $positions{ALU1}, $registers{ALU1}->{$alu1});
-            }
-
-            # Update ALU operation
-            update (\@signal, $positions{ALU}, $ALU{cmp});
-
-            $alu_err = 1 if $alu_op;
-            $alu_op = 'cmp';
 
             push (@comments, $cmd);
         }
@@ -521,7 +423,7 @@ for my $line (@lines) {
                     push (@comments, $cmd);
                 }
                 else {
-                    push (@comments, "? $cmd ?");
+                    die "Unknown command: $cmd";
                 }
             }
             # mem -> src
@@ -535,7 +437,7 @@ for my $line (@lines) {
                     push (@comments, $cmd);
                 }
                 else {
-                    push (@comments, "? $cmd ?");
+                    die "Unknown command: $cmd";
                 }
             }
             # Handle direct
@@ -587,7 +489,7 @@ for my $line (@lines) {
                 push (@comments, "buss -> $dest");
             }
             else {
-                push (@comments, "? $cmd ?");
+                die "Unknown command: $cmd";
             }
         }
         # ALUx += src or ALUx -= src
@@ -627,7 +529,7 @@ for my $line (@lines) {
                 push (@comments, $cmd);
             }
             else {
-                push (@comments, "? $cmd ?");
+                die "Unknown command: $cmd";
             }
         }
         # TODO all jumps does not have addresses?
@@ -653,8 +555,7 @@ for my $line (@lines) {
                         $val = dec2hex ($labels{$label});
                     }
                     else {
-                        push (@comments, "? $cmd ?");
-                        next;
+                        die "Unknown command: $cmd";
                     }
                 }
 
@@ -666,8 +567,7 @@ for my $line (@lines) {
                     $bin = hex2bin ($val);
                 }
                 else {
-                    push (@comments, "? $cmd ?");
-                    next;
+                    die "Unknown command: $cmd";
                 }
 
                 if ($op =~ /^[+-]$/) {
@@ -709,7 +609,7 @@ for my $line (@lines) {
 
             }
             else {
-                push (@comments, "? $cmd ?");
+                die "Unknown command: $cmd";
             }
         }
         # var = stuff eg uPC = 0
@@ -717,8 +617,7 @@ for my $line (@lines) {
             my ($var, $res) = ($1, $2);
 
             if ($var eq "uPC_addr") {
-                push (@comments, "? $cmd ?");
-                next;
+                die "Unknown command: $cmd";
             }
 
             # Check special eg uPC = 0
@@ -728,11 +627,11 @@ for my $line (@lines) {
                 push (@comments, $cmd);
             }
             else {
-                push (@comments, "? $cmd ?");
+                die "Unknown command: $cmd";
             }
         }
         else {
-            push (@comments, "? $cmd ?");
+            die "Unknown command: $cmd";
         }
     }
 

@@ -5,17 +5,19 @@ uPC
     0001    op addr
 
     0010    jmp
-    0011    jmp on Z                    (jmpZ)
+    0011    jmp on Z (zero)             (jmpZ)
     0100    jmp on new IN               (jmpIN)
     0101    jmp if uCounter >= limit    (jmpC)
     0110    jmp if game started         (jmpS)
+    0111    jmp on N (negative)         (jmpN)
+    1000    jmp if both ALU 0           (jmpE)
 
-    1000    jmp if A immediate          (jmpAimm)
-    1001    jmp if A direct             (jmpAdir)
-    1010    jmp if A predecrement       (jmpApre)
-    1011    jmp if B immediate          (jmpBimm)
-    1100    jmp if B direct             (jmpBdir)
-    1101    jmp if B predecrement       (jmpBpre)
+    1001    jmp if A immediate          (jmpAimm)
+    1010    jmp if A direct             (jmpAdir)
+    1011    jmp if A predecrement       (jmpApre)
+    1100    jmp if B immediate          (jmpBimm)
+    1101    jmp if B direct             (jmpBdir)
+    1110    jmp if B predecrement       (jmpBpre)
 
     1111    = 0
 
@@ -85,8 +87,6 @@ ALU
     011     sub
     100     +1
     101     -1
-    110     cmp (sub on both ALU's, and Z if both registers are 0)
-    111     <   (Z = ALU1 < ALU2)
 
 ALU1
     00      M1

@@ -35,15 +35,15 @@ entity ALU is
     Port (  clk : in std_logic;
 
             -- ALU Control
-            alu_operation : in STD_LOGIC_VECTOR(2 downto 0);
-            -- 000 hold
-            -- 001 load main buss
-            -- 010 +
-            -- 011 -
-            -- 100 <
+            alu_operation : in STD_LOGIC_VECTOR(1 downto 0);
+            -- 00 hold
+            -- 01 load main buss
+            -- 10 +
+            -- 11 -
 
-            alu1_zeroFlag : out STD_LOGIC;
-            alu2_zeroFlag : out STD_LOGIC;
+            alu1_zeroFlag : buffer STD_LOGIC;
+            alu1_negFlag : out STD_LOGIC;
+            alu_zeroFlag : out STD_LOGIC;
 
             alu1_operand : in STD_LOGIC_VECTOR(12 downto 0);
             alu2_operand : in STD_LOGIC_VECTOR(12 downto 0);
@@ -58,23 +58,18 @@ architecture Behavioral of ALU is
     signal alu1_register : STD_LOGIC_VECTOR (12 downto 0);
     signal alu2_register : STD_LOGIC_VECTOR (12 downto 0);
 
-    -- 2 complements comparison of alu1_register < alu2_register
-    signal comp : STD_LOGIC;
+    signal alu2_zeroFlag : STD_LOGIC;
+
+    -- Temporary signals for calculating negative flag for alu1
+    signal add_res : STD_LOGIC_VECTOR (12 downto 0);
+    signal sub_res : STD_LOGIC_VECTOR (12 downto 0);
 
 begin
 
-    -- Compare 2-complement
-    comp <= '1' when alu1_register(12) = alu1_operand(12)
-                     and conv_integer(alu1_register) < conv_integer(alu1_operand) else
-            '1' when alu1_register(12) = '1' and alu1_operand(12) = '0' else
-            '0';
+    add_res <= alu1_register + alu1_operand;
+    sub_res <= alu1_register - alu1_operand;
 
-    alu1_zeroFlag <= comp when alu_operation = "100" else
-                     '1' when alu1_register = "0000000000000" else
-                     '0';
-
-    alu2_zeroFlag <= '1' when alu2_register = "0000000000000" else
-                     '0';
+    alu_zeroFlag <= alu1_zeroFlag and alu2_zeroFlag;
 
     alu1_out <= alu1_register;
     alu2_out <= alu2_register;
@@ -83,18 +78,44 @@ begin
     begin
         if rising_edge(clk) then
 
-            if alu_operation="000" then
-                alu1_register <= alu1_register; -- ALU1 = ALU1
-                alu2_register <= alu2_register; -- ALU2 = ALU2
-            elsif alu_operation="001" then
+            if alu_operation = "01" then
                 alu1_register <= alu1_operand; -- ALU1 = OP1
                 alu2_register <= alu2_operand; -- ALU1 = OP1
-            elsif alu_operation="010" then
-                alu1_register <= alu1_register+alu1_operand; -- ALU1 += OP1
-                alu2_register <= alu2_register+alu2_operand; -- ALU2 += OP2
-            elsif alu_operation="011" then
-                alu1_register <= alu1_register-alu1_operand; -- ALU1 -= OP1
-                alu2_register <= alu2_register-alu2_operand; -- ALU2 -= OP2
+            elsif alu_operation = "10" then
+                alu1_register <= alu1_register + alu1_operand; -- ALU1 += OP1
+                alu2_register <= alu2_register + alu2_operand; -- ALU2 += OP2
+
+                if alu1_register + alu1_operand = "0000000000000" then
+                    alu1_zeroFlag <= '1';
+                else
+                    alu1_zeroFlag <= '0';
+                end if;
+
+                if alu2_register - alu2_operand = "0000000000000" then
+                    alu2_zeroFlag <= '1';
+                else
+                    alu2_zeroFlag <= '0';
+                end if;
+
+                alu1_negFlag <= add_res(12);
+
+            elsif alu_operation = "11" then
+                alu1_register <= alu1_register - alu1_operand; -- ALU1 -= OP1
+                alu2_register <= alu2_register - alu2_operand; -- ALU2 -= OP2
+
+                if alu1_register - alu1_operand = "0000000000000" then
+                    alu1_zeroFlag <= '1';
+                else
+                    alu1_zeroFlag <= '0';
+                end if;
+
+                if alu2_register - alu2_operand = "0000000000000" then
+                    alu2_zeroFlag <= '1';
+                else
+                    alu2_zeroFlag <= '0';
+                end if;
+
+                alu1_negFlag <= sub_res(12);
             end if;
 
         end if;

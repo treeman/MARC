@@ -156,8 +156,8 @@
         mem -> OP, mem -> M1, mem -> M2
         ADR1 -> mem_addr, M1 -> ALU1, M2 -> ALU2
         mem -> M1, mem -> M2                ; Fetch mem operands spec by A op
-        ALU cmp M1 M2                       ; Compare
-        jmpZ $CMPOP                         ; If eq compare OP as well
+        ALU1 -= M1, ALU2 -= M2              ; Compare
+        jmpE $CMPOP                         ; If eq compare OP as well
         jmp $ADDPC                          ; Else continue with next instr
 
 :CMPOP  OP -> ALU1
@@ -179,8 +179,8 @@
         M2 -> ALU1
 :SLTCMP ADR2 -> mem_addr                    ; Fetch B field spec by B
         mem -> M2
-        ALU1 < M2                           ; Compare A < B
-        jmpZ $SKIP                          ; Skip next instr if A < B
+        ALU1 -= M2                          ; Compare A < B
+        jmpN $SKIP                          ; Skip next instr if A < B
         jmp $ADDPC                          ; Else continue
 
 :ISLT   M1 -> ALU1, jmp $SLTCMP             ; Place A in ALU for comparison, rest is the same

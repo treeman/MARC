@@ -42,9 +42,10 @@ ARCHITECTURE behavior OF ALU_TEST IS
     COMPONENT ALU
     PORT(
          clk : IN  std_logic;
-         alu_operation : IN  std_logic_vector(2 downto 0);
+         alu_operation : IN  std_logic_vector(1 downto 0);
          alu1_zeroFlag : OUT std_logic;
-         alu2_zeroFlag : OUT std_logic;
+         alu1_negFlag : out STD_LOGIC;
+         alu_zeroFlag : out STD_LOGIC;
          alu1_operand : IN  std_logic_vector(12 downto 0);
          alu2_operand : IN  std_logic_vector(12 downto 0);
          alu1_out : OUT  std_logic_vector(12 downto 0);
@@ -52,16 +53,16 @@ ARCHITECTURE behavior OF ALU_TEST IS
         );
     END COMPONENT;
 
-
    --Inputs
    signal clk : std_logic := '0';
-   signal alu_operation : std_logic_vector(2 downto 0) := (others => '0');
+   signal alu_operation : std_logic_vector(1 downto 0) := (others => '0');
    signal alu1_operand : std_logic_vector(12 downto 0) := (others => '0');
    signal alu2_operand : std_logic_vector(12 downto 0) := (others => '0');
 
     --Outputs
    signal alu1_zeroFlag : std_logic;
-   signal alu2_zeroFlag : std_logic;
+   signal alu1_negFlag : std_logic;
+   signal alu_zeroFlag : std_logic;
    signal alu1_out : std_logic_vector(12 downto 0);
    signal alu2_out : std_logic_vector(12 downto 0);
 
@@ -75,7 +76,8 @@ BEGIN
           clk => clk,
           alu_operation => alu_operation,
           alu1_zeroFlag => alu1_zeroFlag,
-          alu2_zeroFlag => alu2_zeroFlag,
+          alu1_negFlag => alu1_negFlag,
+          alu_zeroFlag => alu_zeroFlag,
           alu1_operand => alu1_operand,
           alu2_operand => alu2_operand,
           alu1_out => alu1_out,
@@ -100,85 +102,65 @@ BEGIN
 
       --wait for clk_period*10;
 
-      -- Load 4
+       -- 4 - 8
       alu1_operand <= "0000000000100";
-      alu_operation <= "001";
-
+      alu_operation <= "01";
       wait for 10 ns;
-
-      -- 4 < 8 ?
       alu1_operand <= "0000000001000";
-      alu_operation <= "100";
-
+      alu_operation <= "11";
       wait for 10 ns;
 
-      -- 4 < 2 ?
-      alu1_operand <= "0000000000010";
-      alu_operation <= "100";
-
-      wait for 10 ns;
-
-      -- 4 < -1 ?
-      alu1_operand <= "1111111111111";
-      alu_operation <= "100";
-
-      wait for 10 ns;
-
-      -- Load -4
-      alu1_operand <= "1111111111100";
-      alu_operation <= "001";
-
-      wait for 10 ns;
-
-      -- -4 < 4?
+       -- 4 - 2
       alu1_operand <= "0000000000100";
-      alu_operation <= "100";
-
+      alu_operation <= "01";
+      wait for 10 ns;
+      alu1_operand <= "0000000000010";
+      alu_operation <= "11";
       wait for 10 ns;
 
-      -- -4 < -1?
-      alu1_operand <= "1111111111111";
-      alu_operation <= "100";
-
+       -- -4 - 2
+      alu1_operand <= "1111111111100";
+      alu_operation <= "01";
+      wait for 10 ns;
+      alu1_operand <= "0000000000010";
+      alu_operation <= "11";
       wait for 10 ns;
 
-      -- -4 < -5?
-      alu1_operand <= "1111111111011";
-      alu_operation <= "100";
-
+       -- -4 - -6
+      alu1_operand <= "1111111111100";
+      alu_operation <= "01";
       wait for 10 ns;
-
-      -- -4 < -2?
-      alu1_operand <= "1111111111110";
-      alu_operation <= "100";
+      alu1_operand <= "1111111111010";
+      alu_operation <= "11";
+      wait for 10 ns;
 
       wait for 10 ns;
 
       alu1_operand <= "0000000000010";   -- 2
-      alu_operation <= "001";
+      alu_operation <= "01";
 
       wait for 10 ns;
 
       alu1_operand <= "1111111111110";    -- -2
-      alu_operation <= "010";
+      alu_operation <= "10";
 
       -- This will be 2 + -2 = 0
       wait for 10 ns;
 
       alu1_operand <= "0000000000100";   -- 4
-      alu_operation <= "001";
+      alu_operation <= "01";
 
       wait for 10 ns;
 
       alu1_operand <= "1111111111100";    -- -4
-      alu_operation <= "011";
+      alu_operation <= "11";
 
       --This will be 4 + -4 = 8
 
       wait for 10 ns;
 
       alu1_operand <= "0000000000001";
-      alu_operation <= "011";
+      alu_operation <= "11";
 
 
 

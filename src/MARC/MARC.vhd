@@ -58,6 +58,9 @@ architecture Behavioral of MARC is
                 FIFO_code : out std_logic_vector(1 downto 0);
 
                 Z : in std_logic;
+                N : in std_logic;
+                both_Z : in std_logic;
+
                 new_IN : in std_logic;
                 game_started : in std_logic
         );
@@ -66,9 +69,10 @@ architecture Behavioral of MARC is
     component ALU
         Port (  clk : in std_logic;
 
-                alu_operation : in std_logic_vector(2 downto 0);
+                alu_operation : in std_logic_vector(1 downto 0);
                 alu1_zeroFlag : out std_logic;
-                alu2_zeroFlag : out std_logic;
+                alu1_negFlag : out std_logic;
+                alu_zeroFlag : out std_logic;
 
                 alu1_operand : in STD_LOGIC_VECTOR(12 downto 0);
                 alu2_operand : in STD_LOGIC_VECTOR(12 downto 0);
@@ -143,12 +147,11 @@ architecture Behavioral of MARC is
     signal ALU1_out : std_logic_vector(12 downto 0);
     signal ALU2_out : std_logic_vector(12 downto 0);
 
-    signal ALU_operation : std_logic_vector(2 downto 0);
-    -- 000 hold
-    -- 001 load main buss
-    -- 010 +
-    -- 011 -
-    -- 100 <
+    signal ALU_operation : std_logic_vector(1 downto 0);
+    -- 00 hold
+    -- 01 load main buss
+    -- 10 +
+    -- 11 -
 
     signal memory1_data_in : std_logic_vector(7 downto 0);
     signal memory2_data_in : std_logic_vector(12 downto 0);
@@ -222,15 +225,14 @@ architecture Behavioral of MARC is
 
     -- Status signals
     signal Z : std_logic := '0';
+    signal N : std_logic := '0';
+    signal both_Z : std_logic := '0';
 
     signal active_player : std_logic_vector(1 downto 0);
     signal game_started : std_logic := '1';
 
     signal new_IN : std_logic := '0';
     signal reset : std_logic := '0';
-
-    signal ALU1_Z : std_logic;
-    signal ALU2_Z : std_logic;
 
     -- TODO connect these modules later
     signal fifo_out : std_logic_vector(12 downto 0) := "0010XXXXXXXXX";
@@ -293,16 +295,20 @@ begin
                     FIFO_code => FIFO_code,
 
                     Z => Z,
+                    N => N,
+                    both_Z => both_Z,
                     new_IN => new_IN,
                     game_started => game_started
         );
 
     alus: ALU
         port map (  clk => clk,
-
                     alu_operation => ALU_operation,
-                    alu1_zeroFlag => ALU1_Z,
-                    alu2_zeroFlag => ALU2_Z,
+
+                    alu1_zeroFlag => Z,
+                    alu1_negFlag => N,
+                    alu_zeroFlag => both_Z,
+
                     alu1_operand => alu1_operand,
                     alu2_operand => alu2_operand,
                     alu1_out => ALU1_out,
@@ -469,17 +475,12 @@ begin
     -- 011     sub
     -- 100     +1
     -- 101     -1
-    -- 110     zero?  (Will Z be set when we simply load?)
 
     -- ALUx_code states the source
     -- 00      M1
     -- 01      buss
     -- 10      M2
     -- 11      mem_addr
-
-    -- This will be ignored when ALU is set to +1, -1 or zero?
-
-    -- Also, do we want to be able to set something else, maybe a memory location, to 0? Should a 0 be produced here then?
 
     alu1_operand <= "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
                     M1 when ALU1_code = "00" else
@@ -491,25 +492,16 @@ begin
                     M1 when ALU2_code = '0' else
                     M2;
 
-    -- 000 hold
-    -- 001 load main buss
-    -- 010 +
-    -- 011 -
-    -- 100 <
-    ALU_operation <= "001" when ALU_code = "001" else -- load
-                     "010" when ALU_code = "010" else -- +
-                     "011" when ALU_code = "011" else -- -
-                     "010" when ALU_code = "100" else -- +1
-                     "011" when ALU_code = "101" else -- -1
-                     "011" when ALU_code = "110" else -- cmp
-                     "100" when ALU_code = "111" else -- <
-                     "000"; -- hold
-
-    -- Latch here!
-    -- Update Z when a change has occured in ALU, so we can keep big cmp status
-    Z <= ALU1_Z and ALU2_Z when ALU_code = "110" else
-         ALU1_Z when ALU_code /= "000" else
-         Z;
+    -- 00 hold
+    -- 01 load main buss
+    -- 10 +
+    -- 11 -
+    ALU_operation <= "01" when ALU_code = "001" else -- load
+                     "10" when ALU_code = "010" else -- +
+                     "11" when ALU_code = "011" else -- -
+                     "10" when ALU_code = "100" else -- +1
+                     "11" when ALU_code = "101" else -- -1
+                     "00"; -- hold
 
     -------------------------------------------------------------------------
     -- FIFO Handling
