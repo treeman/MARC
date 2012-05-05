@@ -119,17 +119,19 @@
         ALU1 -> FIFO, jmp $END              ; Next instr should go at A op location
 
 ; JMPZ Jump to A if B zero
-:JMPZ   ADR2 -> mem_addr                    ; Fetch B op
+:JMPZ   jmpBimm $IJMPZ
+        ADR2 -> mem_addr                    ; Fetch B op
         mem -> M2
-        M2 -> ALU1
+:IJMPZ  M2 -> ALU1
         jmpZ $DOJMPZ                        ; If not zero
         jmp $ADDPC                          ; Continue
 :DOJMPZ jmp $JMP                            ; Else do a jump
 
 ; JMPN Jump to A if B non-zero
-:JMPN   ADR2 -> mem_addr                    ; Fetch B op
+:JMPN   jmpBimm $IJMPN
+        ADR2 -> mem_addr                    ; Fetch B op
         mem -> M2
-        M2 -> ALU1
+:IJMPN  M2 -> ALU1
         jmpZ $ADDPC                         ; If zero no jump
         jmp $JMP                            ; Else do a jump
 
