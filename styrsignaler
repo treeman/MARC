@@ -114,6 +114,7 @@ FIFO
     00      nothing
     01      buss (insert PC from main buss)
     10      change player
+    11      next_pc
 
 Totalt
 

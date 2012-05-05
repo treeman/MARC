@@ -222,8 +222,10 @@ architecture Behavioral of MARC is
 
     -- Status signals
     signal Z : std_logic := '0';
-    --signal active_player : std_logic_vector(1 downto 0);
+
+    signal active_player : std_logic_vector(1 downto 0);
     signal game_started : std_logic := '1';
+
     signal new_IN : std_logic := '0';
     signal reset : std_logic := '0';
 
@@ -250,8 +252,6 @@ architecture Behavioral of MARC is
     signal fifo_next_pc : std_logic := '0';
     signal fifo_write_pc : std_logic := '0';
     signal fifo_change_player : std_logic := '0';
-
-    signal active_player : std_logic_vector(1 downto 0);
 
 begin
 
@@ -505,9 +505,11 @@ begin
                      "100" when ALU_code = "111" else -- <
                      "000"; -- hold
 
+    -- Latch here!
     -- Update Z when a change has occured in ALU, so we can keep big cmp status
     Z <= ALU1_Z and ALU2_Z when ALU_code = "110" else
-         ALU1_Z when ALU_code /= "000";
+         ALU1_Z when ALU_code /= "000" else
+         Z;
 
     -------------------------------------------------------------------------
     -- FIFO Handling
@@ -516,7 +518,7 @@ begin
     fifo_write_pc <= '1' when FIFO_code = "01" else
                      '0';
 
-    fifo_next_pc <= '1' when buss_code = "101" else
+    fifo_next_pc <= '1' when FIFO_code = "11" else
                     '0';
 
     fifo_change_player <= '1' when FIFO_code = "10" else

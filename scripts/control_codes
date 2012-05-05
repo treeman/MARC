@@ -86,6 +86,7 @@ my %singles = (
     jmpBdir => "uPC",
     jmpBpre => "uPC",
     change_player => "FIFO",
+    fifo_next => "FIFO",
 );
 
 my %registers = (
@@ -160,6 +161,7 @@ my %registers = (
     FIFO => {
         buss => "01",
         change_player => "10",
+        fifo_next => "11",
     },
 );
 

@@ -1,14 +1,18 @@
 ; Fetch instruction
         jmpS $GAME                          ; Execute game code only if we're running
 
+        fifo_next
         PC -> FIFO
         change_player
+        fifo_next
         PC -> FIFO
         change_player
         uPC = 0
 
 :GAME   change_player                       ; Change players turn
-        FIFO -> PC, FIFO -> mem_addr        ; Fetch next PC
+        fifo_next
+        FIFO -> PC                          ; Fetch next PC
+        PC -> mem_addr
         mem -> OP, mem -> M1, mem -> M2     ; Fetch data
         OP -> IR, jmp $AMOD                 ; Go to adress decoding
 
