@@ -124,7 +124,7 @@ architecture Behavioral of MARC is
      component PlayerFIFO is
          Port ( current_pc_in : in  STD_LOGIC_VECTOR (12 downto 0);
                 current_pc_out : out  STD_LOGIC_VECTOR (12 downto 0);
-                current_player_out : out STD_LOGIC_VECTOR (1 downto 0);
+                current_player_out : out STD_LOGIC;
                 game_over_out : out STD_LOGIC;
                 next_pc : in  STD_LOGIC;
                 write_pc : in STD_LOGIC;
@@ -244,12 +244,14 @@ architecture Behavioral of MARC is
     signal fbart_request_next_data :  STD_LOGIC := '0';         -- Generate this when we read from FBART into BUSS
     signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
 
-    signal fifo_current_player : STD_LOGIC_VECTOR (1 downto 0);
+    signal fifo_current_player : STD_LOGIC;
     signal fifo_game_over :std_logic;
 
     signal fifo_next_pc : std_logic := '0';
     signal fifo_write_pc : std_logic := '0';
     signal fifo_change_player : std_logic := '0';
+
+    signal active_player : std_logic_vector(1 downto 0);
 
 begin
 
@@ -318,7 +320,7 @@ begin
                     data_gpu => memory1_data_gpu,
                     read_gpu => memory1_read_gpu,
                     address_gpu => memory1_address_gpu,
-                    active_player => fifo_current_player
+                    active_player => active_player
         );
 
     memory2: Memory_Cell
@@ -516,6 +518,13 @@ begin
 
     fifo_next_pc <= '1' when buss_code = "101" else
                     '0';
+
+    fifo_change_player <= '1' when FIFO_code = "10" else
+                          '0';
+
+    active_player <= "00" when game_started = '0' else
+                     "01" when fifo_current_player = '0' else
+                     "10";
 
     -------------------------------------------------------------------------
     -- BUSS MEGA-MULTIPLEXER

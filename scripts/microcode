@@ -1,54 +1,65 @@
 ; Fetch instruction
-        PC -> mem_addr, change_player
-        mem -> OP, mem -> M1, mem -> M2
-        OP -> IR, jmp $AMOD
+        jmpS $GAME                          ; Execute game code only if we're running
+
+        PC -> FIFO
+        change_player
+        PC -> FIFO
+        change_player
+        uPC = 0
+
+:GAME   change_player                       ; Change players turn
+        FIFO -> PC, FIFO -> mem_addr        ; Fetch next PC
+        mem -> OP, mem -> M1, mem -> M2     ; Fetch data
+        OP -> IR, jmp $AMOD                 ; Go to adress decoding
 
 ; Calculate adress mode for A operand
-:AMOD   jmpAimm $BMOD               ; If immediate we're done
-        M1 -> ALU1                  ; Address is a relative offset
-        ALU1 += PC                  ; so add PC
+:AMOD   jmpAimm $BMOD                       ; If immediate we're done
+        M1 -> ALU1                          ; Address is a relative offset
+        ALU1 += PC                          ; so add PC
         ALU1 -> M1
-        jmpAdir $BMOD               ; If direct, we're done
-        M1 -> mem_addr, mem -> M2   ; Check B address
-        M2 -> M1                    ; Move it to A's place
-        jmpApre $APRE               ; If pre-decr decr and come back
-:AOFF   M1 -> ALU1                  ; Relative offset, add mem_addr
+        jmpAdir $BMOD                       ; If direct, we're done
+        M1 -> mem_addr, mem -> M2           ; Check B address
+        M2 -> M1                            ; Move it to A's place
+        jmpApre $APRE                       ; If pre-decr decr and come back
+:AOFF   M1 -> ALU1                          ; Relative offset, add mem_addr
         ALU1 += mem_addr
         ALU1 -> M1
-        jmp $BMOD                   ; Do the same for the B operand
+        jmp $BMOD                           ; Do the same for the B operand
 
-:APRE   M1 -> ALU1                  ; Decr
+:APRE   M1 -> ALU1                          ; Decr
         ALU--
         ALU1 -> M1, ALU1 -> M2
-        M2 -> mem                   ; Write it back where it came from
-        jmp $AOFF                   ; Continue
+        M2 -> mem                           ; Write it back where it came from
+        jmp $AOFF                           ; Continue
 
 ; Calculate adress mode for B operand
-:BMOD   PC -> mem_addr              ; Retrieve data
+:BMOD   PC -> mem_addr                      ; Retrieve data
         mem -> M2
-        jmpBimm $INSTR              ; If immediate we're done
-        M2 -> ALU1                  ; Relative address, add PC
+        jmpBimm $INSTR                      ; If immediate we're done
+        M2 -> ALU1                          ; Relative address, add PC
         ALU1 += PC
         ALU1 -> M2
-        jmpBdir $INSTR              ; If direct, we're done
+        jmpBdir $INSTR                      ; If direct, we're done
         M2 -> mem_addr
-        mem -> M2                   ; Check B operand of the address
+        mem -> M2                           ; Check B operand of the address
         jmpBpre $BPRE
-:BOFF   M2 -> ALU1                  ; Relative offset, add mem_addr
+:BOFF   M2 -> ALU1                          ; Relative offset, add mem_addr
         ALU1 += mem_addr
         ALU1 -> M2
-        jmp $INSTR                  ; We're done
+        jmp $INSTR                          ; We're done
 
-:BPRE   M2 -> ALU1                  ; Decr
+:BPRE   M2 -> ALU1                          ; Decr
         ALU--
         ALU1 -> M2
-        M2 -> mem                   ; Write it back where it came from
-        jmp $BOFF                   ; Continue
+        M2 -> mem                           ; Write it back where it came from
+        jmp $BOFF                           ; Continue
 
 
-; Load up instruction
-:INSTR  M1 -> ADR1, M2 -> ADR2      ; A operand is now in ADR1 and B in ADR2 (if immediate ignore these)
-        op_addr -> uPC
+; Load up instruction and proceed to instruction decoding
+; A operand is now in ADR1 and B in ADR2
+; If immediate ignore these, they're also in M1 and M2
+
+:INSTR  M1 -> ADR1, M2 -> ADR2, op_addr -> uPC
 
 
 ; Execute instruction
