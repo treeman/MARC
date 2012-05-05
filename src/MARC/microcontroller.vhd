@@ -15,6 +15,8 @@ entity Microcontroller is
         -- Buss input
         buss_in : in std_logic_vector(7 downto 0);
 
+        uCount_limit : in std_logic_vector(7 downto 0);
+
         -- Control codes
         PC_code : out std_logic_vector(1 downto 0);
 
@@ -296,9 +298,6 @@ architecture Behavioral of Microcontroller is
 
     signal uCounter : std_logic_vector(7 downto 0);
 
-    -- TODO connect or change this for delay
-    signal uCount_limit : std_logic_vector(7 downto 0) := "00000000";
-
     -- Registers
     signal IR : std_logic_vector(7 downto 0);
     signal uPC : std_logic_vector(7 downto 0);
@@ -443,7 +442,7 @@ begin
             -- Update uCounter
             if reset_a = '1' then
                 uCounter <= "00000000";
-            elsif uPC_code = "1111" then
+            elsif uPC = "00000000" then
                 uCounter <= "00000000";
             else
                 uCounter <= uCounter + 1;

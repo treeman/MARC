@@ -8,6 +8,8 @@ entity MARC is
     Port (  clk : in std_logic;
             reset_a : in std_logic;
 
+            uCount_limit : in std_logic_vector(7 downto 0);
+
             -- Temporary shit
             tmp_buss : in std_logic_vector(12 downto 0);
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
@@ -30,6 +32,8 @@ architecture Behavioral of MARC is
         Port (  clk : in std_logic;
                 reset_a : in std_logic;
                 buss_in : in std_logic_vector(7 downto 0);
+
+                uCount_limit : in std_logic_vector(7 downto 0);
 
                 PC_code : out std_logic_vector(1 downto 0);
                 buss_code : out std_logic_vector(2 downto 0);
@@ -267,6 +271,7 @@ begin
         port map (  clk => clk,
                     reset_a => reset_a,
                     buss_in => main_buss(7 downto 0),
+                    uCount_limit => uCount_limit,
 
                     PC_code => PC_code,
                     buss_code => buss_code,
