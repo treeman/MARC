@@ -68,9 +68,9 @@ architecture Behavioral of Memory_Cell_DualPort is
         --"01000000XXXXXXXX", -- JMP
         --"01010000XXXXXXXX", -- JMPZ
         --"01100000XXXXXXXX", -- JMN
-        "01110000XXXXXXXX", -- CMP
-        "10000000XXXXXXXX", -- SLT
-        "10010101XXXXXXXX", -- DJN
+        --"01110000XXXXXXXX", -- CMP
+        --"10000000XXXXXXXX", -- SLT
+        --"10010000XXXXXXXX", -- DJN
         "10100101XXXXXXXX", -- SPL
 
         others => (others => '0')

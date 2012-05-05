@@ -117,18 +117,18 @@ architecture Behavioral of MARC is
                 has_next_data : out  STD_LOGIC;
                 rxd : in std_logic);
      end component;
-	  
-	 component PlayerFIFO is
-		 Port ( current_pc_in : in  STD_LOGIC_VECTOR (12 downto 0);
-				  current_pc_out : out  STD_LOGIC_VECTOR (12 downto 0);
-				  current_player_out : out STD_LOGIC_VECTOR (1 downto 0);
-				  game_over_out : out STD_LOGIC;
-				  next_pc : in  STD_LOGIC;
-				  write_pc : in STD_LOGIC;
-				  change_player : in STD_LOGIC;
-				  clk : in std_logic;
-				  reset : in std_logic);
-	 end component;
+
+     component PlayerFIFO is
+         Port ( current_pc_in : in  STD_LOGIC_VECTOR (12 downto 0);
+                current_pc_out : out  STD_LOGIC_VECTOR (12 downto 0);
+                current_player_out : out STD_LOGIC_VECTOR (1 downto 0);
+                game_over_out : out STD_LOGIC;
+                next_pc : in  STD_LOGIC;
+                write_pc : in STD_LOGIC;
+                change_player : in STD_LOGIC;
+                clk : in std_logic;
+                reset : in std_logic);
+     end component;
 
     -------------------------------------------------------------------------
     -- DATA SIGNALS
@@ -237,13 +237,13 @@ architecture Behavioral of MARC is
     -------------------------------------------------------------------------
     signal fbart_request_next_data :  STD_LOGIC := '0';         -- Generate this when we read from FBART into BUSS
     signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
-	 
-	 signal fifo_current_player :   STD_LOGIC_VECTOR (1 downto 0);
-	 signal fifo_game_over :std_logic;
-	 
-	 signal fifo_next_pc : std_logic := '0';
-	 signal fifo_write_pc : std_logic := '0';
-	 signal fifo_change_player : std_logic := '0';
+
+    signal fifo_current_player : STD_LOGIC_VECTOR (1 downto 0);
+    signal fifo_game_over :std_logic;
+
+    signal fifo_next_pc : std_logic := '0';
+    signal fifo_write_pc : std_logic := '0';
+    signal fifo_change_player : std_logic := '0';
 
 begin
 
@@ -251,7 +251,7 @@ begin
     -- COMPONENT INITIATION
     -------------------------------------------------------------------------
 
-	game_started <= not fifo_game_over;
+    game_started <= not fifo_game_over;
 
     micro: Microcontroller
         port map (  clk => clk,
@@ -342,17 +342,17 @@ begin
                     has_next_data => new_IN,
                     rxd => fbart_in
         );
-		  
-	fifo: PlayerFIFO
-        port map (  current_pc_in => main_buss, 		-- Always connected to main_buss
-						  current_pc_out => fifo_out,
-						  current_player_out => fifo_current_player,
-						  game_over_out => fifo_game_over,
-						  next_pc => fifo_next_pc,
-						  write_pc => fifo_write_pc,
-						  change_player =>fifo_change_player,
-						  clk => clk,
-						  reset => reset
+
+    fifo: PlayerFIFO
+        port map (  current_pc_in => main_buss,         -- Always connected to main_buss
+                    current_pc_out => fifo_out,
+                    current_player_out => fifo_current_player,
+                    game_over_out => fifo_game_over,
+                    next_pc => fifo_next_pc,
+                    write_pc => fifo_write_pc,
+                    change_player => fifo_change_player,
+                    clk => clk,
+                    reset => reset
         );
 
     -------------------------------------------------------------------------

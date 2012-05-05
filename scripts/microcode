@@ -155,7 +155,6 @@
         jmpZ $SKIP                          ; If eq, skip next instr
         jmp $ADDPC                          ; Else continue as normal
 
-
 ; SLT if A is less than B skip next instr
 :SLT    jmpAimm $ISLT
         ADR1 -> mem_addr                    ; Fetch B field spec by A
@@ -168,6 +167,24 @@
         jmp $ADDPC                          ; Else continue
 
 :ISLT   M1 -> ALU1, jmp $SLTCMP             ; Place A in ALU for comparison, rest is the same
+
+; DJN Decr B, if not zero jmp to A
+:DJN    jmpBimm $IDJN
+        ADR2 -> mem_addr                    ; Fetch B field spec by B
+        mem -> M2
+        M2 -> ALU1                          ; Decr
+        ALU--
+        ALU1 -> M2
+        M2 -> mem                           ; Write back
+:CMPDJN jmpZ $ADDPC                         ; If zero, continue
+        M1 -> FIFO, jmp $END                ; Else jump to A
+
+:IDJN   M2 -> ALU1, jmp $CMPDJN             ; Use B to set Z
+
+; SPL Place A in process queue
+:SPL    PC++
+        PC -> FIFO                          ; First add PC++ to queue
+        M1 -> FIFO, jmp $END                ; Then add the address of A to queue
 
 
 :SKIP   PC++, jmp $ADDPC

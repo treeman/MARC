@@ -56,8 +56,8 @@ add wave -noupdate /marc_test/uut/new_IN
 add wave -noupdate /marc_test/uut/game_started
 add wave -noupdate -group ALU -color Aquamarine -radix hexadecimal /marc_test/uut/alus/alu1_register
 add wave -noupdate -group ALU -color Aquamarine -radix hexadecimal /marc_test/uut/alus/alu2_register
-add wave -noupdate -group ALU /marc_test/uut/alus/alu1_operand
-add wave -noupdate -group ALU /marc_test/uut/alus/alu2_operand
+add wave -noupdate -group ALU -radix hexadecimal /marc_test/uut/alus/alu1_operand
+add wave -noupdate -group ALU -radix hexadecimal /marc_test/uut/alus/alu2_operand
 add wave -noupdate -group ALU -color {Cadet Blue} /marc_test/uut/ALU1_code
 add wave -noupdate -group ALU -color {Cadet Blue} /marc_test/uut/ALU2_code
 add wave -noupdate -group ALU -color {Cadet Blue} /marc_test/uut/ALU_code
@@ -83,7 +83,7 @@ add wave -noupdate -group mem3 /marc_test/uut/memory3_write
 add wave -noupdate -group mem3 -radix hexadecimal /marc_test/uut/memory_address_in
 add wave -noupdate -group mem3 -radix hexadecimal -childformat {{/marc_test/uut/memory3/address_out(12) -radix hexadecimal} {/marc_test/uut/memory3/address_out(11) -radix hexadecimal} {/marc_test/uut/memory3/address_out(10) -radix hexadecimal} {/marc_test/uut/memory3/address_out(9) -radix hexadecimal} {/marc_test/uut/memory3/address_out(8) -radix hexadecimal} {/marc_test/uut/memory3/address_out(7) -radix hexadecimal} {/marc_test/uut/memory3/address_out(6) -radix hexadecimal} {/marc_test/uut/memory3/address_out(5) -radix hexadecimal} {/marc_test/uut/memory3/address_out(4) -radix hexadecimal} {/marc_test/uut/memory3/address_out(3) -radix hexadecimal} {/marc_test/uut/memory3/address_out(2) -radix hexadecimal} {/marc_test/uut/memory3/address_out(1) -radix hexadecimal} {/marc_test/uut/memory3/address_out(0) -radix hexadecimal}} -subitemconfig {/marc_test/uut/memory3/address_out(12) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(11) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(10) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(9) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(8) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(7) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(6) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(5) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(4) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(3) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(2) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(1) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(0) {-height 15 -radix hexadecimal}} /marc_test/uut/memory3/address_out
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {15754 ns} 0}
+WaveRestoreCursors {{Cursor 1} {25055 ns} 0}
 configure wave -namecolwidth 252
 configure wave -valuecolwidth 101
 configure wave -justifyvalue left
@@ -98,4 +98,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {8966 ns} {40466 ns}
+WaveRestoreZoom {0 ns} {31500 ns}
