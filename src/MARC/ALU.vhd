@@ -41,7 +41,7 @@ entity ALU is
             -- 10 +
             -- 11 -
 
-            alu1_zeroFlag : buffer STD_LOGIC;
+            alu1_zeroFlag_out : out STD_LOGIC;
             alu1_negFlag : out STD_LOGIC;
             alu_zeroFlag : out STD_LOGIC;
 
@@ -63,8 +63,12 @@ architecture Behavioral of ALU is
     -- Temporary signals for calculating negative flag for alu1
     signal add_res : STD_LOGIC_VECTOR (12 downto 0);
     signal sub_res : STD_LOGIC_VECTOR (12 downto 0);
+	 
+	 signal alu1_zeroFlag : STD_LOGIC;
 
 begin
+
+	alu1_zeroFlag_out <= alu1_zeroFlag;
 
     add_res <= alu1_register + alu1_operand;
     sub_res <= alu1_register - alu1_operand;

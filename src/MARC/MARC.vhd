@@ -70,7 +70,7 @@ architecture Behavioral of MARC is
         Port (  clk : in std_logic;
 
                 alu_operation : in std_logic_vector(1 downto 0);
-                alu1_zeroFlag : out std_logic;
+                alu1_zeroFlag_out : out std_logic;
                 alu1_negFlag : out std_logic;
                 alu_zeroFlag : out std_logic;
 
@@ -86,6 +86,8 @@ architecture Behavioral of MARC is
         Port (  clk : in std_logic;
                 read : in std_logic;
                 write : in std_logic;
+					 
+					 reset : in std_logic;
 
                 address_in : in std_logic_vector(12 downto 0);
                 address_out : out std_logic_vector(12 downto 0);
@@ -305,7 +307,7 @@ begin
         port map (  clk => clk,
                     alu_operation => ALU_operation,
 
-                    alu1_zeroFlag => Z,
+                    alu1_zeroFlag_out => Z,
                     alu1_negFlag => N,
                     alu_zeroFlag => both_Z,
 
@@ -336,7 +338,8 @@ begin
                     --address_out => memory2_address_out,
                     write => memory2_write,
                     data_in => memory2_data_in,
-                    data_out => M1
+                    data_out => M1,
+						  reset => reset
         );
 
     memory3: Memory_Cell
@@ -346,7 +349,8 @@ begin
                     --address_out => memory3_address_out,
                     write => memory3_write,
                     data_in => memory3_data_in,
-                    data_out => M2
+                    data_out => M2,
+						  reset => reset
         );
 
     fbart: FBARTController

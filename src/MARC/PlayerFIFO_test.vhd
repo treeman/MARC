@@ -103,55 +103,55 @@ BEGIN
       
       current_pc_in <= "0000000000001";
       write_pc <= '1';
-      change_player <= '1';
+      --change_player <= '1';
       
       wait for clk_period;
       current_pc_in <= "0000000000010";
       write_pc <= '1';
-      change_player <= '1';
+      --change_player <= '1';
       
       wait for clk_period;
       current_pc_in <= "0000000000011";
       write_pc <= '1';
-      change_player <= '1';
+      --change_player <= '1';
       
       wait for clk_period;
       current_pc_in <= "0000000000100";
       write_pc <= '1';
-      change_player <= '1';
+     -- change_player <= '1';
       
       wait for clk_period ;	
       
       current_pc_in <= "0000000000101";
       write_pc <= '1';
-      change_player <= '1';
+    --  change_player <= '1';
       
       wait for clk_period;
       current_pc_in <= "0000000000110";
       write_pc <= '1';
-      change_player <= '1';
+    --  change_player <= '1';
       
       wait for clk_period;
       current_pc_in <= "0000000000111";
       write_pc <= '1';
-      change_player <= '1';
+    --  change_player <= '1';
       
       wait for clk_period;
       current_pc_in <= "0000000001000";
       write_pc <= '1';
-      change_player <= '1';
+    --  change_player <= '1';
       
       wait for clk_period;
       write_pc <= '0';
-      change_player <= '0';
+     -- change_player <= '0';
       
       wait for clk_period;
       next_pc <= '1';
-      change_player <= '1';
+     -- change_player <= '1';
       
       wait for clk_period;
       next_pc <= '0';
-      change_player <= '0';
+    --  change_player <= '0';
       
       wait for clk_period;
       next_pc <= '1';
