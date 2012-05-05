@@ -5,7 +5,6 @@ Todo
 * VGA output
 * handle reset/upstart
     Might be doable in microcode
-* latch/delay problem on Z
 * Test input and loading
 * Write compiler to generate useful object code for fbart
     Pad 13 bit instr -> 16 bit
