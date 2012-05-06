@@ -145,6 +145,19 @@ architecture Behavioral of MARC is
                 reset : in std_logic
             );
      end component;
+	  
+	  component vga is 
+		Port ( 	rst : in  STD_LOGIC;
+					clk : in  STD_LOGIC;
+					data_gpu : in  STD_LOGIC_VECTOR (7 downto 0);
+					address_gpu : out  STD_LOGIC_VECTOR (12 downto 0);
+					red : out  STD_LOGIC_VECTOR (2 downto 0);
+					grn : out  STD_LOGIC_VECTOR (2 downto 0);
+					blu : out  STD_LOGIC_VECTOR (1 downto 0);
+					HS : out  STD_LOGIC;
+					VS : out  STD_LOGIC
+				);
+		end component;
 
     -------------------------------------------------------------------------
     -- DATA SIGNALS
@@ -226,7 +239,7 @@ architecture Behavioral of MARC is
     signal ADR2_code : std_logic_vector(1 downto 0);
 
     signal FIFO_code : std_logic_vector(1 downto 0);
-
+		
     -------------------------------------------------------------------------
     -- MISC JUNK
     -------------------------------------------------------------------------
@@ -263,6 +276,21 @@ architecture Behavioral of MARC is
     signal fifo_write_pc : std_logic := '0';
     signal fifo_change_player : std_logic := '0';
 
+	 -------------------------------------------------------------------------
+    -- VGA SIGNALS
+    -------------------------------------------------------------------------
+	 signal colorpix: std_logic_vector (7 downto 0); 
+	 signal red : std_logic_vector (2 downto 0);
+	 signal grn : std_logic_vector (2 downto 0);
+	 signal blu : std_logic_vector (1 downto 0);
+	 signal HS : std_logic;
+	 signal VS : std_logic;
+	 -- temp
+	 signal data_gpu : std_logic_vector (7 downto 0);
+	 signal address_gpu : std_logic_vector (12 downto 0);
+	
+	
+	
 begin
 
     -------------------------------------------------------------------------
@@ -332,9 +360,9 @@ begin
                     write => memory1_write,
                     data_in => memory1_data_in,
                     data_out => OP,
-                    data_gpu => memory1_data_gpu,
+                    data_gpu => data_gpu,
                     read_gpu => memory1_read_gpu,
-                    address_gpu => memory1_address_gpu,
+                    address_gpu => address_gpu,
                     active_player => active_player
         );
 
@@ -384,7 +412,19 @@ begin
                     clk => clk,
                     reset => reset
         );
-
+	
+	 GPU: vga
+			port map ( 	clk => clk,
+							rst => reset,
+							data_gpu => data_gpu,
+							address_gpu => address_gpu,
+							red => red,
+							grn => grn,
+							blu => blu,
+							HS => HS,
+							VS => VS
+		 );
+	
     -------------------------------------------------------------------------
     -- CLOCK EVENT
     -------------------------------------------------------------------------
