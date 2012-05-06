@@ -90,8 +90,6 @@ sub evaluate {
     return $value;
 }
 
-my $codeline = 0;
-
 my $out;
 if ($obj_out) {
     open $out, '>', $obj_out;
@@ -116,7 +114,7 @@ if ($obj_out) {
     elsif ($verbose) {
         my $hex = bin2hex ($pc_bin);
 
-        say "$pc_bin  " . join (" ", $hex =~ /../g) . "  ; Player 2 PC\n";
+        say "\n$pc_bin  " . join (" ", $hex =~ /../g) . "  ; Player 2 PC\n";
     }
 
     parse ($p2);
@@ -132,6 +130,8 @@ sub parse {
 
     # Store line of code here when processing
     my @code;
+
+    my $codeline = 0;
 
     while (my $line = <$in>) {
         chomp $line;
@@ -183,7 +183,7 @@ sub parse {
             push (@code, $code);
         }
         # Match end
-        elsif ($code =~ /^\s*end/) {
+        elsif ($code =~ /^\s*end/i) {
             last;
         }
         else {
@@ -191,13 +191,21 @@ sub parse {
         }
     }
 
-    # Pretty header kthx
-    if ($verbose) {
-        say "Output for file $src";
+    my $bin_output = "";
+
+    # Print line numbers
+    my $codeline_bin = dec2bin ($codeline, 16);
+
+    if ($raw) {
+        say $codeline_bin;
+    }
+    elsif ($verbose) {
+        my $hex = bin2hex ($codeline_bin);
+        say "$codeline_bin  " . join (" ", $hex =~ /../g) . "  ; Number of rows ($codeline) $src\n";
         say "   pad    OP  A  B  pad     A op      pad      B op";
     }
 
-    # We'll incr in the beginning but we still want to start with 0
+    # Start from -1 as we incr in the beginning
     $codeline = -1;
 
     for my $code (@code) {
@@ -218,7 +226,7 @@ sub parse {
         {
             my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
 
-            $codeline++; # Not doing anything here atm though
+            $codeline++;
 
             my %types = (
                 '#' => "01",    # Immediate
@@ -296,11 +304,7 @@ sub parse {
                     "  ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)";
             }
 
-            if ($obj_out) {
-                my $what = "$op_bin$a_op_bin$b_op_bin";
-                my $val = pack ("B48", $what);
-                print $out $val;
-            }
+            $bin_output .= "$op_bin$a_op_bin$b_op_bin";
         }
         # Match a constant
         elsif ($code =~ /^
@@ -331,8 +335,13 @@ sub parse {
         }
     }
 
-    # Linebreak
-    say "";
+    if ($obj_out) {
+        # Output object values
+        print $out pack ("B16", $codeline_bin);
+
+        my $val = pack ("B" . 48 * ($codeline + 1), $bin_output);
+        print $out $val;
+    }
 }
 
 if ($obj_out) {
