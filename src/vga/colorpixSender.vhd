@@ -55,7 +55,7 @@ begin
 				address <= address_mem;
 				-- reset counters when it reaches the max area
 				if height = 525 then
-					if column_cnt = 799 then
+					if column_cnt = 800 then
 						height <= (others => '0');
 						column_cnt <= (others => '0');
 						row_cnt <= (others => '0');
@@ -72,7 +72,7 @@ begin
 						------------------
 						-- Column6 Start --
 						------------------
-						if column_cnt < 800 then
+						if column_cnt < 801 then
 								-- keep sending 128*5 = 640 pixels
 								if column_cnt < 640 then -- within the display area
 									
@@ -92,7 +92,7 @@ begin
 										end if;
 									end if;
 														
-								elsif column_cnt = 799 then -- reset everything on the last cp of column_cnt
+								elsif column_cnt = 800 then -- reset everything on the last cp of column_cnt
 									row_cnt <= (others => '0'); 
 									height <= height + 1;
 									address_mem <= address_mem + 1; -- decrease the address by 128, back to the beginning
@@ -111,7 +111,7 @@ begin
 						------------------
 						-- Column Start --
 						------------------
-						if column_cnt < 800 then
+						if column_cnt < 801 then
 								-- keep sending 128*5 = 640 pixels
 								if column_cnt < 640 then -- within the display area
 									
@@ -131,7 +131,7 @@ begin
 										end if;
 									end if;
 														
-								elsif column_cnt = 799 then -- reset everything on the last cp of column_cnt
+								elsif column_cnt = 800 then -- reset everything on the last cp of column_cnt
 									row_cnt <= row_cnt + 1; -- next row, and height increase by 1 too
 									height <= height + 1;
 									address_mem <= address_mem - 128; -- decrease the address by 128, back to the beginning
@@ -151,7 +151,7 @@ begin
 
 				-- during the blanking zone, just increase the counter.
 				else
-					if column_cnt = 799 then
+					if column_cnt = 800 then
 						height <= height + 1;
 						column_cnt <= (others => '0');
 					else
