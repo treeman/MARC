@@ -158,6 +158,10 @@ while (my $line = <$in>) {
     }
 }
 
+if ($verbose) {
+    say "   pad    OP  A  B  pad     A op      pad      B op";
+}
+
 # We'll incr in the beginning but we still want to start with 0
 $codeline = -1;
 
@@ -234,31 +238,30 @@ for my $code (@code) {
 
         my $instr_code = $instr_codes{uc($instr)};
 
+        my $op_bin = "00000000$instr_code$a_mod$b_mod";
+        my $a_op_bin = "000$a_bin";
+        my $b_op_bin = "000$b_bin";
+
         # Output
         if ($debug) {
             say "I: $instr $a_mod $b_mod $a_val $b_val";
         }
 
         if ($raw) {
-            say "$instr_code$a_mod$b_mod$a_bin$b_bin";
+            say "$op_bin$a_op_bin$b_op_bin";
         }
         elsif ($verbose) {
-            # Ugly hack to truncate hex
-            my $ophex = substr (bin2hex ($instr_code), 0, 1);
-            my $modhex = substr (bin2hex ($a_mod.$b_mod), 0, 1);
+            my $line = "$op_bin$a_op_bin$b_op_bin";
+            my $hex = bin2hex ($line);
 
-            my $ahex = bin2hex ($a_bin);
-            my $bhex = bin2hex ($b_bin);
-
-            say "$instr_code $a_mod $b_mod $a_bin $b_bin   $ophex$modhex "
-            . substr ($ahex, 0, 2) ." ". substr ($ahex, 2) ." "
-            . substr ($bhex, 0, 2) ." ". substr ($bhex, 2)
-            . "  ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)";
+            # Pretty output, split binary into sections, split up hex values into pairs and add code as comment
+            say "00000000 $instr_code $a_mod $b_mod 000 $a_bin 000 $b_bin   " . join (" ", ($hex =~ /../g)) .
+                "  ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)";
         }
 
         if ($obj_out) {
-            my $what = "$instr_code$a_mod$b_mod$a_bin$b_bin";
-            my $val = pack ("B34", $what);
+            my $what = "$op_bin$a_op_bin$b_op_bin";
+            my $val = pack ("B48", $what);
             print $out $val;
         }
     }
