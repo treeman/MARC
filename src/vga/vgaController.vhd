@@ -5,7 +5,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 -- the vga_controller_640_480_60Hz
 
-entity vga_controller is
+entity vgaController is
 port(
    rst   : in std_logic;
    clk   : in std_logic;
@@ -16,9 +16,9 @@ port(
    HS          : out std_logic; -- HS = '0' for display enabled
    VS          : out std_logic -- VS = '0' for display enabled
 );
-end vga_controller;
+end vgaController;
 
-Architecture Behavioral of vga_controller is
+Architecture Behavioral of vgaController is
 
 ------------------------------------------------------------------------
 -- CONSTANTS

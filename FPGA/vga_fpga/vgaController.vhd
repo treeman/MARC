@@ -5,23 +5,20 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 -- the vga_controller_640_480_60Hz
 
-entity lab is
+entity vgaController is
 port(
    rst   : in std_logic;
    clk   : in std_logic;
-	colorpix : in std_logic_vector(7 downto 0);  -- 8 colorpixel bits
+    colorpix : in std_logic_vector(7 downto 0);  -- 8 colorpixel bits
    red : out std_logic_vector(2 downto 0);
    grn : out std_logic_vector(2 downto 0);
    blu : out std_logic_vector(1 downto 0);
    HS          : out std_logic; -- HS = '0' for display enabled
-   VS          : out std_logic; -- VS = '0' for display enabled
-   hcount      : out std_logic_vector(10 downto 0);
-   vcount      : out std_logic_vector(10 downto 0);
-	blank : out std_logic
+   VS          : out std_logic -- VS = '0' for display enabled
 );
-end lab;
+end vgaController;
 
-Architecture Behavioral of lab is
+Architecture Behavioral of vgaController is
 
 ------------------------------------------------------------------------
 -- CONSTANTS
@@ -46,6 +43,7 @@ constant VSP   : std_logic_vector(10 downto 0) := "00111100100"; -- 484
 -- polarity of the horizontal and vertical synch pulse
 -- only one polarity used, because for this resolution they coincide.
 constant SPP   : std_logic := '0';
+
 
 ------------------------------------------------------------------------
 -- SIGNALS
@@ -76,13 +74,13 @@ begin
 				
 				--increase h_counter
 				if hcounter = HMAX then
-					hcounter <= "00000000000";              
-                    --increase v_counter                   
-                    if vcounter = VMAX then
+					hcounter <= "00000000000";
+               --increase v_counter                   
+               if vcounter = VMAX then
 						vcounter <= "00000000000";
 					else
 						vcounter <= vcounter + 1;
-                    end if;
+               end if;
 				else
 					hcounter <= hcounter + 1;
 				end if;
@@ -101,38 +99,36 @@ begin
 					VS <= not SPP;  -- VS = 1
 				end if;				
 				
-                -- output horizontal and vertical counters
-                hcount <= hcounter;
-                vcount <= vcounter;
-                
+            -- output horizontal and vertical counters
+				--hcount <= hcounter;
+            --vcount <= vcounter;
                 if hcounter < HLINES and vcounter < VLINES then
-                    video_enable <= '1';
+                    --video_enable <= '1';
+                    --blank <= '0';  -- input pixecolor signals when blank = 0, 4 clk each input
+                    
+                    if vcounter < 476 then --otherwise border area
+                        -- print colorpixels here
+								red <= colorpix (2 downto 0);
+                        grn <= colorpix (5 downto 3);
+                        blu <= colorpix (7 downto 6);
+                    else
+                        -- print border here (can vary the color with better color than black only)
+                        red <= "000";
+                        grn <= "000";
+                        blu <= "00";
+                    end if;
+                                                           
                 else 
-                    video_enable <= '0';
-                end if;
-					 
-					 -- enable video output when pixel is in visible area
-                if video_enable = '1' then
-						  -- show the colorpix on the screen
-                    red <= colorpix(2 downto 0);
-                    grn <= colorpix(5 downto 3);
-                    blu <= colorpix(7 downto 6);
-						  -- disable the blank signal
-						  blank <= '0';
-					 else
-						  -- enable the blank signal and output black color
-						  blank <= '1';
+                    --video_enable <= '0';
+                    --blank <= '1';
                     red <= "000";
                     grn <= "000";
                     blu <= "00";
-                end if;                
+                end if;         
 			else
 				pixel_cnt <= pixel_cnt + 1;
-			end if;
+		   end if;
             
 		end if;
     end process;
-    
-
-
 end Behavioral;

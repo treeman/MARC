@@ -34,11 +34,11 @@ Net "VS" LOC = P7 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = *IO_L47N, sch n
 # INPUT signals             #
 ######################################
 ##
-Net "colorpix<0>" LOC = T10 | IOSTANDARD = LVCMOS33;
-Net "colorpix<1>" LOC = T9 | IOSTANDARD = LVCMOS33;
-Net "colorpix<2>" LOC = V9 | IOSTANDARD = LVCMOS33;
-Net "colorpix<3>" LOC = M8 | IOSTANDARD = LVCMOS33;
-Net "colorpix<4>" LOC = N8 | IOSTANDARD = LVCMOS33;
-Net "colorpix<5>" LOC = U8 | IOSTANDARD = LVCMOS33;
-Net "colorpix<6>" LOC = V8 | IOSTANDARD = LVCMOS33;
-Net "colorpix<7>" LOC = T5 | IOSTANDARD = LVCMOS33;
+Net "data_gpu<0>" LOC = T10 | IOSTANDARD = LVCMOS33;
+Net "data_gpu<1>" LOC = T9 | IOSTANDARD = LVCMOS33;
+Net "data_gpu<2>" LOC = V9 | IOSTANDARD = LVCMOS33;
+Net "data_gpu<3>" LOC = M8 | IOSTANDARD = LVCMOS33;
+Net "data_gpu<4>" LOC = N8 | IOSTANDARD = LVCMOS33;
+Net "data_gpu<5>" LOC = U8 | IOSTANDARD = LVCMOS33;
+Net "data_gpu<6>" LOC = V8 | IOSTANDARD = LVCMOS33;
+Net "data_gpu<7>" LOC = T5 | IOSTANDARD = LVCMOS33;

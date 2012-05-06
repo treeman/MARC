@@ -2,15 +2,15 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   15:29:56 05/01/2012
+-- Create Date:   10:44:43 05/06/2012
 -- Design Name:   
--- Module Name:   E:/vga_fpga/labtb.vhd
+-- Module Name:   E:/vga_fpga/vgaTB.vhd
 -- Project Name:  vga_fpga
 -- Target Device:  
 -- Tool versions:  
 -- Description:   
 -- 
--- VHDL Test Bench Created by ISE for module: lab
+-- VHDL Test Bench Created by ISE for module: VGA
 -- 
 -- Dependencies:
 -- 
@@ -32,26 +32,24 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
-ENTITY labtb IS
-END labtb;
+ENTITY vgaTB IS
+END vgaTB;
  
-ARCHITECTURE behavior OF labtb IS 
+ARCHITECTURE behavior OF vgaTB IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
-    COMPONENT lab
+    COMPONENT VGA
     PORT(
          rst : IN  std_logic;
          clk : IN  std_logic;
-         colorpix : IN  std_logic_vector(7 downto 0);
+         data_gpu : IN  std_logic_vector(7 downto 0);
+         address_gpu : OUT  std_logic_vector(12 downto 0);
          red : OUT  std_logic_vector(2 downto 0);
          grn : OUT  std_logic_vector(2 downto 0);
          blu : OUT  std_logic_vector(1 downto 0);
          HS : OUT  std_logic;
-         VS : OUT  std_logic;
-         hcount : OUT  std_logic_vector(10 downto 0);
-         vcount : OUT  std_logic_vector(10 downto 0);
-			blank : out std_logic
+         VS : OUT  std_logic
         );
     END COMPONENT;
     
@@ -59,36 +57,32 @@ ARCHITECTURE behavior OF labtb IS
    --Inputs
    signal rst : std_logic := '0';
    signal clk : std_logic := '0';
-   signal colorpix : std_logic_vector(7 downto 0) := (others => '0');
+   signal data_gpu : std_logic_vector(7 downto 0) := (others => '0');
 
  	--Outputs
+   signal address_gpu : std_logic_vector(12 downto 0);
    signal red : std_logic_vector(2 downto 0);
    signal grn : std_logic_vector(2 downto 0);
    signal blu : std_logic_vector(1 downto 0);
    signal HS : std_logic;
    signal VS : std_logic;
-   signal hcount : std_logic_vector(10 downto 0);
-   signal vcount : std_logic_vector(10 downto 0);
-	signal blank : std_logic;
 
    -- Clock period definitions
-   constant clk_period : time := 10 ns; -- 100 MHz default clock
-	
+   constant clk_period : time := 10 ns;
+ 
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: lab PORT MAP (
+   uut: VGA PORT MAP (
           rst => rst,
           clk => clk,
-          colorpix => colorpix,
+          data_gpu => data_gpu,
+          address_gpu => address_gpu,
           red => red,
           grn => grn,
           blu => blu,
           HS => HS,
-          VS => VS,
-          hcount => hcount,
-          vcount => vcount,
-			 blank => blank
+          VS => VS
         );
 
    -- Clock process definitions
@@ -105,14 +99,13 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-      wait for 100 ns;	
+      wait for 10 ns;	
 
       -- insert stimulus here 
-		rst <= '1' after 10 ns, '0' after 50 ns;
-		colorpix <= "11111111" after 10 ns, "00000000" after 50 ns, "11111111" after 90 ns;
-		wait;
+		rst <= '1' after 10 ns, '0' after 20 ns;
+		data_gpu <= "11111111" after 50 ns, "00000000" after 250 ns, "11111111" after 450 ns, "00000000" after 650 ns, "11111111" after 850 ns, "00000000" after 1050 ns, "11111111" after 1250 ns;
+
+      wait;
    end process;
-
-
 
 END;

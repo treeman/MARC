@@ -33,9 +33,9 @@ XILINX_INIT = source /sw/xilinx/ise_12.4i/ISE_DS/settings32.sh;
 PART=xc6slx16-3-csg324
 
 
-lab.%: S=lab.vhd
-lab.%: T=labtb.vhd
-lab.%: U=lab.ucf
+lab.%: S=vga.vhd vgaController.vhd colorpixSender.vhd
+lab.%: T=vgaTB.vhd
+lab.%: U=vga.ucf
 
 
 # Det här är ett exempel på hur man kan skriva en testbänk som är
