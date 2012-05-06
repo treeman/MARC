@@ -3,7 +3,7 @@ Todo
 ====
 
 * VGA output
-* Test input
+* Test fbart longer input
 * Write compiler to generate useful object code for fbart  
     Pad 13 bit instr -> 16 bit  
     Use two source code files, randomize a PC for each one and output as  
@@ -19,7 +19,8 @@ Todo
     PC, A, B, n, k 13 bit  
 
     pad msb  
-
+* Start/Reset handling may not be satisfactory
+* Reset memory when restarting
 
 Schema
 ------
