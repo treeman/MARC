@@ -61,9 +61,9 @@ architecture behavior of MARC_test is
     signal last_request : std_logic := '0';
 
     signal prog1 : Data := (
-        "XXXXX1111111100000111100001000011001100",
+        "XXXXX0001111100000111100001000011001100",
         --"XXXXX  1111 1111  0 0000 1111 0000  1 0000 1100 1100", ff 00f0  10cc
-        "XXXXX0000000011111111100001000011101110",
+        "XXXXX0010000011111111100001000011101110",
 
         others => (others => '0')
     );
