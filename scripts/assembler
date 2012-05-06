@@ -21,17 +21,20 @@ GetOptions(
     'raw|r' => \$raw,
 );
 
-my $src = $ARGV[0];
+if ($obj_out && scalar @ARGV != 2) {
+    say "Object output requires two files\!";
+}
 
-if ($help || !$src || (!$debug && !$verbose && !$raw && !$obj_out)) {
+if ($help || !scalar @ARGV || (!$debug && !$verbose && !$raw && !$obj_out)) {
     my ($name) = $0 =~ /([^\/]+$)/;
 
     say "Simple assembler";
     say "  usage:";
-    say "   $name [option]... [file]";
+    say "   $name [option]... [file]...";
     say "  options:";
     say "   -h --help       Show this screen.";
     say "   -o --obj=FILE   Generate binary file output.";
+    say "       Must specify two files.";
     say "   -v --verbose    Verbose output signals in a human readable format.";
     say "   -r --raw        Outputs raw binary data.";
     exit;
@@ -89,211 +92,248 @@ sub evaluate {
 
 my $codeline = 0;
 
-open my $in, '<', $src;
-
 my $out;
 if ($obj_out) {
     open $out, '>', $obj_out;
     binmode $out;
+
+    my ($p1, $p2) = @ARGV;
+
+    parse ($p1);
+
+    # We have 8192 lines, PC1 will be at 0 so generate a random number
+    # between 100 and 8091
+    my $pc = int(rand(7991)) + 100;
+
+    # Convert to bin and pad up to 16 bits
+    my $pc_bin = "000" . dec2bin ($pc, 13);
+
+    print $out pack ("B16", $pc_bin);
+
+    if ($raw) {
+        say $pc_bin;
+    }
+    elsif ($verbose) {
+        my $hex = bin2hex ($pc_bin);
+
+        say "$pc_bin  " . join (" ", $hex =~ /../g) . "  ; Player 2 PC\n";
+    }
+
+    parse ($p2);
+}
+else {
+    parse ($_) for @ARGV;
 }
 
-# Store line of code here when processing
-my @code;
+sub parse {
+    my ($src) = @_;
 
-while (my $line = <$in>) {
-    chomp $line;
+    open my $in, '<', $src;
 
-    # Ignore empty lines
-    next if $line =~ /^\s*$/;
+    # Store line of code here when processing
+    my @code;
 
-    # Remove comments, will always match
-    my ($code, $comment) = $line =~ /^([^;]*);?(.*)/;
+    while (my $line = <$in>) {
+        chomp $line;
 
-    # Don't parse a full comment line
-    next if !$code;
+        # Ignore empty lines
+        next if $line =~ /^\s*$/;
 
-    # Match up a line of redcode
-    if ($code =~ /^(?:
-                      ([A-Z0-9]{0,8})?      # Label, not necessary
-                      [A-Z0-9]*             # Only catch first 8 chars
-                      \s+
-                   )?
-                   ([A-Z0-9]+)              # Mnemonic
-                   (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
-                   \s+
-                   ([^,]+)                  # A operand
-                   \s*,\s*                  # , delimited
-                   ([^,]+)                  # B operand
-                 /xi)
-    {
-        my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
+        # Remove comments, will always match
+        my ($code, $comment) = $line =~ /^([^;]*);?(.*)/;
 
-        # Log label
-        if ($label) {
-            $labels{$label} = $codeline;
-            say "L: $label = $codeline" if $debug;
-        }
-        $codeline++;
+        # Don't parse a full comment line
+        next if !$code;
 
-        push (@code, $code);
-    }
-    # Match a constant
-    elsif ($code =~ /^
-                     ([A-Z0-9]{0,8})        # Label necessary
-                     [A-Z0-9]*              # Only catch first 8 chars
-                     \s+
-                     equ                    # Constant instr mnemonic
-                     \s+
-                     ([-+*\/A-Z0-9\s+]+)    # Definition
+        # Match up a line of redcode
+        if ($code =~ /^(?:
+                        ([A-Z0-9]{0,8})?      # Label, not necessary
+                        [A-Z0-9]*             # Only catch first 8 chars
+                        \s+
+                    )?
+                    ([A-Z0-9]+)              # Mnemonic
+                    (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
+                    \s+
+                    ([^,]+)                  # A operand
+                    \s*,\s*                  # , delimited
+                    ([^,]+)                  # B operand
                     /xi)
-    {
-        push (@code, $code);
-    }
-    # Match end
-    elsif ($code =~ /^\s*end/) {
-        last;
-    }
-    else {
-        die "Syntax error.";
-    }
-}
+        {
+            my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
 
-if ($verbose) {
-    say "   pad    OP  A  B  pad     A op      pad      B op";
-}
+            # Log label
+            if ($label) {
+                $labels{$label} = $codeline;
+                say "L: $label = $codeline" if $debug;
+            }
+            $codeline++;
 
-# We'll incr in the beginning but we still want to start with 0
-$codeline = -1;
-
-for my $code (@code) {
-
-    # Match up a line of redcode
-    if ($code =~ /^(?:
-                      ([A-Z0-9]{0,8})?      # Label, not necessary
-                      [A-Z0-9]*             # Only catch first 8 chars
-                      \s+
-                   )?
-                   ([A-Z0-9]+)              # Mnemonic
-                   (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
-                   \s+
-                   ([^,]+)                  # A operand
-                   \s*,\s*                  # , delimited
-                   ([^,]+)                  # B operand
-                 /xi)
-    {
-        my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
-
-        $codeline++; # Not doing anything here atm though
-
-        my %types = (
-            '#' => "01",    # Immediate
-            '@' => "10",    # Indirect
-            '<' => "11",    # Pre-decrement indirect
-        );
-
-        # Default
-        my $a_mod = "00";   # Direct
-        my $b_mod = "00";
-
-        my $a_type = "";
-        my $b_type = "";
-
-        # Fetch adress modes
-        if ($a_op =~ /^([#@<])(.*)/) {
-            my ($op, $rest) = ($1, $2);
-
-            $a_mod = $types{$op};
-            $a_type = $op;
-            $a_op = $rest;
+            push (@code, $code);
         }
-        if ($b_op =~ /^([#@<])(.*)/) {
-            my ($op, $rest) = ($1, $2);
-
-            $b_mod = $types{$op};
-            $b_type = $op;
-            $b_op = $rest;
+        # Match a constant
+        elsif ($code =~ /^
+                        ([A-Z0-9]{0,8})        # Label necessary
+                        [A-Z0-9]*              # Only catch first 8 chars
+                        \s+
+                        equ                    # Constant instr mnemonic
+                        \s+
+                        ([-+*\/A-Z0-9\s+]+)    # Definition
+                        /xi)
+        {
+            push (@code, $code);
         }
-
-        my $a_val = evaluate $a_op, $codeline;
-        my $b_val = evaluate $b_op, $codeline;
-
-        my $a_bin = dec2bin ($a_val, 13);
-        my $b_bin = dec2bin ($b_val, 13);
-
-        my %instr_codes = (
-            DAT => '0000',
-            MOV => '0001',
-            ADD => '0010',
-            SUB => '0011',
-            JMP => '0100',
-            JMPZ=> '0101',
-            JMN => '0110',
-            CMP => '0111',
-            SLT => '1000',
-            DJN => '1001',
-            SPL => '1010',
-        );
-
-        die "Instr '$instr' does not exist!" if !exists $instr_codes{uc($instr)};
-
-        my $instr_code = $instr_codes{uc($instr)};
-
-        my $op_bin = "00000000$instr_code$a_mod$b_mod";
-        my $a_op_bin = "000$a_bin";
-        my $b_op_bin = "000$b_bin";
-
-        # Output
-        if ($debug) {
-            say "I: $instr $a_mod $b_mod $a_val $b_val";
+        # Match end
+        elsif ($code =~ /^\s*end/) {
+            last;
         }
-
-        if ($raw) {
-            say "$op_bin$a_op_bin$b_op_bin";
-        }
-        elsif ($verbose) {
-            my $line = "$op_bin$a_op_bin$b_op_bin";
-            my $hex = bin2hex ($line);
-
-            # Pretty output, split binary into sections, split up hex values into pairs and add code as comment
-            say "00000000 $instr_code $a_mod $b_mod 000 $a_bin 000 $b_bin   " . join (" ", ($hex =~ /../g)) .
-                "  ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)";
-        }
-
-        if ($obj_out) {
-            my $what = "$op_bin$a_op_bin$b_op_bin";
-            my $val = pack ("B48", $what);
-            print $out $val;
+        else {
+            die "Syntax error.";
         }
     }
-    # Match a constant
-    elsif ($code =~ /^
-                     ([A-Z0-9]{0,8})        # Label necessary
-                     [A-Z0-9]*              # Only catch first 8 chars
-                     \s+
-                     equ                    # Constant instr mnemonic
-                     \s+
-                     ([-+*\/A-Z0-9\s+]+)    # Definition
+
+    # Pretty header kthx
+    if ($verbose) {
+        say "Output for file $src";
+        say "   pad    OP  A  B  pad     A op      pad      B op";
+    }
+
+    # We'll incr in the beginning but we still want to start with 0
+    $codeline = -1;
+
+    for my $code (@code) {
+
+        # Match up a line of redcode
+        if ($code =~ /^(?:
+                        ([A-Z0-9]{0,8})?      # Label, not necessary
+                        [A-Z0-9]*             # Only catch first 8 chars
+                        \s+
+                    )?
+                    ([A-Z0-9]+)              # Mnemonic
+                    (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
+                    \s+
+                    ([^,]+)                  # A operand
+                    \s*,\s*                  # , delimited
+                    ([^,]+)                  # B operand
                     /xi)
-    {
-        my ($label, $def) = ($1, $2);
+        {
+            my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
 
-        # Evaluate
-        my $value = evaluate $def, $codeline;
+            $codeline++; # Not doing anything here atm though
 
-        # And insert
-        $constants{$label} = $value;
+            my %types = (
+                '#' => "01",    # Immediate
+                '@' => "10",    # Indirect
+                '<' => "11",    # Pre-decrement indirect
+            );
 
-        say "C: $label = $def ($value)" if $debug;
+            # Default
+            my $a_mod = "00";   # Direct
+            my $b_mod = "00";
+
+            my $a_type = "";
+            my $b_type = "";
+
+            # Fetch adress modes
+            if ($a_op =~ /^([#@<])(.*)/) {
+                my ($op, $rest) = ($1, $2);
+
+                $a_mod = $types{$op};
+                $a_type = $op;
+                $a_op = $rest;
+            }
+            if ($b_op =~ /^([#@<])(.*)/) {
+                my ($op, $rest) = ($1, $2);
+
+                $b_mod = $types{$op};
+                $b_type = $op;
+                $b_op = $rest;
+            }
+
+            my $a_val = evaluate $a_op, $codeline;
+            my $b_val = evaluate $b_op, $codeline;
+
+            my $a_bin = dec2bin ($a_val, 13);
+            my $b_bin = dec2bin ($b_val, 13);
+
+            my %instr_codes = (
+                DAT => '0000',
+                MOV => '0001',
+                ADD => '0010',
+                SUB => '0011',
+                JMP => '0100',
+                JMPZ=> '0101',
+                JMN => '0110',
+                CMP => '0111',
+                SLT => '1000',
+                DJN => '1001',
+                SPL => '1010',
+            );
+
+            die "Instr '$instr' does not exist!" if !exists $instr_codes{uc($instr)};
+
+            my $instr_code = $instr_codes{uc($instr)};
+
+            my $op_bin = "00000000$instr_code$a_mod$b_mod";
+            my $a_op_bin = "000$a_bin";
+            my $b_op_bin = "000$b_bin";
+
+            # Output
+            if ($debug) {
+                say "I: $instr $a_mod $b_mod $a_val $b_val";
+            }
+
+            if ($raw) {
+                say "$op_bin$a_op_bin$b_op_bin";
+            }
+            elsif ($verbose) {
+                my $line = "$op_bin$a_op_bin$b_op_bin";
+                my $hex = bin2hex ($line);
+
+                # Pretty output, split binary into sections
+                # split up hex values into pairs and add code as comment
+                say "00000000 $instr_code $a_mod $b_mod 000 $a_bin 000 $b_bin   " .
+                    join (" ", ($hex =~ /../g)) .
+                    "  ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)";
+            }
+
+            if ($obj_out) {
+                my $what = "$op_bin$a_op_bin$b_op_bin";
+                my $val = pack ("B48", $what);
+                print $out $val;
+            }
+        }
+        # Match a constant
+        elsif ($code =~ /^
+                        ([A-Z0-9]{0,8})        # Label necessary
+                        [A-Z0-9]*              # Only catch first 8 chars
+                        \s+
+                        equ                    # Constant instr mnemonic
+                        \s+
+                        ([-+*\/A-Z0-9\s+]+)    # Definition
+                        /xi)
+        {
+            my ($label, $def) = ($1, $2);
+
+            # Evaluate
+            my $value = evaluate $def, $codeline;
+
+            # And insert
+            $constants{$label} = $value;
+
+            say "C: $label = $def ($value)" if $debug;
+        }
+        # Match end
+        elsif ($code =~ /^\s*end/) {
+            last;
+        }
+        else {
+            die "Syntax error.";
+        }
     }
-    # Match end
-    elsif ($code =~ /^\s*end/) {
-        last;
-    }
-    else {
-        die "Syntax error.";
-    }
+
+    # Linebreak
+    say "";
 }
-
 
 if ($obj_out) {
     close $out;
