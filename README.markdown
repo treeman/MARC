@@ -3,22 +3,23 @@ Todo
 ====
 
 * VGA output
-* FIFO
-* input via fbart
-* microcode for instructions
-    Immediate for jumps.
+* Test input
+* Write compiler to generate useful object code for fbart  
+    Pad 13 bit instr -> 16 bit  
+    Use two source code files, randomize a PC for each one and output as  
+    (PC1 = 0 implied)  
 
-    Non-working functions:
-        CMP
-        SLT
-        DJN
-        SPL
+    n (16 bit)  
+    n rows of code padded as OP (16 bit) A (16 bit) B (16 bit)  
+    PC2 (16 bit) (randomized within a minimum distance or specified)  
+    k (16 bit)  
+    k rows of code padded as OP (16 bit) A (16 bit) B (16 bit)  
 
-    Need support for FIFO in microcode.
-    Need to test FIFO + input via microcode.
+    OP 8 bit  
+    PC, A, B, n, k 13 bit  
 
-* handle reset/upstart
-    Might be doable in microcode
+    pad msb  
+
 
 Schema
 ------
@@ -60,6 +61,7 @@ Schema
 
 ## v18
 - skriva VHDL, 3:e byggveckan
+    DONE
 
 ## v19
 - skriva VHDL, 4:e byggveckan

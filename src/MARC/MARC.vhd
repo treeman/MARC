@@ -8,14 +8,18 @@ entity MARC is
     Port (  clk : in std_logic;
             reset_a : in std_logic;
 
+            uCount_limit : in std_logic_vector(7 downto 0);
+            fbart_in : in std_logic;
+
             -- Temporary shit
             tmp_buss : in std_logic_vector(12 downto 0);
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
             tmp_gpu_data : out std_logic_vector(7 downto 0);
 
+            -- Test upstart load without fbart
+            tmp_has_next_data : in std_logic;
             tmp_IN : in std_logic_vector(12 downto 0);
-
-            fbart_in : in std_logic
+            tmp_request_next_data : out std_logic
     );
 end MARC;
 
@@ -30,6 +34,8 @@ architecture Behavioral of MARC is
         Port (  clk : in std_logic;
                 reset_a : in std_logic;
                 buss_in : in std_logic_vector(7 downto 0);
+
+                uCount_limit : in std_logic_vector(7 downto 0);
 
                 PC_code : out std_logic_vector(1 downto 0);
                 buss_code : out std_logic_vector(2 downto 0);
@@ -55,7 +61,12 @@ architecture Behavioral of MARC is
                 ADR1_code : out std_logic_vector(1 downto 0);
                 ADR2_code : out std_logic_vector(1 downto 0);
 
+                FIFO_code : out std_logic_vector(1 downto 0);
+
                 Z : in std_logic;
+                N : in std_logic;
+                both_Z : in std_logic;
+
                 new_IN : in std_logic;
                 game_started : in std_logic
         );
@@ -65,8 +76,9 @@ architecture Behavioral of MARC is
         Port (  clk : in std_logic;
 
                 alu_operation : in std_logic_vector(1 downto 0);
-                alu1_zeroFlag : out std_logic;
-                alu2_zeroFlag : out std_logic;
+                alu1_zeroFlag_out : out std_logic;
+                alu1_negFlag : out std_logic;
+                alu_zeroFlag : out std_logic;
 
                 alu1_operand : in STD_LOGIC_VECTOR(12 downto 0);
                 alu2_operand : in STD_LOGIC_VECTOR(12 downto 0);
@@ -80,6 +92,8 @@ architecture Behavioral of MARC is
         Port (  clk : in std_logic;
                 read : in std_logic;
                 write : in std_logic;
+
+                reset : in std_logic;
 
                 address_in : in std_logic_vector(12 downto 0);
                 address_out : out std_logic_vector(12 downto 0);
@@ -107,7 +121,7 @@ architecture Behavioral of MARC is
                 read_gpu : in std_logic
         );
     end component;
--- dirr
+
     component FBARTController
         Port (  request_next_data : in  STD_LOGIC;
                 reset : in  STD_LOGIC;
@@ -115,20 +129,22 @@ architecture Behavioral of MARC is
                 control_signals : out  STD_LOGIC_VECTOR (2 downto 0);
                 buss_out : out  STD_LOGIC_VECTOR (12 downto 0);
                 has_next_data : out  STD_LOGIC;
-                rxd : in std_logic);
+                rxd : in std_logic
+            );
      end component;
-	  
-	 component PlayerFIFO is
-		 Port ( current_pc_in : in  STD_LOGIC_VECTOR (12 downto 0);
-				  current_pc_out : out  STD_LOGIC_VECTOR (12 downto 0);
-				  current_player_out : out STD_LOGIC_VECTOR (1 downto 0);
-				  game_over_out : out STD_LOGIC;
-				  next_pc : in  STD_LOGIC;
-				  write_pc : in STD_LOGIC;
-				  change_player : in STD_LOGIC;
-				  clk : in std_logic;
-				  reset : in std_logic);
-	 end component;
+
+     component PlayerFIFO is
+         Port ( current_pc_in : in  STD_LOGIC_VECTOR (12 downto 0);
+                current_pc_out : out  STD_LOGIC_VECTOR (12 downto 0);
+                current_player_out : out STD_LOGIC;
+                game_over_out : out STD_LOGIC;
+                next_pc : in  STD_LOGIC;
+                write_pc : in STD_LOGIC;
+                change_player : in STD_LOGIC;
+                clk : in std_logic;
+                reset : in std_logic
+            );
+     end component;
 
     -------------------------------------------------------------------------
     -- DATA SIGNALS
@@ -143,7 +159,7 @@ architecture Behavioral of MARC is
     -- 00 hold
     -- 01 load main buss
     -- 10 +
-    -- xx -
+    -- 11 -
 
     signal memory1_data_in : std_logic_vector(7 downto 0);
     signal memory2_data_in : std_logic_vector(12 downto 0);
@@ -209,19 +225,22 @@ architecture Behavioral of MARC is
     signal ADR1_code : std_logic_vector(1 downto 0);
     signal ADR2_code : std_logic_vector(1 downto 0);
 
+    signal FIFO_code : std_logic_vector(1 downto 0);
+
     -------------------------------------------------------------------------
     -- MISC JUNK
     -------------------------------------------------------------------------
 
     -- Status signals
     signal Z : std_logic := '0';
-    --signal active_player : std_logic_vector(1 downto 0);
+    signal N : std_logic := '0';
+    signal both_Z : std_logic := '0';
+
+    signal active_player : std_logic_vector(1 downto 0);
     signal game_started : std_logic := '1';
+
     signal new_IN : std_logic := '0';
     signal reset : std_logic := '0';
-
-    signal ALU1_Z : std_logic;
-    signal ALU2_Z : std_logic;
 
     -- TODO connect these modules later
     signal fifo_out : std_logic_vector(12 downto 0) := "0010XXXXXXXXX";
@@ -236,13 +255,13 @@ architecture Behavioral of MARC is
     -------------------------------------------------------------------------
     signal fbart_request_next_data :  STD_LOGIC := '0';         -- Generate this when we read from FBART into BUSS
     signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
-	 
-	 signal fifo_current_player :   STD_LOGIC_VECTOR (1 downto 0);
-	 signal fifo_game_over :std_logic;
-	 
-	 signal fifo_next_pc : std_logic := '0';
-	 signal fifo_write_pc : std_logic := '0';
-	 signal fifo_change_player : std_logic := '0';
+
+    signal fifo_current_player : STD_LOGIC;
+    signal fifo_game_over :std_logic;
+
+    signal fifo_next_pc : std_logic := '0';
+    signal fifo_write_pc : std_logic := '0';
+    signal fifo_change_player : std_logic := '0';
 
 begin
 
@@ -250,12 +269,13 @@ begin
     -- COMPONENT INITIATION
     -------------------------------------------------------------------------
 
-	game_started <= not fifo_game_over;
+    game_started <= not fifo_game_over;
 
     micro: Microcontroller
         port map (  clk => clk,
                     reset_a => reset_a,
                     buss_in => main_buss(7 downto 0),
+                    uCount_limit => uCount_limit,
 
                     PC_code => PC_code,
                     buss_code => buss_code,
@@ -281,17 +301,23 @@ begin
                     ADR1_code => ADR1_code,
                     ADR2_code => ADR2_code,
 
+                    FIFO_code => FIFO_code,
+
                     Z => Z,
+                    N => N,
+                    both_Z => both_Z,
                     new_IN => new_IN,
                     game_started => game_started
         );
 
     alus: ALU
         port map (  clk => clk,
-
                     alu_operation => ALU_operation,
-                    alu1_zeroFlag => ALU1_Z,
-                    alu2_zeroFlag => ALU2_Z,
+
+                    alu1_zeroFlag_out => Z,
+                    alu1_negFlag => N,
+                    alu_zeroFlag => both_Z,
+
                     alu1_operand => alu1_operand,
                     alu2_operand => alu2_operand,
                     alu1_out => ALU1_out,
@@ -309,7 +335,7 @@ begin
                     data_gpu => memory1_data_gpu,
                     read_gpu => memory1_read_gpu,
                     address_gpu => memory1_address_gpu,
-                    active_player => fifo_current_player
+                    active_player => active_player
         );
 
     memory2: Memory_Cell
@@ -319,7 +345,8 @@ begin
                     --address_out => memory2_address_out,
                     write => memory2_write,
                     data_in => memory2_data_in,
-                    data_out => M1
+                    data_out => M1,
+                    reset => reset
         );
 
     memory3: Memory_Cell
@@ -329,7 +356,8 @@ begin
                     --address_out => memory3_address_out,
                     write => memory3_write,
                     data_in => memory3_data_in,
-                    data_out => M2
+                    data_out => M2,
+                    reset => reset
         );
 
     fbart: FBARTController
@@ -337,21 +365,24 @@ begin
                     request_next_data  => fbart_request_next_data,
                     reset => reset,
                     control_signals => fbart_control_signals,
-                    buss_out => IN_reg,
-                    has_next_data => new_IN,
+
+                    -- Commented when testing
+                    --buss_out => IN_reg,
+                    --has_next_data => new_IN,
+
                     rxd => fbart_in
         );
-		  
-	fifo: PlayerFIFO
-        port map (  current_pc_in => main_buss, 		-- Always connected to main_buss
-						  current_pc_out => fifo_out,
-						  current_player_out => fifo_current_player,
-						  game_over_out => fifo_game_over,
-						  next_pc => fifo_next_pc,
-						  write_pc => fifo_write_pc,
-						  change_player =>fifo_change_player,
-						  clk => clk,
-						  reset => reset
+
+    fifo: PlayerFIFO
+        port map (  current_pc_in => main_buss,         -- Always connected to main_buss
+                    current_pc_out => fifo_out,
+                    current_player_out => fifo_current_player,
+                    game_over_out => fifo_game_over,
+                    next_pc => fifo_next_pc,
+                    write_pc => fifo_write_pc,
+                    change_player => fifo_change_player,
+                    clk => clk,
+                    reset => reset
         );
 
     -------------------------------------------------------------------------
@@ -364,8 +395,10 @@ begin
 
             -- Generating fbart_request_next_data when we read the buss.
             if buss_code = "110" then
+                tmp_request_next_data <= '1';
                 fbart_request_next_data <= '1';
             else
+                tmp_request_next_data <= '0';
                 fbart_request_next_data <= '0';
             end if;
 
@@ -452,13 +485,13 @@ begin
     -- ALU_code is the control signal which says what the ALU should do
 
     -- ALU_code has these commands:
-    -- 000     nothing (hold AR and don't update Z)
+    -- 000     nothing
     -- 001     load
     -- 010     add
     -- 011     sub
     -- 100     +1
     -- 101     -1
-    -- 110     zero?  (Will Z be set when we simply load?)
+    -- 110      = 0
 
     -- ALUx_code states the source
     -- 00      M1
@@ -466,35 +499,46 @@ begin
     -- 10      M2
     -- 11      mem_addr
 
-    -- This will be ignored when ALU is set to +1, -1 or zero?
-
-    -- Also, do we want to be able to set something else, maybe a memory location, to 0? Should a 0 be produced here then?
-
-    alu1_operand <= "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
+    alu1_operand <= "0000000000000" when ALU_code = "110" else -- = 0
+                    "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
                     M1 when ALU1_code = "00" else
                     M2 when ALU1_code = "10" else
                     memory_address when ALU1_code = "11" else
                     main_buss;
 
-    alu2_operand <= "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
+    alu2_operand <= "0000000000000" when ALU_code = "110" else -- = 0
+                    "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
                     M1 when ALU2_code = '0' else
                     M2;
 
     -- 00 hold
     -- 01 load main buss
     -- 10 +
-    -- xx -
+    -- 11 -
     ALU_operation <= "01" when ALU_code = "001" else -- load
                      "10" when ALU_code = "010" else -- +
                      "11" when ALU_code = "011" else -- -
                      "10" when ALU_code = "100" else -- +1
                      "11" when ALU_code = "101" else -- -1
-                     "11" when ALU_code = "110" else -- cmp
+                     "01" when ALU_code = "110" else
                      "00"; -- hold
 
-    -- Update Z when a change has occured in ALU, so we can keep big cmp status
-    Z <= ALU1_Z and ALU2_Z when ALU_code = "110" else
-         ALU1_Z when ALU_code /= "000";
+    -------------------------------------------------------------------------
+    -- FIFO Handling
+    -------------------------------------------------------------------------
+
+    fifo_write_pc <= '1' when FIFO_code = "01" else
+                     '0';
+
+    fifo_next_pc <= '1' when FIFO_code = "11" else
+                    '0';
+
+    fifo_change_player <= '1' when FIFO_code = "10" else
+                          '0';
+
+    active_player <= "00" when game_started = '0' else
+                     "01" when fifo_current_player = '0' else
+                     "10";
 
     -------------------------------------------------------------------------
     -- BUSS MEGA-MULTIPLEXER
@@ -510,9 +554,14 @@ begin
                     IN_reg when "110",
                     "0000000000000" when others;
 
+    -------------------------------------------------------------------------
+    -- TEMP AND TESTING
+    -------------------------------------------------------------------------
 
     memory1_read_gpu <= tmp_gpu_read;
 
+    new_IN <= tmp_has_next_data;
+    IN_reg <= tmp_IN;
 
 end Behavioral;
 

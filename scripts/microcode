@@ -1,54 +1,109 @@
-; Fetch instruction
-        PC -> mem_addr, uCount = 0
-        mem -> OP, mem -> M1, mem -> M2
-        OP -> IR, jmp $AMOD
+; Startup, check if we're in game
+        jmpS $GAME                              ; Execute game code only if we're running
+
+; Load in program to memory
+        IN -> buss                              ; Temporary start polling fbart
+
+; Load program 1
+        ALU = 0, fifo_next                      ; PC1 = 0
+        ALU1 -> buss, buss -> FIFO, buss -> PC  ; Insert it to FIFO
+        change_player                           ; Change player in FIFO
+
+        jmpIN $F1NUM                            ; Fetch number of rows from in
+        jmp -1                                  ; If not ready, stall
+:F1NUM  IN -> ALU1                              ; Store number of rows in ALU1
+:F1ROW  jmpIN $F1OP                             ; Fetch OP
+        jmp -1
+:F1OP   IN -> OP                                ; Store OP
+        jmpIN $F1M1                             ; Fetch M1
+        jmp -1
+:F1M1   IN -> M1                                ; Store M1
+        jmpIN $F1M2                             ; Fetch M2
+        jmp -1
+:F1M2   IN -> M2, PC -> mem_addr                ; Store M2
+        OP -> mem, M1 -> mem, M2 -> mem         ; Write line to mem
+        ALU--, PC++                             ; Decr row counter, incr PC
+        jmpZ $LOAD2                             ; If 0 we're done
+        jmp $F1ROW                              ; Else load next row
+
+; Load program 2
+:LOAD2  jmpIN $F2PC                             ; Fetch PC for player 2
+        jmp -1
+:F2PC   IN -> buss, buss -> FIFO, buss -> PC    ; Insert to FIFO
+        jmpIN $F2NUM                            ; Fetch number of rows
+        jmp -1
+:F2NUM  IN -> ALU1                              ; Store numbers of rows in ALU1
+:F2ROW  jmpIN $F2OP                             ; Fetch OP
+        jmp -1
+:F2OP   IN -> OP                                ; Store OP
+        jmpIN $F2M1                             ; Fetch M1
+        jmp -1
+:F2M1   IN -> M1                                ; Store M1
+        jmpIN $F2M2                             ; Fetch M2
+        jmp -1
+:F2M2   IN -> M2, PC -> mem_addr                ; Store M2
+        OP -> mem, M1 -> mem, M2 -> mem         ; Write line to mem
+        ALU--, PC++                             ; Decr row counter, incr PC
+        jmpZ 0                                  ; If 0 we're done
+        jmp $F2ROW                              ; Else load next row
+
+
+; Game sequence
+:GAME   change_player                       ; Change players turn
+        fifo_next
+        FIFO -> PC                          ; Fetch next PC
+        PC -> mem_addr
+        mem -> OP, mem -> M1, mem -> M2     ; Fetch data
+        OP -> IR, jmp $AMOD                 ; Go to adress decoding
 
 ; Calculate adress mode for A operand
-:AMOD   jmpAimm $BMOD               ; If immediate we're done
-        M1 -> ALU1                  ; Address is a relative offset
-        ALU1 += PC                  ; so add PC
+:AMOD   jmpAimm $BMOD                       ; If immediate we're done
+        M1 -> ALU1                          ; Address is a relative offset
+        ALU1 += PC                          ; so add PC
         ALU1 -> M1
-        jmpAdir $BMOD               ; If direct, we're done
-        M1 -> mem_addr, mem -> M2   ; Check B address
-        M2 -> M1                    ; Move it to A's place
-        jmpApre $APRE               ; If pre-decr decr and come back
-:AOFF   M1 -> ALU1                  ; Relative offset, add mem_addr
+        jmpAdir $BMOD                       ; If direct, we're done
+        M1 -> mem_addr, mem -> M2           ; Check B address
+        M2 -> M1                            ; Move it to A's place
+        jmpApre $APRE                       ; If pre-decr decr and come back
+:AOFF   M1 -> ALU1                          ; Relative offset, add mem_addr
         ALU1 += mem_addr
         ALU1 -> M1
-        jmp $BMOD                   ; Do the same for the B operand
+        jmp $BMOD                           ; Do the same for the B operand
 
-:APRE   M1 -> ALU1                  ; Decr
+:APRE   M1 -> ALU1                          ; Decr
         ALU--
         ALU1 -> M1, ALU1 -> M2
-        M2 -> mem                   ; Write it back where it came from
-        jmp $AOFF                   ; Continue
+        M2 -> mem                           ; Write it back where it came from
+        jmp $AOFF                           ; Continue
 
 ; Calculate adress mode for B operand
-:BMOD   PC -> mem_addr              ; Retrieve data
+:BMOD   PC -> mem_addr                      ; Retrieve data
         mem -> M2
-        jmpBimm $INSTR              ; If immediate we're done
-        M2 -> ALU1                  ; Relative address, add PC
+        jmpBimm $INSTR                      ; If immediate we're done
+        M2 -> ALU1                          ; Relative address, add PC
         ALU1 += PC
         ALU1 -> M2
-        jmpBdir $INSTR              ; If direct, we're done
+        jmpBdir $INSTR                      ; If direct, we're done
         M2 -> mem_addr
-        mem -> M2                   ; Check B operand of the address
+        mem -> M2                           ; Check B operand of the address
         jmpBpre $BPRE
-:BOFF   M2 -> ALU1                  ; Relative offset, add mem_addr
+:BOFF   M2 -> ALU1                          ; Relative offset, add mem_addr
         ALU1 += mem_addr
         ALU1 -> M2
-        jmp $INSTR                  ; We're done
+        jmp $INSTR                          ; We're done
 
-:BPRE   M2 -> ALU1                  ; Decr
+:BPRE   M2 -> ALU1                          ; Decr
         ALU--
         ALU1 -> M2
-        M2 -> mem                   ; Write it back where it came from
-        jmp $BOFF                   ; Continue
+        M2 -> mem                           ; Write it back where it came from
+        jmp $BOFF                           ; Continue
 
 
-; Load up instruction
-:INSTR  M1 -> ADR1, M2 -> ADR2      ; A operand is now in ADR1 and B in ADR2 (if immediate ignore these)
-        op_addr -> uPC
+; Load up instruction and proceed to instruction decoding
+; A operand is now in ADR1 and B in ADR2
+; If immediate ignore these, they're also in M1 and M2
+
+:INSTR  M1 -> ADR1, M2 -> ADR2, op_addr -> uPC
 
 
 ; Execute instruction
@@ -119,17 +174,19 @@
         ALU1 -> FIFO, jmp $END              ; Next instr should go at A op location
 
 ; JMPZ Jump to A if B zero
-:JMPZ   ADR2 -> mem_addr                    ; Fetch B op
+:JMPZ   jmpBimm $IJMPZ
+        ADR2 -> mem_addr                    ; Fetch B op
         mem -> M2
-        M2 -> ALU1
+:IJMPZ  M2 -> ALU1
         jmpZ $DOJMPZ                        ; If not zero
         jmp $ADDPC                          ; Continue
 :DOJMPZ jmp $JMP                            ; Else do a jump
 
 ; JMPN Jump to A if B non-zero
-:JMPN   ADR2 -> mem_addr                    ; Fetch B op
+:JMPN   jmpBimm $IJMPN
+        ADR2 -> mem_addr                    ; Fetch B op
         mem -> M2
-        M2 -> ALU1
+:IJMPN  M2 -> ALU1
         jmpZ $ADDPC                         ; If zero no jump
         jmp $JMP                            ; Else do a jump
 
@@ -139,23 +196,55 @@
         mem -> OP, mem -> M1, mem -> M2
         ADR1 -> mem_addr, M1 -> ALU1, M2 -> ALU2
         mem -> M1, mem -> M2                ; Fetch mem operands spec by A op
-        ALU cmp M1 M2                       ; Compare
-        jmpZ $CMPOP                         ; If eq compare OP as well
+        ALU1 -= M1, ALU2 -= M2              ; Compare
+        jmpE $CMPOP                         ; If eq compare OP as well
         jmp $ADDPC                          ; Else continue with next instr
 
 :CMPOP  OP -> ALU1
         mem -> OP
         ALU1 -= OP
-        jmpZ $SCMP                          ; If eq, skip next instr
+        jmpZ $SKIP                          ; If eq, skip next instr
         jmp $ADDPC                          ; Else continue as normal
 
 :ICMP   ADR2 -> mem_addr                    ; Fetch B op
         mem -> M2, M1 -> ALU1
         ALU1 -= M2                          ; Compare
-        jmpZ $SCMP                          ; If eq, skip next instr
+        jmpZ $SKIP                          ; If eq, skip next instr
         jmp $ADDPC                          ; Else continue as normal
 
-:SCMP  PC++, jmp $ADDPC
+; SLT if A is less than B skip next instr
+:SLT    jmpAimm $ISLT
+        ADR1 -> mem_addr                    ; Fetch B field spec by A
+        mem -> M2
+        M2 -> ALU1
+:SLTCMP ADR2 -> mem_addr                    ; Fetch B field spec by B
+        mem -> M2
+        ALU1 -= M2                          ; Compare A < B
+        jmpN $SKIP                          ; Skip next instr if A < B
+        jmp $ADDPC                          ; Else continue
+
+:ISLT   M1 -> ALU1, jmp $SLTCMP             ; Place A in ALU for comparison, rest is the same
+
+; DJN Decr B, if not zero jmp to A
+:DJN    jmpBimm $IDJN
+        ADR2 -> mem_addr                    ; Fetch B field spec by B
+        mem -> M2
+        M2 -> ALU1                          ; Decr
+        ALU--
+        ALU1 -> M2
+        M2 -> mem                           ; Write back
+:CMPDJN jmpZ $ADDPC                         ; If zero, continue
+        M1 -> FIFO, jmp $END                ; Else jump to A
+
+:IDJN   M2 -> ALU1, jmp $CMPDJN             ; Use B to set Z
+
+; SPL Place A in process queue
+:SPL    PC++
+        PC -> FIFO                          ; First add PC++ to queue
+        M1 -> FIFO, jmp $END                ; Then add the address of A to queue
+
+
+:SKIP   PC++, jmp $ADDPC
 
 ; Keep the PC for next round
 :ADDPC  PC++

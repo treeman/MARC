@@ -12,6 +12,7 @@ my $dest;
 my $lines_until_header = 20;
 my $verbose;
 my $debug;
+my $vhdl;
 
 GetOptions(
     'help|h' => \$help,
@@ -19,6 +20,7 @@ GetOptions(
     'header|l=i' => \$lines_until_header,
     'verbose|v' => \$verbose,
     'debug' => \$debug,
+    'vhdl' => \$vhdl,
 );
 
 $dest = "code_output" if !$dest;
@@ -29,12 +31,13 @@ if ($help || !$src) {
     say "   options:";
     say "   -h --help       Show this screen.";
     say "   -v --verbose    Verbose output signals in a human readable format.";
+    say "   -vhdl           Makes my life easier.";
     exit;
 }
 
 # Ouput format
-my $h = "IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uCount uPC  uPC_addr";
-my $c = "0   00  00   0  00 00  00   00   00    000     00   0   000 000  00   0    0000 00000000";
+my $h = "FIFO IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uPC  uPC_addr";
+my $c = " 00  0   00  00   0  00 00  00   00   00    000     00   0   000 000  00 0000 00000000";
 
 my %ALU = (
     load => "001",
@@ -42,7 +45,7 @@ my %ALU = (
     '-' =>"011",
     '++' =>"100",
     '--' => "101",
-    cmp => "110",
+    '0' => "110",
 );
 
 my %buss = (
@@ -81,6 +84,8 @@ my %singles = (
     jmpBimm => "uPC",
     jmpBdir => "uPC",
     jmpBpre => "uPC",
+    change_player => "FIFO",
+    fifo_next => "FIFO",
 );
 
 my %registers = (
@@ -93,19 +98,17 @@ my %registers = (
         jmpIN => "0100",
         jmpC => "0101",
         jmpS => "0110",
+        jmpN => "0111",
+        jmpE => "1000",
 
-        jmpAimm => "1000",
-        jmpAdir => "1001",
-        jmpApre => "1010",
-        jmpBimm => "1011",
-        jmpBdir => "1100",
-        jmpBpre => "1101",
+        jmpAimm => "1001",
+        jmpAdir => "1010",
+        jmpApre => "1011",
+        jmpBimm => "1100",
+        jmpBdir => "1101",
+        jmpBpre => "1110",
 
         '0' => "1111",
-    },
-    uCount => {
-        '++' => '0',
-        '0' => '1',
     },
     PC => {
         buss => "01",
@@ -156,6 +159,11 @@ my %registers = (
         ADR2 => "101",
         PC => "110",
     },
+    FIFO => {
+        buss => "01",
+        change_player => "10",
+        fifo_next => "11",
+    },
 );
 
 # Positions for our subsignals in the grand control scheme
@@ -168,16 +176,34 @@ my @codechunks = split (/\s+/, trim($c));
 my $signallength = length (join "", @codechunks);
 my $l = $signallength - 1;
 
+my @vhdl_output;
+
 for my $chunk (@codechunks) {
     my $r = $l - length ($chunk) + 1;
 
     my $name = shift @namechunks;
 
-    say "$name has $r .. $l" if $debug;
+    # Output vhdl shortcut for signals
+    if ($vhdl) {
+        if ($l == $r) {
+            push (@vhdl_output, "${name}_code <= signals($l);");
+        }
+        else {
+            push (@vhdl_output, "${name}_code <= signals($l downto $r);");
+        }
+    }
+
+    say "$name $l .. $r" if $debug;
+
 
     $positions{$name} = [$r .. $l];
 
     $l = $r - 1;
+}
+
+if ($vhdl) {
+    say $_ for (reverse @vhdl_output);
+    say "";
 }
 
 say "" if $debug;
@@ -236,7 +262,7 @@ while (my $line = <$in>) {
         my ($code) = $line =~ /^([^;]*)/;
 
         # If we have a label
-        if ($code =~ /^:([A-Z]+)\s+(.*)/) {
+        if ($code =~ /^:([A-Z0-9]+)\s+(.*)/) {
             # Store it's address (start with 0)
             $labels{$1} = $codeline;
 
@@ -257,6 +283,42 @@ if ($debug) {
     for my $k (keys %labels) {
         say "labels{$k} = " . dec2hex ($labels{$k});
     }
+}
+
+if ($vhdl) {
+    my %instructions = (
+        DAT => "0000",
+        MOV => "0001",
+        ADD => "0010",
+        SUB => "0011",
+        JMP => "0100",
+        JMPZ => "0101",
+        JMPN => "0110",
+        CMP => "0111",
+        SLT => "1000",
+        DJN => "1001",
+        SPL => "1010",
+    );
+
+    # Create a sorted pair instr -> code
+    my @pairs = sort { $a->[1] cmp $b->[1] }
+                map { [ $_ => $instructions{$_} ] } keys %instructions;
+
+    for (@pairs) {
+        my ($instr, $code) = (@$_);
+
+        die "No $instr label!" if !exists $labels{$instr};
+
+        my $pos = dec2bin ($labels{$instr});
+        $pos = '0' x (8 - length($pos)) . $pos;
+
+        my $hpos = dec2hex ($labels{$instr});
+
+        say "\"$pos\" when \"$code\", -- $instr $hpos";
+    }
+    say '"11111111" when others;';
+
+    exit;
 }
 
 $codeline = 0;
@@ -309,7 +371,7 @@ for my $line (@lines) {
             push (@comments, $cmd);
         }
         # Grab single word affixes eg PC++, ALU--
-        elsif ($cmd =~ /^(\S+?)(\+{2}|-{2})$/) {
+        elsif ($cmd =~ /^(\S+?)([-+<]+)$/) {
             my ($reg, $op) = ($1, $2);
 
             if (exists $registers{$reg}->{$op}) {
@@ -326,7 +388,7 @@ for my $line (@lines) {
                 push (@comments, $cmd);
             }
             else {
-                push (@comments, "(? $cmd)");
+                die "Unknown command: $cmd";
             }
         }
         # We have a single shorthand notation
@@ -334,66 +396,6 @@ for my $line (@lines) {
             my $reg = $singles{$cmd};
 
             update (\@signal, $positions{$reg}, $registers{$reg}->{$cmd});
-
-            push (@comments, $cmd);
-        }
-        # Special case ALU compare
-        elsif ($cmd =~ /^ALU\s+cmp\s+(\S*)\s+(\S*)/) {
-            my ($src1, $src2) = ($1, $2);
-
-            my $alu1;
-            my $alu2;
-
-            # Check connection to ALU2
-            if (exists $registers{ALU2}->{$src1}) {
-                $alu2 = $src1;
-                $alu1 = $src2;
-            }
-            elsif (exists $registers{ALU2}->{$src2}) {
-                $alu2 = $src2;
-                $alu1 = $src1;
-            }
-            else {
-                push (@comments, "? $cmd ?");
-                next;
-            }
-
-            # Check connection to ALU1
-            if (exists $registers{ALU1}->{$alu1}) {
-                # Hmmm..... ^^
-            }
-            # Try to route through buss
-            elsif (exists $registers{ALU1}->{buss} && exists $buss{$alu1}) {
-                $alu1 = "buss";
-            }
-            else {
-                push (@comments, "? $cmd ?");
-                next;
-            }
-
-            # Update to ALU2
-            update (\@signal, $positions{ALU2}, $registers{ALU2}->{$alu2});
-
-            # Update to ALU1
-            if ($alu1 eq "buss") {
-
-                $buss_used++;
-
-                # Update src -> buss
-                update (\@signal, $positions{buss}, $buss{$alu1});
-
-                # Update buss -> alu
-                update (\@signal, $positions{ALU1}, $registers{ALU1}->{buss});
-            }
-            else {
-                update (\@signal, $positions{ALU1}, $registers{ALU1}->{$alu1});
-            }
-
-            # Update ALU operation
-            update (\@signal, $positions{ALU}, $ALU{cmp});
-
-            $alu_err = 1 if $alu_op;
-            $alu_op = 'cmp';
 
             push (@comments, $cmd);
         }
@@ -420,7 +422,7 @@ for my $line (@lines) {
                     push (@comments, $cmd);
                 }
                 else {
-                    push (@comments, "? $cmd ?");
+                    die "Unknown command: $cmd";
                 }
             }
             # mem -> src
@@ -434,7 +436,7 @@ for my $line (@lines) {
                     push (@comments, $cmd);
                 }
                 else {
-                    push (@comments, "? $cmd ?");
+                    die "Unknown command: $cmd";
                 }
             }
             # Handle direct
@@ -486,7 +488,7 @@ for my $line (@lines) {
                 push (@comments, "buss -> $dest");
             }
             else {
-                push (@comments, "? $cmd ?");
+                die "Unknown command: $cmd";
             }
         }
         # ALUx += src or ALUx -= src
@@ -526,7 +528,7 @@ for my $line (@lines) {
                 push (@comments, $cmd);
             }
             else {
-                push (@comments, "? $cmd ?");
+                die "Unknown command: $cmd";
             }
         }
         # TODO all jumps does not have addresses?
@@ -545,28 +547,26 @@ for my $line (@lines) {
                 my $label = "";
 
                 # Convert label def
-                if ($val =~ /^\$([A-Z]+)/) {
+                if ($val =~ /^\$([A-Z0-9]+)/) {
                     $label = $1;
 
                     if (exists $labels{$label}) {
                         $val = dec2hex ($labels{$label});
                     }
                     else {
-                        push (@comments, "? $cmd ?");
-                        next;
+                        die "Unknown label: $label";
                     }
                 }
 
                 my $bin;
-                if ($val =~ /^[01]+$/) {
-                    $bin = $val;
-                }
-                elsif ($val =~ /^[0123456789ABCDEF]+$/i) {
+                if ($val =~ /^[0123456789ABCDEF]{0,2}$/i) {
                     $bin = hex2bin ($val);
                 }
+                elsif ($val =~ /^[01]+$/) {
+                    $bin = $val;
+                }
                 else {
-                    push (@comments, "? $cmd ?");
-                    next;
+                    die "Unknown command: $cmd";
                 }
 
                 if ($op =~ /^[+-]$/) {
@@ -603,21 +603,23 @@ for my $line (@lines) {
                     push (@comments, "$jmp $label($addr)");
                 }
                 else {
-                    push (@comments, $cmd);
+                    # Ugly I know ^^
+                    my $dec = bin2dec ($bin);
+                    my $hex = dec2hex ($dec);
+                    push (@comments, "$cmd($hex)");
                 }
 
             }
             else {
-                push (@comments, "? $cmd ?");
+                die "Unknown command: $cmd";
             }
         }
-        # var = stuff eg uPC = 0, uCount = 0
+        # var = stuff eg uPC = 0
         elsif ($cmd =~ /(\S+)\s*=\s*(\S+)/) {
             my ($var, $res) = ($1, $2);
 
             if ($var eq "uPC_addr") {
-                push (@comments, "? $cmd ?");
-                next;
+                die "Unknown command: $cmd";
             }
 
             # Check special eg uPC = 0
@@ -626,12 +628,18 @@ for my $line (@lines) {
 
                 push (@comments, $cmd);
             }
+            # ALU = x
+            elsif (exists $ALU{$res}) {
+                update (\@signal, $positions{ALU}, $ALU{$res});
+
+                push (@comments, $cmd);
+            }
             else {
-                push (@comments, "? $cmd ?");
+                die "Unknown command: $cmd";
             }
         }
         else {
-            push (@comments, "? $cmd ?");
+            die "Unknown command: $cmd";
         }
     }
 

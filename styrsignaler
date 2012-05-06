@@ -5,23 +5,21 @@ uPC
     0001    op addr
 
     0010    jmp
-    0011    jmp on Z                    (jmpZ)
+    0011    jmp on Z (zero)             (jmpZ)
     0100    jmp on new IN               (jmpIN)
     0101    jmp if uCounter >= limit    (jmpC)
     0110    jmp if game started         (jmpS)
+    0111    jmp on N (negative)         (jmpN)
+    1000    jmp if both ALU 0           (jmpE)
 
-    1000    jmp if A immediate          (jmpAimm)
-    1001    jmp if A direct             (jmpAdir)
-    1010    jmp if A predecrement       (jmpApre)
-    1011    jmp if B immediate          (jmpBimm)
-    1100    jmp if B direct             (jmpBdir)
-    1101    jmp if B predecrement       (jmpBpre)
+    1001    jmp if A immediate          (jmpAimm)
+    1010    jmp if A direct             (jmpAdir)
+    1011    jmp if A predecrement       (jmpApre)
+    1100    jmp if B immediate          (jmpBimm)
+    1101    jmp if B direct             (jmpBdir)
+    1110    jmp if B predecrement       (jmpBpre)
 
     1111    = 0
-
-uCount      (Could be removed! Check when uPC = 0 and do the same here)
-    0       uCounter + 1
-    1       uCounter = 0
 
 PC
     00      PC (nothing)
@@ -84,12 +82,12 @@ to buss
 
 ALU
     000     nothing (hold AR and don't update Z)
-    001     load (and update Z)
+    001     load
     010     add
     011     sub
     100     +1
     101     -1
-    110     cmp (sub on both ALU's, and Z if both registers are 0)
+    110     = 0
 
 ALU1
     00      M1
@@ -113,37 +111,20 @@ ADR2
     10     M2
     11     AR 2
 
+FIFO
+    00      nothing
+    01      buss (insert PC from main buss)
+    10      change player
+    11      next_pc
+
 Totalt
+    44 bit bredd
 
 FIXME!
 Kontrollera signalerna under
 FIXME!
 
-FIFO
-    2bit
-        read
-        write
-        nothing
-
-    3 bit P1 function
-        incr read
-        zero read
-        incr write
-        zero write
-        nothing
-
-    3 bit P2 function
-        incr read
-        zero read
-        incr write
-        zero write
-        nothing
-
-    1bit
-        change player
-        nothing
-
-FBART:
+FBART: (nothing needed as control signals)
     IN:
         1 bit next_address (we have writen our data to the memory, now we want the next data to write).
         1 bit reset (global)
