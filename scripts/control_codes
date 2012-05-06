@@ -45,8 +45,7 @@ my %ALU = (
     '-' =>"011",
     '++' =>"100",
     '--' => "101",
-    cmp => "110",
-    '<' => "111",
+    '0' => "110",
 );
 
 my %buss = (
@@ -263,7 +262,7 @@ while (my $line = <$in>) {
         my ($code) = $line =~ /^([^;]*)/;
 
         # If we have a label
-        if ($code =~ /^:([A-Z]+)\s+(.*)/) {
+        if ($code =~ /^:([A-Z0-9]+)\s+(.*)/) {
             # Store it's address (start with 0)
             $labels{$1} = $codeline;
 
@@ -548,23 +547,23 @@ for my $line (@lines) {
                 my $label = "";
 
                 # Convert label def
-                if ($val =~ /^\$([A-Z]+)/) {
+                if ($val =~ /^\$([A-Z0-9]+)/) {
                     $label = $1;
 
                     if (exists $labels{$label}) {
                         $val = dec2hex ($labels{$label});
                     }
                     else {
-                        die "Unknown command: $cmd";
+                        die "Unknown label: $label";
                     }
                 }
 
                 my $bin;
-                if ($val =~ /^[01]+$/) {
-                    $bin = $val;
-                }
-                elsif ($val =~ /^[0123456789ABCDEF]+$/i) {
+                if ($val =~ /^[0123456789ABCDEF]{0,2}$/i) {
                     $bin = hex2bin ($val);
+                }
+                elsif ($val =~ /^[01]+$/) {
+                    $bin = $val;
                 }
                 else {
                     die "Unknown command: $cmd";
@@ -604,7 +603,10 @@ for my $line (@lines) {
                     push (@comments, "$jmp $label($addr)");
                 }
                 else {
-                    push (@comments, $cmd);
+                    # Ugly I know ^^
+                    my $dec = bin2dec ($bin);
+                    my $hex = dec2hex ($dec);
+                    push (@comments, "$cmd($hex)");
                 }
 
             }
@@ -623,6 +625,12 @@ for my $line (@lines) {
             # Check special eg uPC = 0
             if (exists $registers{$var} && exists $registers{$var}->{$res}) {
                 update (\@signal, $positions{$var}, $registers{$var}->{$res});
+
+                push (@comments, $cmd);
+            }
+            # ALU = x
+            elsif (exists $ALU{$res}) {
+                update (\@signal, $positions{ALU}, $ALU{$res});
 
                 push (@comments, $cmd);
             }

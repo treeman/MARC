@@ -82,11 +82,12 @@ to buss
 
 ALU
     000     nothing (hold AR and don't update Z)
-    001     load (and update Z)
+    001     load
     010     add
     011     sub
     100     +1
     101     -1
+    110     = 0
 
 ALU1
     00      M1

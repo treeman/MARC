@@ -1,14 +1,54 @@
-; Fetch instruction
-        jmpS $GAME                          ; Execute game code only if we're running
+; Startup, check if we're in game
+        jmpS $GAME                              ; Execute game code only if we're running
 
-        fifo_next
-        PC -> FIFO
-        change_player
-        fifo_next
-        PC -> FIFO
-        change_player
-        uPC = 0
+; Load in program to memory
+        IN -> buss                              ; Temporary start polling fbart
 
+; Load program 1
+        ALU = 0, fifo_next                      ; PC1 = 0
+        ALU1 -> buss, buss -> FIFO, buss -> PC  ; Insert it to FIFO
+        change_player                           ; Change player in FIFO
+
+        jmpIN $F1NUM                            ; Fetch number of rows from in
+        jmp -1                                  ; If not ready, stall
+:F1NUM  IN -> ALU1                              ; Store number of rows in ALU1
+:F1ROW  jmpIN $F1OP                             ; Fetch OP
+        jmp -1
+:F1OP   IN -> OP                                ; Store OP
+        jmpIN $F1M1                             ; Fetch M1
+        jmp -1
+:F1M1   IN -> M1                                ; Store M1
+        jmpIN $F1M2                             ; Fetch M2
+        jmp -1
+:F1M2   IN -> M2, PC -> mem_addr                ; Store M2
+        OP -> mem, M1 -> mem, M2 -> mem         ; Write line to mem
+        ALU--, PC++                             ; Decr row counter, incr PC
+        jmpZ $LOAD2                             ; If 0 we're done
+        jmp $F1ROW                              ; Else load next row
+
+; Load program 2
+:LOAD2  jmpIN $F2PC                             ; Fetch PC for player 2
+        jmp -1
+:F2PC   IN -> buss, buss -> FIFO, buss -> PC    ; Insert to FIFO
+        jmpIN $F2NUM                            ; Fetch number of rows
+        jmp -1
+:F2NUM  IN -> ALU1                              ; Store numbers of rows in ALU1
+:F2ROW  jmpIN $F2OP                             ; Fetch OP
+        jmp -1
+:F2OP   IN -> OP                                ; Store OP
+        jmpIN $F2M1                             ; Fetch M1
+        jmp -1
+:F2M1   IN -> M1                                ; Store M1
+        jmpIN $F2M2                             ; Fetch M2
+        jmp -1
+:F2M2   IN -> M2, PC -> mem_addr                ; Store M2
+        OP -> mem, M1 -> mem, M2 -> mem         ; Write line to mem
+        ALU--, PC++                             ; Decr row counter, incr PC
+        jmpZ 0                                  ; If 0 we're done
+        jmp $F2ROW                              ; Else load next row
+
+
+; Game sequence
 :GAME   change_player                       ; Change players turn
         fifo_next
         FIFO -> PC                          ; Fetch next PC

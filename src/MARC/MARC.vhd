@@ -9,15 +9,17 @@ entity MARC is
             reset_a : in std_logic;
 
             uCount_limit : in std_logic_vector(7 downto 0);
+            fbart_in : in std_logic;
 
             -- Temporary shit
             tmp_buss : in std_logic_vector(12 downto 0);
             tmp_gpu_adr : in std_logic_vector(12 downto 0);
             tmp_gpu_data : out std_logic_vector(7 downto 0);
 
+            -- Test upstart load without fbart
+            tmp_has_next_data : in std_logic;
             tmp_IN : in std_logic_vector(12 downto 0);
-
-            fbart_in : in std_logic
+            tmp_request_next_data : out std_logic
     );
 end MARC;
 
@@ -90,8 +92,8 @@ architecture Behavioral of MARC is
         Port (  clk : in std_logic;
                 read : in std_logic;
                 write : in std_logic;
-					 
-					 reset : in std_logic;
+
+                reset : in std_logic;
 
                 address_in : in std_logic_vector(12 downto 0);
                 address_out : out std_logic_vector(12 downto 0);
@@ -344,7 +346,7 @@ begin
                     write => memory2_write,
                     data_in => memory2_data_in,
                     data_out => M1,
-						  reset => reset
+                    reset => reset
         );
 
     memory3: Memory_Cell
@@ -355,7 +357,7 @@ begin
                     write => memory3_write,
                     data_in => memory3_data_in,
                     data_out => M2,
-						  reset => reset
+                    reset => reset
         );
 
     fbart: FBARTController
@@ -363,8 +365,11 @@ begin
                     request_next_data  => fbart_request_next_data,
                     reset => reset,
                     control_signals => fbart_control_signals,
-                    buss_out => IN_reg,
-                    has_next_data => new_IN,
+
+                    -- Commented when testing
+                    --buss_out => IN_reg,
+                    --has_next_data => new_IN,
+
                     rxd => fbart_in
         );
 
@@ -390,8 +395,10 @@ begin
 
             -- Generating fbart_request_next_data when we read the buss.
             if buss_code = "110" then
+                tmp_request_next_data <= '1';
                 fbart_request_next_data <= '1';
             else
+                tmp_request_next_data <= '0';
                 fbart_request_next_data <= '0';
             end if;
 
@@ -478,12 +485,13 @@ begin
     -- ALU_code is the control signal which says what the ALU should do
 
     -- ALU_code has these commands:
-    -- 000     nothing (hold AR and don't update Z)
+    -- 000     nothing
     -- 001     load
     -- 010     add
     -- 011     sub
     -- 100     +1
     -- 101     -1
+    -- 110      = 0
 
     -- ALUx_code states the source
     -- 00      M1
@@ -491,13 +499,15 @@ begin
     -- 10      M2
     -- 11      mem_addr
 
-    alu1_operand <= "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
+    alu1_operand <= "0000000000000" when ALU_code = "110" else -- = 0
+                    "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
                     M1 when ALU1_code = "00" else
                     M2 when ALU1_code = "10" else
                     memory_address when ALU1_code = "11" else
                     main_buss;
 
-    alu2_operand <= "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
+    alu2_operand <= "0000000000000" when ALU_code = "110" else -- = 0
+                    "0000000000001" when ALU_code = "100" or ALU_code = "101" else -- +1 or -1
                     M1 when ALU2_code = '0' else
                     M2;
 
@@ -510,6 +520,7 @@ begin
                      "11" when ALU_code = "011" else -- -
                      "10" when ALU_code = "100" else -- +1
                      "11" when ALU_code = "101" else -- -1
+                     "01" when ALU_code = "110" else
                      "00"; -- hold
 
     -------------------------------------------------------------------------
@@ -543,9 +554,14 @@ begin
                     IN_reg when "110",
                     "0000000000000" when others;
 
+    -------------------------------------------------------------------------
+    -- TEMP AND TESTING
+    -------------------------------------------------------------------------
 
     memory1_read_gpu <= tmp_gpu_read;
 
+    new_IN <= tmp_has_next_data;
+    IN_reg <= tmp_IN;
 
 end Behavioral;
 
