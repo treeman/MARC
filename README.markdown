@@ -3,24 +3,22 @@ Todo
 ====
 
 * VGA output
-* handle reset/upstart
-    Might be doable in microcode
-* Test input and loading
-* Write compiler to generate useful object code for fbart
-    Pad 13 bit instr -> 16 bit
-    Use two source code files, randomize a PC for each one and output as
+* Test input
+* Write compiler to generate useful object code for fbart  
+    Pad 13 bit instr -> 16 bit  
+    Use two source code files, randomize a PC for each one and output as  
+    (PC1 = 0 implied)  
 
-    (PC1 = 0 implied)
-    <n 16 bit>
-    n rows of code padded as <OP 16 bit><A 16 bit><B 16 bit>
-    <PC2 16 bit> (randomized within a minimum distance or specified)
-    <k 16 bit>
-    k rows of code padded as <OP 16 bit><A 16 bit><B 16 bit>
+    n (16 bit)  
+    n rows of code padded as OP (16 bit) A (16 bit) B (16 bit)  
+    PC2 (16 bit) (randomized within a minimum distance or specified)  
+    k (16 bit)  
+    k rows of code padded as OP (16 bit) A (16 bit) B (16 bit)  
 
-    OP 8 bit
-    PC, A, B, n, k 13 bit
+    OP 8 bit  
+    PC, A, B, n, k 13 bit  
 
-    pad msb
+    pad msb  
 
 
 Schema
@@ -63,6 +61,7 @@ Schema
 
 ## v18
 - skriva VHDL, 3:e byggveckan
+    DONE
 
 ## v19
 - skriva VHDL, 4:e byggveckan
