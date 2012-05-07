@@ -1,0 +1,12 @@
+0000000000000001  00 01  ; Number of rows (1) imp.red
+
+   pad    OP  A  B  pad     A op      pad      B op
+00000000 0001 00 00 000 0000000000000 000 0000000000001   00 10 00 00 00 01  ; MOV  0(0)  1(1)
+
+0001000101011011  11 5b  ; Player 2 PC
+
+0000000000000001  00 01  ; Number of rows (1) imp.red
+
+   pad    OP  A  B  pad     A op      pad      B op
+00000000 0001 00 00 000 0000000000000 000 0000000000001   00 10 00 00 00 01  ; MOV  0(0)  1(1)
+Wrote 18 bytes to imp.bin

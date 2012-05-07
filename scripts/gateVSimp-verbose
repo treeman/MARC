@@ -1,0 +1,12 @@
+0000000000000001  00 01  ; Number of rows (1) gate.red
+
+   pad    OP  A  B  pad     A op      pad      B op
+00000000 0100 00 11 000 0000000000000 000 1111111111110   00 43 00 00 1f fe  ; JMP  0(0) < -2(-2)
+
+0001101101001111  1b 4f  ; Player 2 PC
+
+0000000000000001  00 01  ; Number of rows (1) imp.red
+
+   pad    OP  A  B  pad     A op      pad      B op
+00000000 0001 00 00 000 0000000000000 000 0000000000001   00 10 00 00 00 01  ; MOV  0(0)  1(1)
+Wrote 18 bytes to gateVSimp.bin
