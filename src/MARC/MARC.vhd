@@ -11,10 +11,12 @@ entity MARC is
             uCount_limit : in std_logic_vector(7 downto 0);
             fbart_in : in std_logic;
 
-            -- Temporary shit
-            tmp_buss : in std_logic_vector(12 downto 0);
-            tmp_gpu_adr : in std_logic_vector(12 downto 0);
-            tmp_gpu_data : out std_logic_vector(7 downto 0);
+            -- VGA output
+            red : out std_logic_vector(2 downto 0);
+            grn : out std_logic_vector(2 downto 0);
+            blu : out std_logic_vector(1 downto 0);
+            HS : out std_logic;
+            VS : out std_logic;
 
             -- Test upstart load without fbart
             tmp_has_next_data : in std_logic;
@@ -145,19 +147,19 @@ architecture Behavioral of MARC is
                 reset : in std_logic
             );
      end component;
-	  
-	  component vga is 
-		Port ( 	rst : in  STD_LOGIC;
-					clk : in  STD_LOGIC;
-					data_gpu : in  STD_LOGIC_VECTOR (7 downto 0);
-					address_gpu : out  STD_LOGIC_VECTOR (12 downto 0);
-					red : out  STD_LOGIC_VECTOR (2 downto 0);
-					grn : out  STD_LOGIC_VECTOR (2 downto 0);
-					blu : out  STD_LOGIC_VECTOR (1 downto 0);
-					HS : out  STD_LOGIC;
-					VS : out  STD_LOGIC
-				);
-		end component;
+
+      component vga is
+        Port (  rst : in  STD_LOGIC;
+                clk : in  STD_LOGIC;
+                data_gpu : in  STD_LOGIC_VECTOR (7 downto 0);
+                address_gpu : out  STD_LOGIC_VECTOR (12 downto 0);
+                red : out  STD_LOGIC_VECTOR (2 downto 0);
+                grn : out  STD_LOGIC_VECTOR (2 downto 0);
+                blu : out  STD_LOGIC_VECTOR (1 downto 0);
+                HS : out  STD_LOGIC;
+                VS : out  STD_LOGIC
+             );
+        end component;
 
     -------------------------------------------------------------------------
     -- DATA SIGNALS
@@ -181,10 +183,6 @@ architecture Behavioral of MARC is
     -- Combined to one for now
     signal memory_address_in : std_logic_vector(12 downto 0);
     signal memory_address : std_logic_vector(12 downto 0);
-
-    signal memory1_address_gpu : std_logic_vector(12 downto 0); -- Unsynced!
-    signal memory1_data_gpu : std_logic_vector(7 downto 0); -- Unsynced!
-    signal memory1_read_gpu : std_logic;
 
 
     -------------------------------------------------------------------------
@@ -239,7 +237,7 @@ architecture Behavioral of MARC is
     signal ADR2_code : std_logic_vector(1 downto 0);
 
     signal FIFO_code : std_logic_vector(1 downto 0);
-		
+
     -------------------------------------------------------------------------
     -- MISC JUNK
     -------------------------------------------------------------------------
@@ -276,21 +274,13 @@ architecture Behavioral of MARC is
     signal fifo_write_pc : std_logic := '0';
     signal fifo_change_player : std_logic := '0';
 
-	 -------------------------------------------------------------------------
+     -------------------------------------------------------------------------
     -- VGA SIGNALS
     -------------------------------------------------------------------------
-	 signal colorpix: std_logic_vector (7 downto 0); 
-	 signal red : std_logic_vector (2 downto 0);
-	 signal grn : std_logic_vector (2 downto 0);
-	 signal blu : std_logic_vector (1 downto 0);
-	 signal HS : std_logic;
-	 signal VS : std_logic;
-	 -- temp
-	 signal data_gpu : std_logic_vector (7 downto 0);
-	 signal address_gpu : std_logic_vector (12 downto 0);
-	
-	
-	
+
+    signal data_gpu : std_logic_vector (7 downto 0);
+    signal address_gpu : std_logic_vector (12 downto 0);
+
 begin
 
     -------------------------------------------------------------------------
@@ -361,7 +351,7 @@ begin
                     data_in => memory1_data_in,
                     data_out => OP,
                     data_gpu => data_gpu,
-                    read_gpu => memory1_read_gpu,
+                    read_gpu => '1', -- TODO change?!
                     address_gpu => address_gpu,
                     active_player => active_player
         );
@@ -412,19 +402,19 @@ begin
                     clk => clk,
                     reset => reset
         );
-	
-	 GPU: vga
-			port map ( 	clk => clk,
-							rst => reset,
-							data_gpu => data_gpu,
-							address_gpu => address_gpu,
-							red => red,
-							grn => grn,
-							blu => blu,
-							HS => HS,
-							VS => VS
-		 );
-	
+
+     GPU: vga
+            port map (  clk => clk,
+                        rst => reset,
+                        data_gpu => data_gpu,
+                        address_gpu => address_gpu,
+                        red => red,
+                        grn => grn,
+                        blu => blu,
+                        HS => HS,
+                        VS => VS
+         );
+
     -------------------------------------------------------------------------
     -- CLOCK EVENT
     -------------------------------------------------------------------------
@@ -448,11 +438,6 @@ begin
             elsif reset = '1' then
                 reset <= '0';
             end if;
-
-            -- Temporary GPU emulator
-            memory1_address_gpu <= tmp_buss;
-            tmp_gpu_data <= memory1_data_gpu;
-            tmp_gpu_read <= not tmp_gpu_read;
 
             -------------------------------------------------------------------------
             -- REGISTRY MULTIPLEXERS
@@ -597,8 +582,6 @@ begin
     -------------------------------------------------------------------------
     -- TEMP AND TESTING
     -------------------------------------------------------------------------
-
-    memory1_read_gpu <= tmp_gpu_read;
 
     new_IN <= tmp_has_next_data;
     IN_reg <= tmp_IN;

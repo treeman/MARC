@@ -16,10 +16,14 @@ architecture behavior of MARC_test is
             uCount_limit : in std_logic_vector(7 downto 0);
             fbart_in : in std_logic;
 
-            tmp_buss : in std_logic_vector(12 downto 0);
-            tmp_gpu_adr : in std_logic_vector(12 downto 0);
-            tmp_gpu_data : out std_logic_vector(7 downto 0);
+            -- VGA output
+            red : out std_logic_vector(2 downto 0);
+            grn : out std_logic_vector(2 downto 0);
+            blu : out std_logic_vector(1 downto 0);
+            HS : out std_logic;
+            VS : out std_logic;
 
+            -- Test upstart load without fbart
             tmp_has_next_data : in std_logic;
             tmp_IN : in std_logic_vector(12 downto 0);
             tmp_request_next_data : out std_logic
@@ -32,15 +36,17 @@ architecture behavior of MARC_test is
     signal uCount_limit : std_logic_vector(7 downto 0) := "00000000";
     signal fbart_in : std_logic := '0';
 
-    signal tmp_buss : std_logic_vector(12 downto 0);
-    signal tmp_gpu_adr : std_logic_vector(12 downto 0);
-
     signal tmp_has_next_data : std_logic := '0';
     signal tmp_IN : std_logic_vector(12 downto 0) := "0000000000000";
 
     -- Outputs
-    signal tmp_gpu_data : std_logic_vector(7 downto 0);
     signal tmp_request_next_data : std_logic;
+
+    signal red : std_logic_vector(2 downto 0);
+    signal grn : std_logic_vector(2 downto 0);
+    signal blu : std_logic_vector(1 downto 0);
+    signal HS : std_logic;
+    signal VS : std_logic;
 
     -- Clock period definitions
     constant clk_period : time := 1 us;
@@ -89,9 +95,11 @@ begin
         uCount_limit => uCount_limit,
         fbart_in => fbart_in,
 
-        tmp_buss => tmp_buss,
-        tmp_gpu_adr => tmp_gpu_adr,
-        tmp_gpu_data => tmp_gpu_data,
+        red => red,
+        grn => grn,
+        blu => blu,
+        HS => HS,
+        VS => VS,
 
         tmp_has_next_data => tmp_has_next_data,
         tmp_IN => tmp_IN,
@@ -177,10 +185,6 @@ begin
 
         -- Test async reset
         reset_a <= '0', '1' after 50 ns, '0' after 70 ns, '1' after 1 us, '0' after 2 us;
-
-        tmp_gpu_adr <= "0000000000000";
-
-        tmp_buss <= "0000000000000";
 
         wait;
     end process;
