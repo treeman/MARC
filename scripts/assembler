@@ -49,10 +49,16 @@ sub evaluate {
 
     my @pieces = split /[-+*\/]/, $def;
 
+    say "Evaluating: $def" if $debug;
+
     for my $piece (@pieces) {
 
         # Remove whitespace
         $piece = trim ($piece);
+
+        # Remove parenthesis
+        $piece =~ /^\(*(.*?)\)*$/;
+        $piece = $1;
 
         # Ignore empty and all numbers
         next if $piece =~ /^\d*$/;
@@ -63,11 +69,11 @@ sub evaluate {
 
             if (exists $labels{$label}) {
 
-                # Substitute the label with it's value
-                #$def =~ s/$piece/$labels{$label}/;
-
                 # Addresses to labels are relative to the line of code
                 my $relative = $labels{$label} - $linenum;
+
+                # Surround negative values with parenthesis
+                $relative = "($relative)" if $relative < 0;
                 $def =~ s/$piece/$relative/;
             }
             elsif (exists $constants{$label}) {
@@ -83,6 +89,8 @@ sub evaluate {
             die "Syntax error, label expected ner '$piece'";
         }
     }
+
+    say "eval '$def'" if $debug;
 
     my $value = eval $def;
     die "Error: Malformed operator '$def' $@" if $@;
@@ -177,7 +185,7 @@ sub parse {
                         \s+
                         equ                    # Constant instr mnemonic
                         \s+
-                        ([-+*\/A-Z0-9\s+]+)    # Definition
+                        ([-+*\/()A-Z0-9\s+]+)    # Definition
                         /xi)
         {
             push (@code, $code);
@@ -313,7 +321,7 @@ sub parse {
                         \s+
                         equ                    # Constant instr mnemonic
                         \s+
-                        ([-+*\/A-Z0-9\s+]+)    # Definition
+                        ([-+*\/()A-Z0-9\s+]+)    # Definition
                         /xi)
         {
             my ($label, $def) = ($1, $2);
