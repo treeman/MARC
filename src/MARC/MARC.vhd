@@ -11,17 +11,17 @@ entity MARC is
             uCount_limit : in std_logic_vector(7 downto 0);
             fbart_in : in std_logic;
 
+            -- Test upstart load without fbart
+            --tmp_has_next_data : in std_logic;
+            --tmp_IN : in std_logic_vector(12 downto 0);
+            --tmp_request_next_data : out std_logic;
+
             -- VGA output
             red : out std_logic_vector(2 downto 0);
             grn : out std_logic_vector(2 downto 0);
             blu : out std_logic_vector(1 downto 0);
             HS : out std_logic;
-            VS : out std_logic;
-
-            -- Test upstart load without fbart
-            tmp_has_next_data : in std_logic;
-            tmp_IN : in std_logic_vector(12 downto 0);
-            tmp_request_next_data : out std_logic
+            VS : out std_logic
     );
 end MARC;
 
@@ -385,8 +385,8 @@ begin
                     control_signals => fbart_control_signals,
 
                     -- Commented when testing
-                    --buss_out => IN_reg,
-                    --has_next_data => new_IN,
+                    buss_out => IN_reg,
+                    has_next_data => new_IN,
 
                     rxd => fbart_in
         );
@@ -425,10 +425,10 @@ begin
 
             -- Generating fbart_request_next_data when we read the buss.
             if buss_code = "110" then
-                tmp_request_next_data <= '1';
+                --tmp_request_next_data <= '1';
                 fbart_request_next_data <= '1';
             else
-                tmp_request_next_data <= '0';
+                --tmp_request_next_data <= '0';
                 fbart_request_next_data <= '0';
             end if;
 
@@ -583,8 +583,8 @@ begin
     -- TEMP AND TESTING
     -------------------------------------------------------------------------
 
-    new_IN <= tmp_has_next_data;
-    IN_reg <= tmp_IN;
+    --new_IN <= tmp_has_next_data;
+    --IN_reg <= tmp_IN;
 
 end Behavioral;
 
