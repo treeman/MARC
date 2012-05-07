@@ -24,7 +24,7 @@ end colorpixSender;
 architecture Behavioral of colorpixSender is
 
 signal row_cnt : std_logic_vector (3 downto 0) := (others => '0');
-signal column_cnt : std_logic_vector (11 downto 0) := (others => '0');
+signal column_cnt : std_logic_vector (10 downto 0) := (others => '0');
 signal unit_cnt : std_logic_vector (2 downto 0) := (others => '0');
 signal height : std_logic_vector (11 downto 0) := (others => '0');
 signal address_mem : STD_LOGIC_VECTOR (12 downto 0) := (others => '0');
