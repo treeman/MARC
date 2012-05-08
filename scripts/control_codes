@@ -3,7 +3,12 @@
 use utf8;
 #use autodie;
 
-use Modern::Perl;
+# Modern::Perl stuff
+use strict;
+use warnings;
+#use 5.010;
+
+#use Modern::Perl;
 use Getopt::Long;
 
 # Command line options
@@ -27,11 +32,11 @@ $dest = "code_output" if !$dest;
 my $src = $ARGV[0];
 
 if ($help || !$src) {
-    say "Convert control code comments to actual control code.";
-    say "   options:";
-    say "   -h --help       Show this screen.";
-    say "   -v --verbose    Verbose output signals in a human readable format.";
-    say "   -vhdl           Makes my life easier.";
+    print "Convert control code comments to actual control code.\n";
+    print "   options:\n";
+    print "   -h --help       Show this screen.\n";
+    print "   -v --verbose    Verbose output signals in a human readable format.\n";
+    print "   -vhdl           Makes my life easier.\n";
     exit;
 }
 
@@ -193,7 +198,7 @@ for my $chunk (@codechunks) {
         }
     }
 
-    say "$name $l .. $r" if $debug;
+    print "$name $l .. $r\n" if $debug;
 
 
     $positions{$name} = [$r .. $l];
@@ -202,11 +207,11 @@ for my $chunk (@codechunks) {
 }
 
 if ($vhdl) {
-    say $_ for (reverse @vhdl_output);
-    say "";
+    print "$_\n" for (reverse @vhdl_output);
+    print "\n";
 }
 
-say "" if $debug;
+print "\n" if $debug;
 
 # Reverse the positions (we're using strings 0 indexed to the left but vhdl uses bits reversed)
 for my $key (keys %positions) {
@@ -279,9 +284,9 @@ while (my $line = <$in>) {
 
 # List labels
 if ($debug) {
-    say "Labels:";
+    print "Labels:\n";
     for my $k (keys %labels) {
-        say "labels{$k} = " . dec2hex ($labels{$k});
+        print "labels{$k} = " . dec2hex ($labels{$k}) . "\n";
     }
 }
 
@@ -314,9 +319,9 @@ if ($vhdl) {
 
         my $hpos = dec2hex ($labels{$instr});
 
-        say "\"$pos\" when \"$code\", -- $instr $hpos";
+        print "\"$pos\" when \"$code\", -- $instr $hpos\n";
     }
-    say '"11111111" when others;';
+    print '"11111111" when others;' . "\n";
 
     exit;
 }
@@ -330,7 +335,7 @@ for my $line (@lines) {
     if ($line =~ /^;(.*)/) {
         # If we're in verbose, simply output comments
         if ($verbose) {
-            #say $line;
+            #print $line;
             push (@output, $line);
         }
         # Otherwise transform into vhdl comments
@@ -342,7 +347,7 @@ for my $line (@lines) {
     }
     # Simply output empty lines
     elsif ($line =~ /^\s*$/) {
-        #say $line;
+        #print $line;
         push (@output, $line);
         $last_was_code = 0;
         next;
@@ -661,7 +666,7 @@ for my $line (@lines) {
         # Output verbose output, format lines like this with the occassional help header
 
         if (!$header_shown || $rows_since_help > $lines_until_header && !$last_was_code) {
-            #say "    $h";
+            #print "    $h";
             push (@output, "    $h");
 
             $header_shown = 1;
@@ -703,20 +708,20 @@ for my $line (@lines) {
 
         my $hexline = dec2hex ($codeline - 1);
 
-        #say "$hexline  $result ; " . join (", ", @comments);
+        #print "$hexline  $result ; " . join (", ", @comments);
         push (@output, "$hexline  $result ; " . trim (join (", ", @comments)));
     }
     # Output for vhdl copy paste
     else {
         my $res = '"' . join ("", @signal) . '", -- ' . trim (join (", ", @comments));
-        #say $res;
+        #print $res;
         push (@output, $res);
     }
 }
 
 # Print output
 my $txt = join ("\n", @output);
-say $txt;
+print "$txt\n";
 
 sub dec2hex {   # Force at least length 2
     my $d = shift;
