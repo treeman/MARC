@@ -1,9 +1,11 @@
 #!/usr/bin/perl -w
 
 use utf8;
-use autodie;
+use strict;
+use warnings;
+#use autodie;
 
-use Modern::Perl;
+#use Modern::Perl;
 use Getopt::Long;
 
 # Command line options
@@ -22,21 +24,21 @@ GetOptions(
 );
 
 if ($obj_out && scalar @ARGV != 2) {
-    say "Object output requires two files\!";
+    print "Object output requires two files\!\n";
 }
 
 if ($help || !scalar @ARGV || (!$debug && !$verbose && !$raw && !$obj_out)) {
     my ($name) = $0 =~ /([^\/]+$)/;
 
-    say "Simple assembler";
-    say "  usage:";
-    say "   $name [option]... [file]...";
-    say "  options:";
-    say "   -h --help       Show this screen.";
-    say "   -o --obj=FILE   Generate binary file output.";
-    say "       Must specify two files.";
-    say "   -v --verbose    Verbose output signals in a human readable format.";
-    say "   -r --raw        Outputs raw binary data.";
+    print "Simple assembler\n";
+    print "  usage:\n";
+    print "   $name [option]... [file]...\n";
+    print "  options:\n";
+    print "   -h --help       Show this screen.\n";
+    print "   -o --obj=FILE   Generate binary file output.\n";
+    print "       Must specify two files.\n";
+    print "   -v --verbose    Verbose output signals in a human readable format.\n";
+    print "   -r --raw        Outputs raw binary data.\n";
     exit;
 }
 
@@ -49,7 +51,7 @@ sub evaluate {
 
     my @pieces = split /[-+*\/]/, $def;
 
-    say "Evaluating: $def" if $debug;
+    print "Evaluating: $def\n" if $debug;
 
     for my $piece (@pieces) {
 
@@ -90,7 +92,7 @@ sub evaluate {
         }
     }
 
-    say "eval '$def'" if $debug;
+    print "eval '$def'\n" if $debug;
 
     my $value = eval $def;
     die "Error: Malformed operator '$def' $@" if $@;
@@ -117,12 +119,12 @@ if ($obj_out) {
     print $out pack ("B16", $pc_bin);
 
     if ($raw) {
-        say $pc_bin;
+        print "$pc_bin\n";
     }
     elsif ($verbose) {
         my $hex = bin2hex ($pc_bin);
 
-        say "\n$pc_bin  " . join (" ", $hex =~ /../g) . "  ; Player 2 PC\n";
+        print "\n$pc_bin  " . join (" ", $hex =~ /../g) . "  ; Player 2 PC\n\n";
     }
 
     parse ($p2);
@@ -172,7 +174,7 @@ sub parse {
             # Log label
             if ($label) {
                 $labels{$label} = $codeline;
-                say "L: $label = $codeline" if $debug;
+                print "L: $label = $codeline\n" if $debug;
             }
             $codeline++;
 
@@ -205,12 +207,12 @@ sub parse {
     my $codeline_bin = dec2bin ($codeline, 16);
 
     if ($raw) {
-        say $codeline_bin;
+        print "$codeline_bin\n";
     }
     elsif ($verbose) {
         my $hex = bin2hex ($codeline_bin);
-        say "$codeline_bin  " . join (" ", $hex =~ /../g) . "  ; Number of rows ($codeline) $src\n";
-        say "   pad    OP  A  B  pad     A op      pad      B op";
+        print "$codeline_bin  " . join (" ", $hex =~ /../g) . "  ; Number of rows ($codeline) $src\n\n";
+        print "   pad    OP  A  B  pad     A op      pad      B op\n";
     }
 
     # Start from -1 as we incr in the beginning
@@ -295,11 +297,11 @@ sub parse {
 
             # Output
             if ($debug) {
-                say "I: $instr $a_mod $b_mod $a_val $b_val";
+                print "I: $instr $a_mod $b_mod $a_val $b_val\n";
             }
 
             if ($raw) {
-                say "$op_bin$a_op_bin$b_op_bin";
+                print "$op_bin$a_op_bin$b_op_bin\n";
             }
             elsif ($verbose) {
                 my $line = "$op_bin$a_op_bin$b_op_bin";
@@ -307,9 +309,9 @@ sub parse {
 
                 # Pretty output, split binary into sections
                 # split up hex values into pairs and add code as comment
-                say "00000000 $instr_code $a_mod $b_mod 000 $a_bin 000 $b_bin   " .
+                print "00000000 $instr_code $a_mod $b_mod 000 $a_bin 000 $b_bin   " .
                     join (" ", ($hex =~ /../g)) .
-                    "  ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)";
+                    "  ; $instr $a_type $a_op($a_val) $b_type $b_op($b_val)\n";
             }
 
             $bin_output .= "$op_bin$a_op_bin$b_op_bin";
@@ -332,7 +334,7 @@ sub parse {
             # And insert
             $constants{$label} = $value;
 
-            say "C: $label = $def ($value)" if $debug;
+            print "C: $label = $def ($value)\n" if $debug;
         }
         # Match end
         elsif ($code =~ /^\s*end/) {
@@ -355,7 +357,7 @@ sub parse {
 if ($obj_out) {
     close $out;
     my $size = (stat $obj_out)[7];
-    say "Wrote $size bytes to $obj_out";
+    print "Wrote $size bytes to $obj_out\n";
 }
 
 sub trim {
