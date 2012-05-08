@@ -21,7 +21,11 @@ entity MARC is
             grn : out std_logic_vector(2 downto 0);
             blu : out std_logic_vector(1 downto 0);
             HS : out std_logic;
-            VS : out std_logic
+            VS : out std_logic;
+            reset_out : out std_logic;
+            game_started_out : out std_logic;
+            active_player_out : out std_logic_vector(1 downto 0);
+            pad_error : out STD_LOGIC_VECTOR(2 downto 0)
     );
 end MARC;
 
@@ -131,7 +135,8 @@ architecture Behavioral of MARC is
                 control_signals : out  STD_LOGIC_VECTOR (2 downto 0);
                 buss_out : out  STD_LOGIC_VECTOR (12 downto 0);
                 has_next_data : out  STD_LOGIC;
-                rxd : in std_logic
+                rxd : in std_logic;
+                padding_error_out : out STD_LOGIC_VECTOR(2 downto 0)
             );
      end component;
 
@@ -286,6 +291,9 @@ begin
     -------------------------------------------------------------------------
     -- COMPONENT INITIATION
     -------------------------------------------------------------------------
+   active_player_out <= active_player;
+   reset_out <= reset;
+   game_started_out <= game_started;
 
     game_started <= not fifo_game_over;
 
@@ -388,7 +396,8 @@ begin
                     buss_out => IN_reg,
                     has_next_data => new_IN,
 
-                    rxd => fbart_in
+                    rxd => fbart_in,
+                    padding_error_out => pad_error
         );
 
     fifo: PlayerFIFO
@@ -561,7 +570,7 @@ begin
     fifo_change_player <= '1' when FIFO_code = "10" else
                           '0';
 
-    active_player <= "00" when game_started = '0' else
+    active_player <= -- "00" when game_started = '0' else
                      "01" when fifo_current_player = '0' else
                      "10";
 

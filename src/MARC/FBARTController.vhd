@@ -39,7 +39,8 @@ entity FBARTController is
 		     --out_switch : in STD_LOGIC;
 		     --out_display : out STD_LOGIC_VECTOR( 7 downto 0);
 		   
-           has_next_data : out  STD_LOGIC);
+           has_next_data : out  STD_LOGIC;
+           padding_error_out : out STD_LOGIC_VECTOR(2 downto 0));
 end FBARTController;
 
 architecture Behavioral of FBARTController is
@@ -56,6 +57,7 @@ architecture Behavioral of FBARTController is
 	signal register1 	: STD_LOGIC_VECTOR(7 downto 0);
 	signal register2 	: STD_LOGIC_VECTOR(7 downto 0);
 	signal state		: STD_LOGIC_VECTOR(2 downto 0);
+        signal padding_error    : STD_LOGIC_VECTOR(2 downto 0) := "000";
 	
 	--signal request_next_data : STD_LOGIC := '0';
 	--signal reset : STD_LOGIC := '0';
@@ -69,9 +71,11 @@ architecture Behavioral of FBARTController is
 	signal d          : std_logic_vector(7 downto 0);    -- Data bus
 	signal inverted_reset : std_logic := '0';
 begin
+        padding_error_out <= padding_error;
+	buss_out <= register1(4 downto 0) & register2;
+	control_signals <= register1(7 downto 5);
 
-	buss_out <= register1 & register2(4 downto 0);
-	control_signals <= register2(7 downto 5);
+        inverted_reset <= not reset;
   --inverted_reset <= not(reset);
   
    -- out_display <=  register1 when out_switch = '1' else register2;
@@ -84,20 +88,30 @@ begin
 		
 			--request_next_data <= request_next_data_a; -- and not(request_next_data);
 			--reset <= reset_a;
-		
+		        
 		  
 			if (reset='1') then
 				state <= "000";
 				has_next_data <= '0';
-				--register1 <= "00000000";
-        --register2 <= "00000000";
+				padding_error <= "000";
+				register1 <= "00000000";
+        			register2 <= "00000000";
 				-- Reset FBART here!
 			else
-				if state = "000" then
-					inverted_reset <= '0';
-				else
-					inverted_reset <= '1';
-				end if;
+
+					if (register1(7 downto 5) = "000") then
+                                            if padding_error = "000" then
+		                               padding_error <= "000";
+                                            end if;
+					else
+                                            padding_error <= register1(7 downto 5);
+		                        end if;
+
+				--if state = "000" then
+				--	inverted_reset <= '0';
+				--else
+				--	inverted_reset <= '1';
+				--end if;
 			
 				-- Wait for request_next_data request
 				if state = "000" then
@@ -107,8 +121,8 @@ begin
 						has_next_data <= '0';
 						--inverted_reset <= '1';
 						-- We don't want junk data in out memory, better to have DAT 0 0 as default.
-						--register1 <= "00000000";
-						--register2 <= "00000000";
+						register1 <= "00000000";
+						register2 <= "00000000";
 					else
 						state <= "000";
 						--inverted_reset <= '0';
@@ -131,6 +145,7 @@ begin
 				elsif state = "010" then
 					rd <= '1';
 					register1 <= d;
+					
 					state <= "011";
 				
 				-- Wait for second 8 bits of data
