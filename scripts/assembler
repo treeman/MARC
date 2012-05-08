@@ -16,6 +16,7 @@ my $verbose;
 my $debug;
 my $obj_out = "";
 my $raw;
+my $pc;
 
 GetOptions(
     'help|h' => \$help,
@@ -23,6 +24,7 @@ GetOptions(
     'verbose|v' => \$verbose,
     'debug' => \$debug,
     'raw|r' => \$raw,
+    'pc|p=s' => \$pc,
 );
 
 if ($obj_out && scalar @ARGV != 2) {
@@ -41,6 +43,7 @@ if ($help || !scalar @ARGV || (!$debug && !$verbose && !$raw && !$obj_out)) {
     say "       Must specify two files.";
     say "   -v --verbose    Verbose output signals in a human readable format.";
     say "   -r --raw        Outputs raw binary data.";
+    say "   -p --pc         Specify PC for 2nd program, in hex.";
     exit;
 }
 
@@ -104,16 +107,21 @@ sub evaluate {
 
 my $out;
 if ($obj_out) {
-    open $out, '>', $obj_out;
+    open $out, '>', $obj_out or die "Couldn't open file $obj_out $!";
     binmode $out;
 
     my ($p1, $p2) = @ARGV;
 
     parse ($p1);
 
-    # We have 8192 lines, PC1 will be at 0 so generate a random number
-    # between 100 and 8091
-    my $pc = int(rand(7991)) + 100;
+    if ($pc) {
+        $pc = hex $pc;
+    }
+    else {
+        # We have 8192 lines, PC1 will be at 0 so generate a random number
+        # between 100 and 8091
+        $pc = int(rand(7991)) + 100;
+    }
 
     # Convert to bin and pad up to 16 bits
     my $pc_bin = "000" . dec2bin ($pc, 13);
@@ -138,7 +146,7 @@ else {
 sub parse {
     my ($src) = @_;
 
-    open my $in, '<', $src;
+    open my $in, '<', $src or die "Couldn't open file $src $!";
 
     # Store line of code here when processing
     my @code;

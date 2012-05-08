@@ -1,7 +1,6 @@
 #!/usr/bin/perl -w
 
 use utf8;
-#use autodie;
 
 # Modern::Perl
 use strict;
@@ -232,8 +231,7 @@ sub update {
     @$signal[ @{$pos} ] = split (//, $what);
 }
 
-open my $in, '<', $src;
-#open my $out, '>', $dest;
+open my $in, '<', $src or die "Couldn't open file $src $!";
 
 my $codeline = 0;
 my $rows_since_help = 0;
