@@ -546,7 +546,9 @@ for my $line (@lines) {
 
                 # Check to see if we have a relative absolute address
                 $where =~ /^([+-])?(.*)/;
-                my $op = $1 // "";
+                my $op = $1;
+                $op = "" if !$op;
+
                 my $val = $2;
 
                 my $label = "";
