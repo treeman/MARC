@@ -72,10 +72,9 @@ architecture Behavioral of Memory_Cell_DualPort is
         --"10000000XXXXXXXX", -- SLT
         --"10010000XXXXXXXX", -- DJN
         --"10100101XXXXXXXX", -- SPL
-	-- "xxxxxxxx11111111",
+        -- "xxxxxxxx11111111",
 
         others => (others => '0')
-	--others => "xxxxxxxx11111111",
     );
     signal ram_block_1 : ram_block_type := (others => (others => '0'));
     signal ram_block_2 : ram_block_type := (others => (others => '0'));
@@ -84,6 +83,8 @@ architecture Behavioral of Memory_Cell_DualPort is
     signal ram_block_5 : ram_block_type := (others => (others => '0'));
     signal ram_block_6 : ram_block_type := (others => (others => '0'));
     signal ram_block_7 : ram_block_type := (others => (others => '0'));
+
+    -- Color block test
     --signal ram_block_0 : ram_block_type := (others => "0000000010100111");
     --signal ram_block_1 : ram_block_type := (others => "0000000011111000");
     --signal ram_block_2 : ram_block_type := (others => "0000000011000111");

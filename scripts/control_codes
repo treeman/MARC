@@ -40,8 +40,8 @@ if ($help || !$src) {
 }
 
 # Ouput format
-my $h = "FIFO IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC uPC  uPC_addr";
-my $c = " 00  0   00  00   0  00 00  00   00   00    000     00   0   000 000  00 0000 00000000";
+my $h = "game FIFO IR ADR1 ADR2 OP M1 M2 mem1 mem2 mem3 mem_addr ALU1 ALU2 ALU buss PC  uPC  uPC_addr";
+my $c = " 00   00  0   00  00   0  00 00  00   00   00    000     00   0   000 000  00 00000 00000000";
 
 my %ALU = (
     load => "001",
@@ -90,29 +90,33 @@ my %singles = (
     jmpBpre => "uPC",
     change_player => "FIFO",
     fifo_next => "FIFO",
+    game_started => "game",
+    check_gameover => "game",
 );
 
 my %registers = (
     uPC => {
-        '++' => "0000",
-        op_addr => "0001",
+        '++' => "00000",
+        op_addr => "00001",
 
-        jmp => "0010",
-        jmpZ => "0011",
-        jmpIN => "0100",
-        jmpC => "0101",
-        jmpS => "0110",
-        jmpN => "0111",
-        jmpE => "1000",
+        jmp =>  "00010",
+        jmpZ => "00011",
+        jmpIN =>"00100",
+        jmpC => "00101",
+        jmpS => "00110",
+        jmpN => "00111",
+        jmpE => "01000",
+        jmpL => "01001",
+        jmpO => "01010",
 
-        jmpAimm => "1001",
-        jmpAdir => "1010",
-        jmpApre => "1011",
-        jmpBimm => "1100",
-        jmpBdir => "1101",
-        jmpBpre => "1110",
+        jmpAimm => "10000",
+        jmpAdir => "10001",
+        jmpApre => "10010",
+        jmpBimm => "10011",
+        jmpBdir => "10100",
+        jmpBpre => "10101",
 
-        '0' => "1111",
+        '0' => "11111",
     },
     PC => {
         buss => "01",
@@ -167,6 +171,10 @@ my %registers = (
         buss => "01",
         change_player => "10",
         fifo_next => "11",
+    },
+    game => {
+        game_started => "01",
+        check_gameover => "10",
     },
 );
 

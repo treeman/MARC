@@ -7,14 +7,15 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity MARC is
     Port (  clk : in std_logic;
             reset_a : in std_logic;
+            start : in std_logic;
 
             uCount_limit : in std_logic_vector(7 downto 0);
             fbart_in : in std_logic;
 
             -- Test upstart load without fbart
-            --tmp_has_next_data : in std_logic;
-            --tmp_IN : in std_logic_vector(12 downto 0);
-            --tmp_request_next_data : out std_logic;
+            tmp_has_next_data : in std_logic;
+            tmp_IN : in std_logic_vector(12 downto 0);
+            tmp_request_next_data : out std_logic;
 
             -- VGA output
             red : out std_logic_vector(2 downto 0);
@@ -22,6 +23,8 @@ entity MARC is
             blu : out std_logic_vector(1 downto 0);
             HS : out std_logic;
             VS : out std_logic;
+
+            -- Output flags etc
             reset_out : out std_logic;
             game_started_out : out std_logic;
             active_player_out : out std_logic_vector(1 downto 0);
@@ -69,12 +72,16 @@ architecture Behavioral of MARC is
 
                 FIFO_code : out std_logic_vector(1 downto 0);
 
+                game_code : out std_logic_vector(1 downto 0);
+
                 Z : in std_logic;
                 N : in std_logic;
                 both_Z : in std_logic;
 
                 new_IN : in std_logic;
-                game_started : in std_logic
+                game_started : in std_logic;
+                shall_load : in std_logic;
+                game_over : in std_logic
         );
     end component;
 
@@ -243,34 +250,37 @@ architecture Behavioral of MARC is
 
     signal FIFO_code : std_logic_vector(1 downto 0);
 
+    signal game_code : std_logic_vector(1 downto 0);
+
     -------------------------------------------------------------------------
-    -- MISC JUNK
+    -- STATUS SIGNALS
     -------------------------------------------------------------------------
 
-    -- Status signals
     signal Z : std_logic := '0';
     signal N : std_logic := '0';
     signal both_Z : std_logic := '0';
 
     signal active_player : std_logic_vector(1 downto 0);
-    signal game_started : std_logic := '1';
+    -- Are we executing code as playing?
+    signal game_started : std_logic := '0';
+    -- Do we want to load in from fbart?
+    signal load : std_logic := '0';
+    -- Did the play stop? (Will not be game over after reset)
+    signal game_over : std_logic := '0';
 
     signal new_IN : std_logic := '0';
     signal reset : std_logic := '0';
-
-    -- TODO connect these modules later
-    signal fifo_out : std_logic_vector(12 downto 0) := "0010XXXXXXXXX";
-
-    -- Crap
-    signal tmp_gpu_read : STD_LOGIC := '0';
-    signal tmp_gpu_adr_sync : STD_LOGIC_VECTOR(12 downto 0) := "0000000000000";
-    signal tmp_gpu_data_sync : STD_LOGIC_VECTOR(7 downto 0);
 
     -------------------------------------------------------------------------
     -- FBART SIGNALS
     -------------------------------------------------------------------------
     signal fbart_request_next_data :  STD_LOGIC := '0';         -- Generate this when we read from FBART into BUSS
     signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
+
+    -------------------------------------------------------------------------
+    -- FIFO SIGNALS
+    -------------------------------------------------------------------------
+    signal fifo_out : std_logic_vector(12 downto 0) := "0010XXXXXXXXX";
 
     signal fifo_current_player : STD_LOGIC;
     signal fifo_game_over :std_logic;
@@ -289,13 +299,24 @@ architecture Behavioral of MARC is
 begin
 
     -------------------------------------------------------------------------
+    -- TEST SIGNALS
+    -------------------------------------------------------------------------
+
+    active_player_out <= active_player;
+    reset_out <= reset;
+    game_started_out <= game_started;
+
+    -------------------------------------------------------------------------
+    -- TEMP AND TESTING
+    -------------------------------------------------------------------------
+
+    new_IN <= tmp_has_next_data;
+    IN_reg <= tmp_IN;
+    tmp_request_next_data <= fbart_request_next_data;
+
+    -------------------------------------------------------------------------
     -- COMPONENT INITIATION
     -------------------------------------------------------------------------
-   active_player_out <= active_player;
-   reset_out <= reset;
-   game_started_out <= game_started;
-
-    game_started <= not fifo_game_over;
 
     micro: Microcontroller
         port map (  clk => clk,
@@ -329,11 +350,15 @@ begin
 
                     FIFO_code => FIFO_code,
 
+                    game_code => game_code,
+
                     Z => Z,
                     N => N,
                     both_Z => both_Z,
                     new_IN => new_IN,
-                    game_started => game_started
+                    game_started => game_started,
+                    shall_load => load,
+                    game_over => game_over
         );
 
     alus: ALU
@@ -393,8 +418,8 @@ begin
                     control_signals => fbart_control_signals,
 
                     -- Commented when testing
-                    buss_out => IN_reg,
-                    has_next_data => new_IN,
+                    --buss_out => IN_reg,
+                    --has_next_data => new_IN,
 
                     rxd => fbart_in,
                     padding_error_out => pad_error
@@ -432,12 +457,31 @@ begin
     begin
         if rising_edge(clk) then
 
+            -- Set load status
+            if reset = '1' then
+                load <= '0';
+            elsif start = '1' then
+                load <= '1';
+            end if;
+
+            -- Game started, will only check at certain times
+            if reset = '1' then
+                game_started <= '0';
+            elsif game_code = "01" then
+                game_started <= '1';
+            end if;
+
+            -- Game over, will only check at certain times
+            if reset = '1' then
+                game_over <= '0';
+            elsif game_code = "10" then
+                game_over <= fifo_game_over;
+            end if;
+
             -- Generating fbart_request_next_data when we read the buss.
             if buss_code = "110" then
-                --tmp_request_next_data <= '1';
                 fbart_request_next_data <= '1';
             else
-                --tmp_request_next_data <= '0';
                 fbart_request_next_data <= '0';
             end if;
 
@@ -478,7 +522,6 @@ begin
 
         end if;
     end process;
-
 
     -------------------------------------------------------------------------
     -- MEMORY MULTIPLEXERS
@@ -570,7 +613,7 @@ begin
     fifo_change_player <= '1' when FIFO_code = "10" else
                           '0';
 
-    active_player <= -- "00" when game_started = '0' else
+    active_player <= "00" when load = '0' else
                      "01" when fifo_current_player = '0' else
                      "10";
 
@@ -587,13 +630,6 @@ begin
                     fifo_out when "101",
                     IN_reg when "110",
                     "0000000000000" when others;
-
-    -------------------------------------------------------------------------
-    -- TEMP AND TESTING
-    -------------------------------------------------------------------------
-
-    --new_IN <= tmp_has_next_data;
-    --IN_reg <= tmp_IN;
 
 end Behavioral;
 

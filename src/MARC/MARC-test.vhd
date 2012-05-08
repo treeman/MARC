@@ -12,9 +12,15 @@ architecture behavior of MARC_test is
         Port(
             clk : in std_logic;
             reset_a : in std_logic;
+            start : in std_logic;
 
             uCount_limit : in std_logic_vector(7 downto 0);
             fbart_in : in std_logic;
+
+            -- Test upstart load without fbart
+            tmp_has_next_data : in std_logic;
+            tmp_IN : in std_logic_vector(12 downto 0);
+            tmp_request_next_data : out std_logic;
 
             -- VGA output
             red : out std_logic_vector(2 downto 0);
@@ -23,16 +29,18 @@ architecture behavior of MARC_test is
             HS : out std_logic;
             VS : out std_logic;
 
-            -- Test upstart load without fbart
-            tmp_has_next_data : in std_logic;
-            tmp_IN : in std_logic_vector(12 downto 0);
-            tmp_request_next_data : out std_logic
+            -- Output flags etc
+            reset_out : out std_logic;
+            game_started_out : out std_logic;
+            active_player_out : out std_logic_vector(1 downto 0);
+            pad_error : out STD_LOGIC_VECTOR(2 downto 0)
         );
     end component;
 
     -- Inputs
     signal clk : std_logic := '0';
     signal reset_a : std_logic := '0';
+    signal start : std_logic := '0';
     signal uCount_limit : std_logic_vector(7 downto 0) := "00000000";
     signal fbart_in : std_logic := '0';
 
@@ -47,6 +55,11 @@ architecture behavior of MARC_test is
     signal blu : std_logic_vector(1 downto 0);
     signal HS : std_logic;
     signal VS : std_logic;
+
+    signal reset_out : std_logic;
+    signal game_started_out : std_logic;
+    signal active_player_out : std_logic_vector(1 downto 0);
+    signal pad_error : STD_LOGIC_VECTOR(2 downto 0);
 
     -- Clock period definitions
     constant clk_period : time := 1 us;
@@ -67,17 +80,15 @@ architecture behavior of MARC_test is
     signal last_request : std_logic := '0';
 
     signal prog1 : Data := (
-        "XXXXX0001111100000111100001000011001100",
-        --"XXXXX  1111 1111  0 0000 1111 0000  1 0000 1100 1100", ff 00f0  10cc
-        "XXXXX0010000011111111100001000011101110",
+        "XXXXX0001000000000000000000000000000001",
 
         others => (others => '0')
     );
-    signal prog1_lines : std_logic_vector(4 downto 0) := "00010";
+    signal prog1_lines : std_logic_vector(4 downto 0) := "00001";
     signal prog1_row : DataLine;
 
     signal prog2 : Data := (
-        "XXXXX1010101010101101001111011011011100",
+        "XXXXX0001000000000000000000000000000001",
 
         others => (others => '0')
     );
@@ -92,8 +103,13 @@ begin
     uut: MARC Port map (
         clk => clk,
         reset_a => reset_a,
+        start => start,
         uCount_limit => uCount_limit,
         fbart_in => fbart_in,
+
+        tmp_has_next_data => tmp_has_next_data,
+        tmp_IN => tmp_IN,
+        tmp_request_next_data => tmp_request_next_data,
 
         red => red,
         grn => grn,
@@ -101,9 +117,10 @@ begin
         HS => HS,
         VS => VS,
 
-        tmp_has_next_data => tmp_has_next_data,
-        tmp_IN => tmp_IN,
-        tmp_request_next_data => tmp_request_next_data
+        reset_out => reset_out,
+        game_started_out => game_started_out,
+        active_player_out => active_player_out,
+        pad_error => pad_error
     );
 
     clk_process :process
@@ -185,6 +202,9 @@ begin
 
         -- Test async reset
         reset_a <= '0', '1' after 50 ns, '0' after 70 ns, '1' after 1 us, '0' after 2 us;
+
+        -- Press start button
+        start <= '0', '1' after 6 us, '0' after 7 us;
 
         wait;
     end process;

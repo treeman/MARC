@@ -1,25 +1,27 @@
 Styrsignaler:
 
 uPC
-    0000    +1
-    0001    op addr
+    00000   +1
+    00001   op addr
 
-    0010    jmp
-    0011    jmp on Z (zero)             (jmpZ)
-    0100    jmp on new IN               (jmpIN)
-    0101    jmp if uCounter >= limit    (jmpC)
-    0110    jmp if game started         (jmpS)
-    0111    jmp on N (negative)         (jmpN)
-    1000    jmp if both ALU 0           (jmpE)
+    00010   jmp                         (jmp)
+    00011   jmp on Z (zero)             (jmpZ)
+    00100   jmp on new IN               (jmpIN)
+    00101   jmp if uCounter >= limit    (jmpC)
+    00110   jmp if game started         (jmpS)
+    00111   jmp on N (negative)         (jmpN)
+    01000   jmp if both ALU 0           (jmpE)
+    01001   jmp if we shall load        (jmpL)
+    01010   jmp if game over            (jmpO)
 
-    1001    jmp if A immediate          (jmpAimm)
-    1010    jmp if A direct             (jmpAdir)
-    1011    jmp if A predecrement       (jmpApre)
-    1100    jmp if B immediate          (jmpBimm)
-    1101    jmp if B direct             (jmpBdir)
-    1110    jmp if B predecrement       (jmpBpre)
+    10000   jmp if A immediate          (jmpAimm)
+    10001   jmp if A direct             (jmpAdir)
+    10010   jmp if A predecrement       (jmpApre)
+    10011   jmp if B immediate          (jmpBimm)
+    10100   jmp if B direct             (jmpBdir)
+    10101   jmp if B predecrement       (jmpBpre)
 
-    1111    = 0
+    11111   = 0
 
 PC
     00      PC (nothing)
@@ -117,8 +119,13 @@ FIFO
     10      change player
     11      next_pc
 
+game
+    00      nothing
+    01      set game as started
+    10      check and update game over (check if fifo queue flags game over)
+
 Totalt
-    44 bit bredd
+    xx bit bredd
 
 FIXME!
 Kontrollera signalerna under

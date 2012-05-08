@@ -1,13 +1,25 @@
 ; Startup, check if we're in game
         jmpS $GAME                              ; Execute game code only if we're running
+        jmpO +0                                 ; Infinite loop if we've recieved game over, reset to break it
+
+; Clear memory contents
+;        ALU = 0                                 ; Load 0
+;        ALU1 -> buss, buss -> OP, buss -> M1, buss -> M2, buss -> PC
+;:CLRMEM PC -> mem_addr                          ; Look at PC
+;        OP -> mem, M1 -> mem, M2 -> mem         ; Clear it
+;        ALU++                                   ; Incr
+;        ALU1 -> PC, jmpZ $LOADP                 ; If 0 we're done looping
+;        jmp $CLRMEM                             ; Else continue
+
+:LOADP  jmpL $POLL                              ; If we should start polling (start is pressed)
+        jmp -1
 
 ; Load in program to memory
-        IN -> buss                              ; Temporary start polling fbart
+:POLL   IN -> buss                              ; Temporary start polling fbart
 
 ; Load program 1
         ALU = 0, fifo_next                      ; PC1 = 0
         ALU1 -> buss, buss -> FIFO, buss -> PC  ; Insert it to FIFO
-        change_player                           ; Change player in FIFO
 
         jmpIN $F1NUM                            ; Fetch number of rows from in
         jmp -1                                  ; If not ready, stall
@@ -27,7 +39,8 @@
         jmp $F1ROW                              ; Else load next row
 
 ; Load program 2
-:LOAD2  jmpIN $F2PC                             ; Fetch PC for player 2
+:LOAD2  change_player                           ; Change player in FIFO
+        jmpIN $F2PC                             ; Fetch PC for player 2
         jmp -1
 :F2PC   IN -> buss, buss -> FIFO, buss -> PC    ; Insert to FIFO
         jmpIN $F2NUM                            ; Fetch number of rows
@@ -44,8 +57,9 @@
 :F2M2   IN -> M2, PC -> mem_addr                ; Store M2
         OP -> mem, M1 -> mem, M2 -> mem         ; Write line to mem
         ALU--, PC++                             ; Decr row counter, incr PC
-        jmpZ 0                                  ; If 0 we're done
+        jmpZ $LEND                              ; If 0 we're done
         jmp $F2ROW                              ; Else load next row
+:LEND   game_started, jmpZ 0
 
 
 ; Game sequence
@@ -250,7 +264,7 @@
 :ADDPC  PC++
         PC -> FIFO
 
-:END    jmp $DELAY
+:END    check_gameover
 :DELAY  jmpC 0                              ; Start over when we've spent enough time
         jmp $DELAY
 
