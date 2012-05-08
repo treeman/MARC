@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 use utf8;
-use autodie;
+#use autodie;
 
 use Modern::Perl;
 use Getopt::Long;
