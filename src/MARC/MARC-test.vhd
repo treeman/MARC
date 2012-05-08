@@ -80,7 +80,7 @@ architecture behavior of MARC_test is
     signal last_request : std_logic := '0';
 
     signal prog1 : Data := (
-        "XXXXX0001000000000000000000000000000001",
+        "XXXXX0001000000000000000000000000000001", -- imp
 
         others => (others => '0')
     );
@@ -88,7 +88,7 @@ architecture behavior of MARC_test is
     signal prog1_row : DataLine;
 
     signal prog2 : Data := (
-        "XXXXX0001000000000000000000000000000001",
+        "XXXXX0000000000000000000000000000000000", -- DAT
 
         others => (others => '0')
     );
@@ -201,7 +201,8 @@ begin
         wait for 100 ns; -- wait until global set/reset completes
 
         -- Test async reset
-        reset_a <= '0', '1' after 50 ns, '0' after 70 ns, '1' after 1 us, '0' after 2 us;
+        reset_a <= '0', '1' after 50 ns, '0' after 70 ns, '1' after 1 us, '0' after 2 us, '1' after 145 us,
+                   '0' after 146 us;
 
         -- Press start button
         start <= '0', '1' after 6 us, '0' after 7 us;

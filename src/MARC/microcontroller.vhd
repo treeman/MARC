@@ -419,17 +419,17 @@ begin
 
     -- OP code address decoding
     with OP_field select
-        op_addr <=  "01010110" when "0000", -- DAT 56
-                    "01010111" when "0001", -- MOV 57
-                    "01100000" when "0010", -- ADD 60
-                    "01101111" when "0011", -- SUB 6f
-                    "01111111" when "0100", -- JMP 7f
-                    "10000011" when "0101", -- JMPZ 83
-                    "10001010" when "0110", -- JMPN 8a
-                    "10010000" when "0111", -- CMP 90
-                    "10100010" when "1000", -- SLT a2
-                    "10101100" when "1001", -- DJN ac
-                    "10110110" when "1010", -- SPL b6
+        op_addr <=  "01010111" when "0000", -- DAT 57
+                    "01011000" when "0001", -- MOV 58
+                    "01100001" when "0010", -- ADD 61
+                    "01110000" when "0011", -- SUB 70
+                    "10000000" when "0100", -- JMP 80
+                    "10000100" when "0101", -- JMPZ 84
+                    "10001011" when "0110", -- JMPN 8b
+                    "10010001" when "0111", -- CMP 91
+                    "10100011" when "1000", -- SLT a3
+                    "10101101" when "1001", -- DJN ad
+                    "10110111" when "1010", -- SPL b7
                     "11111111" when others;
 
     A_dir <= '1' when A_field = "00" else '0';

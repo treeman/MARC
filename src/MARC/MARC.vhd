@@ -464,8 +464,8 @@ begin
                 load <= '1';
             end if;
 
-            -- Game started, will only check at certain times
-            if reset = '1' then
+            -- Game started, will only set at certain times
+            if reset = '1' or game_over = '1' then
                 game_started <= '0';
             elsif game_code = "01" then
                 game_started <= '1';
