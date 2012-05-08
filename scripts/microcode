@@ -3,13 +3,13 @@
         jmpO +0                                 ; Infinite loop if we've recieved game over, reset to break it
 
 ; Clear memory contents
-;        ALU = 0                                 ; Load 0
-;        ALU1 -> buss, buss -> OP, buss -> M1, buss -> M2, buss -> PC
-;:CLRMEM PC -> mem_addr                          ; Look at PC
-;        OP -> mem, M1 -> mem, M2 -> mem         ; Clear it
-;        ALU++                                   ; Incr
-;        ALU1 -> PC, jmpZ $LOADP                 ; If 0 we're done looping
-;        jmp $CLRMEM                             ; Else continue
+        ALU = 0                                 ; Load 0
+        ALU1 -> buss, buss -> OP, buss -> M1, buss -> M2, buss -> PC
+:CLRMEM PC -> mem_addr                          ; Look at PC
+        OP -> mem, M1 -> mem, M2 -> mem         ; Clear it
+        ALU++                                   ; Incr
+        ALU1 -> PC, jmpZ $LOADP                 ; If 0 we're done looping
+        jmp $CLRMEM                             ; Else continue
 
 :LOADP  jmpL $POLL                              ; If we should start polling (start is pressed)
         jmp -1
