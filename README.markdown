@@ -2,22 +2,10 @@
 Todo
 ====
 
-* Write compiler to generate useful object code for fbart  
-    Pad 13 bit instr -> 16 bit  
-    Use two source code files, randomize a PC for each one and output as  
-    (PC1 = 0 implied)  
-
-    n (16 bit)  
-    n rows of code padded as OP (16 bit) A (16 bit) B (16 bit)  
-    PC2 (16 bit) (randomized within a minimum distance or specified)  
-    k (16 bit)  
-    k rows of code padded as OP (16 bit) A (16 bit) B (16 bit)  
-
-    OP 8 bit  
-    PC, A, B, n, k 13 bit  
-
-    pad msb  
 * Start/Reset handling may not be satisfactory
+    Is it ok to press reset then to press start again?!
+    Maybe Maybe could work without it?!
+
 * Color coding in memory; different color for different code?  Player1 - Red; Player2 - Green
 * DAT Dark red
 * ADD, SUB
@@ -28,6 +16,7 @@ Todo
 * MEMORY: Grey
 * Game over visual output
 * Slow down! ! !
+* More flashy and badass warriors!
 
 Schema
 ------
