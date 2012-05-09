@@ -13,9 +13,9 @@ entity MARC is
             fbart_in : in std_logic;
 
             -- Test upstart load without fbart
-            tmp_has_next_data : in std_logic;
-            tmp_IN : in std_logic_vector(12 downto 0);
-            tmp_request_next_data : out std_logic;
+            --tmp_has_next_data : in std_logic;
+            --tmp_IN : in std_logic_vector(12 downto 0);
+            --tmp_request_next_data : out std_logic;
 
             -- VGA output
             red : out std_logic_vector(2 downto 0);
@@ -28,7 +28,10 @@ entity MARC is
             reset_out : out std_logic;
             game_started_out : out std_logic;
             active_player_out : out std_logic_vector(1 downto 0);
-            pad_error : out STD_LOGIC_VECTOR(2 downto 0)
+            pad_error : out STD_LOGIC_VECTOR(2 downto 0);
+	    game_over_out : out std_logic;
+		 
+		 				alu1_o : out stD_LOGIC_VECTOR(7 downto 0)
     );
 end MARC;
 
@@ -181,7 +184,7 @@ architecture Behavioral of MARC is
     signal ALU_in : std_logic_vector(12 downto 0);
     signal ALU1_out : std_logic_vector(12 downto 0);
     signal ALU2_out : std_logic_vector(12 downto 0);
-
+    
     signal ALU_operation : std_logic_vector(1 downto 0);
     -- 00 hold
     -- 01 load main buss
@@ -276,7 +279,8 @@ architecture Behavioral of MARC is
     -------------------------------------------------------------------------
     signal fbart_request_next_data :  STD_LOGIC := '0';         -- Generate this when we read from FBART into BUSS
     signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
-
+    signal rxd : std_logic := '1';
+	 
     -------------------------------------------------------------------------
     -- FIFO SIGNALS
     -------------------------------------------------------------------------
@@ -305,14 +309,20 @@ begin
     active_player_out <= active_player;
     reset_out <= reset;
     game_started_out <= game_started;
+    game_over_out <= game_over;
+	 
+	 alu1_o <= ALU1_out(12 downto 5);
 
     -------------------------------------------------------------------------
     -- TEMP AND TESTING
     -------------------------------------------------------------------------
 
-    new_IN <= tmp_has_next_data;
-    IN_reg <= tmp_IN;
-    tmp_request_next_data <= fbart_request_next_data;
+    --new_IN <= tmp_has_next_data;
+    --IN_reg <= tmp_IN;
+    --tmp_request_next_data <= fbart_request_next_data;
+
+		fbart_request_next_data <= '1' when buss_code = "110" else '0';
+		
 
     -------------------------------------------------------------------------
     -- COMPONENT INITIATION
@@ -384,7 +394,7 @@ begin
                     data_in => memory1_data_in,
                     data_out => OP,
                     data_gpu => data_gpu,
-                    read_gpu => '1', -- TODO change?!
+                    read_gpu => '1',
                     address_gpu => address_gpu,
                     active_player => active_player
         );
@@ -418,10 +428,10 @@ begin
                     control_signals => fbart_control_signals,
 
                     -- Commented when testing
-                    --buss_out => IN_reg,
-                    --has_next_data => new_IN,
+                    buss_out => IN_reg,
+                    has_next_data => new_IN,
 
-                    rxd => fbart_in,
+                    rxd => rxd,
                     padding_error_out => pad_error
         );
 
@@ -456,7 +466,13 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-
+			if reset = '1' then
+				rxd <= '1';
+			else
+				rxd <= fbart_in;
+			end if;
+             
+				 
             -- Set load status
             if reset = '1' then
                 load <= '0';
@@ -479,11 +495,11 @@ begin
             end if;
 
             -- Generating fbart_request_next_data when we read the buss.
-            if buss_code = "110" then
-                fbart_request_next_data <= '1';
-            else
-                fbart_request_next_data <= '0';
-            end if;
+--            if buss_code = "110" then
+--                fbart_request_next_data <= '1';
+--            else
+--                fbart_request_next_data <= '0';
+--            end if;
 
             -- Sync reset
             if reset_a = '1' then

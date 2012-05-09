@@ -98,13 +98,16 @@ begin
     address_out <= address_sync;
     data_out <= data_sync;
 
-    -- This determines the color depending on what player put what there and what kind of OP code it is (data / non data)
-    calculated_color <=     "11111111" when active_player = "00" else                                       -- Black when no player
-                            "11000000" when active_player = "01" and data_sync(7 downto 4) = "0000" else    -- Weak red when player 1 and data
-                            "00111000" when active_player = "10" and data_sync(7 downto 4) = "0000" else    -- Weak blue when player 2 and data
-                            "00000111" when active_player = "10" else                                       -- Red when player 1 and code
-                            "01001001";                                                                     -- Blue when player 2 and code
-
+--    -- This determines the color depending on what player put what there and what kind of OP code it is (data / non data)
+--    calculated_color <=     "00000000" when active_player = "00" else
+--                            "11111111" when data_sync(7 downto 4) = "1000" else
+--                            "10011101" when active_player = "01" and data_sync(7 downto 4) = "0000" else    -- Weak red when player 1 and data
+--                            "00100011" when active_player = "10" and data_sync(7 downto 4) = "0000" else    -- Weak blue when player 2 and data
+--                            "00111011" when active_player = "10" else                                       -- Red when player 1 and code
+--                            "10011111";                                                                     -- Blue when player 2 and code
+									 
+	calculated_color <= active_player & data_sync(7 downto 4) & "00";
+	
     PROCESS(clk) begin
         if(rising_edge(clk)) then
 

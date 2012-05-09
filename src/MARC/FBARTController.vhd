@@ -73,6 +73,10 @@ architecture Behavioral of FBARTController is
 begin
         padding_error_out <= padding_error;
 	buss_out <= register1(4 downto 0) & register2;
+	--buss_out <= register1(0 to 4) & register2(0 to 7);
+	
+	--buss_out <= register1(3) & register1(4) & register1(5) & register1(6) & register1(7) & register2(0) & register2(1) & register2(2) & register2(3) & register2(4) & register2(5) & register2(6) & register2(7);
+	
 	control_signals <= register1(7 downto 5);
 
         inverted_reset <= not reset;

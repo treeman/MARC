@@ -32,6 +32,8 @@ signal address_mem : STD_LOGIC_VECTOR (12 downto 0) := (others => '0');
 -- use the same clk as vga_controller
 signal pixel_cnt : std_logic_vector(1 downto 0) := "00";
 
+signal border_color : std_logic_vector(7 downto 0) := "00100111";
+
 begin
   process(clk)
   begin
@@ -49,7 +51,7 @@ begin
       
       if pixel_cnt = "11" then
         pixel_cnt <= "00";
-        
+
         --------------------------------------------------------------------------------
         -- Main code --
         --------------------------------------------------------------------------------
@@ -101,7 +103,7 @@ begin
                 unit_cnt <= (others => '0'); -- reset the unit_cnt(not nessessary, but just in case)
               elsif column_cnt >= 320 and column_cnt < 640 then
                 column_cnt <= column_cnt + 1;
-                colorpix(7 downto 0) <= "00111000";
+                colorpix(7 downto 0) <= border_color;
               else
                 -- this is the blanking are, just incrase the column_cnt here, output nothing
                 column_cnt <= column_cnt + 1;
@@ -145,7 +147,7 @@ begin
                 unit_cnt <= (others => '0'); -- reset the unit_cnt(not nessessary, but just in case)
               elsif column_cnt >= 320 and column_cnt < 640 then
                 column_cnt <= column_cnt + 1;
-                colorpix(7 downto 0) <= "00111000";
+                colorpix(7 downto 0) <= border_color;
               else
                 -- this is the blanking area, just incrase the column_cnt here, output nothing
                 column_cnt <= column_cnt + 1;
@@ -250,7 +252,7 @@ begin
               unit_cnt <= (others => '0');
               column_cnt <= column_cnt + 1; 
             elsif unit_cnt = 1 then
-              colorpix(7 downto 0) <= "00111000";
+              colorpix(7 downto 0) <= border_color;
               unit_cnt <= unit_cnt + 1;
               column_cnt <= column_cnt + 1; 
             else
