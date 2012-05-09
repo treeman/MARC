@@ -182,10 +182,7 @@
         jmp $ADDPC                          ; Continue
 
 ; JMP  Jump to A
-:JMP    ADR1 -> mem_addr                    ; Fetch A op
-        mem -> M1, mem_addr -> ALU1         ; Add in memory offset
-        ALU1 += M1
-        ALU1 -> FIFO, jmp $END              ; Next instr should go at A op location
+:JMP    M1 -> FIFO, jmp $END                ; Jump to adress of A op
 
 ; JMPZ Jump to A if B zero
 :JMPZ   jmpBimm $IJMPZ

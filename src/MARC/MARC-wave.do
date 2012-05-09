@@ -1,6 +1,6 @@
 onerror {resume}
-virtual type { DAT MOV ADD SUB JMP JMPZ JMN CMP SLT DJN SPL} instr_type
 virtual type { direct immediate indirect pre-decr} mod_type
+virtual type { DAT MOV ADD SUB JMP JMPZ JMN CMP SLT DJN SPL} instr_type
 quietly virtual signal -install /marc_test/uut/micro {/marc_test/uut/micro/A_field  } A_field_bus
 quietly virtual function -install /marc_test/uut/micro -env /marc_test/uut/micro { (mod_type)A_field_bus} A_field_
 quietly virtual signal -install /marc_test/uut/micro {/marc_test/uut/micro/B_field  } B_field_bus
@@ -58,6 +58,7 @@ add wave -noupdate -group fifo -radix hexadecimal /marc_test/uut/fifo/p1_head_pc
 add wave -noupdate -group fifo -radix hexadecimal /marc_test/uut/fifo/p2_head
 add wave -noupdate -group fifo -radix hexadecimal /marc_test/uut/fifo/p2_head_pc
 add wave -noupdate -group fifo /marc_test/uut/fifo_game_over
+add wave -noupdate -group fifo /marc_test/uut/fifo/write_pc
 add wave -noupdate -group test_input -radix hexadecimal /marc_test/tmp_IN
 add wave -noupdate -group test_input /marc_test/tmp_has_next_data
 add wave -noupdate -group test_input /marc_test/tmp_request_next_data
@@ -109,7 +110,7 @@ add wave -noupdate -group mem3 /marc_test/uut/memory3_write
 add wave -noupdate -group mem3 -radix hexadecimal /marc_test/uut/memory_address_in
 add wave -noupdate -group mem3 -radix hexadecimal -childformat {{/marc_test/uut/memory3/address_out(12) -radix hexadecimal} {/marc_test/uut/memory3/address_out(11) -radix hexadecimal} {/marc_test/uut/memory3/address_out(10) -radix hexadecimal} {/marc_test/uut/memory3/address_out(9) -radix hexadecimal} {/marc_test/uut/memory3/address_out(8) -radix hexadecimal} {/marc_test/uut/memory3/address_out(7) -radix hexadecimal} {/marc_test/uut/memory3/address_out(6) -radix hexadecimal} {/marc_test/uut/memory3/address_out(5) -radix hexadecimal} {/marc_test/uut/memory3/address_out(4) -radix hexadecimal} {/marc_test/uut/memory3/address_out(3) -radix hexadecimal} {/marc_test/uut/memory3/address_out(2) -radix hexadecimal} {/marc_test/uut/memory3/address_out(1) -radix hexadecimal} {/marc_test/uut/memory3/address_out(0) -radix hexadecimal}} -subitemconfig {/marc_test/uut/memory3/address_out(12) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(11) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(10) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(9) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(8) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(7) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(6) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(5) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(4) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(3) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(2) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(1) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(0) {-height 15 -radix hexadecimal}} /marc_test/uut/memory3/address_out
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {139645 ns} 0}
+WaveRestoreCursors {{Cursor 1} {1770 ns} 0}
 configure wave -namecolwidth 252
 configure wave -valuecolwidth 101
 configure wave -justifyvalue left
@@ -122,6 +123,6 @@ configure wave -gridoffset 0
 configure wave -gridperiod 1
 configure wave -griddelta 40
 configure wave -timeline 0
-configure wave -timelineunits us
+configure wave -timelineunits ns
 update
-WaveRestoreZoom {132330 ns} {161330 ns}
+WaveRestoreZoom {376 ns} {3064 ns}

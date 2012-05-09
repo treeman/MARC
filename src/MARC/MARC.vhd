@@ -318,8 +318,6 @@ begin
     --new_IN <= tmp_has_next_data;
     --IN_reg <= tmp_IN;
     --tmp_request_next_data <= fbart_request_next_data;
-    fbart_request_next_data <= '1' when buss_code = "110" else '0';
-
 
     -------------------------------------------------------------------------
     -- COMPONENT INITIATION
@@ -425,8 +423,8 @@ begin
                     control_signals => fbart_control_signals,
 
                     -- Commented when testing
-                    buss_out => IN_reg,
-                    has_next_data => new_IN,
+                    --buss_out => IN_reg,
+                    --has_next_data => new_IN,
 
                     rxd => rxd,
                     padding_error_out => pad_error
@@ -629,6 +627,12 @@ begin
     active_player <= "00" when load = '0' else
                      "01" when fifo_current_player = '0' else
                      "10";
+
+    -------------------------------------------------------------------------
+    -- FBARt Handling
+    -------------------------------------------------------------------------
+
+    fbart_request_next_data <= '1' when buss_code = "110" else '0';
 
     -------------------------------------------------------------------------
     -- BUSS MEGA-MULTIPLEXER
