@@ -29,9 +29,8 @@ entity MARC is
             game_started_out : out std_logic;
             active_player_out : out std_logic_vector(1 downto 0);
             pad_error : out STD_LOGIC_VECTOR(2 downto 0);
-	    game_over_out : out std_logic;
-		 
-		 				alu1_o : out stD_LOGIC_VECTOR(7 downto 0)
+            game_over_out : out std_logic;
+            alu1_o : out stD_LOGIC_VECTOR(7 downto 0)
     );
 end MARC;
 
@@ -184,7 +183,7 @@ architecture Behavioral of MARC is
     signal ALU_in : std_logic_vector(12 downto 0);
     signal ALU1_out : std_logic_vector(12 downto 0);
     signal ALU2_out : std_logic_vector(12 downto 0);
-    
+
     signal ALU_operation : std_logic_vector(1 downto 0);
     -- 00 hold
     -- 01 load main buss
@@ -280,7 +279,7 @@ architecture Behavioral of MARC is
     signal fbart_request_next_data :  STD_LOGIC := '0';         -- Generate this when we read from FBART into BUSS
     signal fbart_control_signals :   STD_LOGIC_VECTOR (2 downto 0);
     signal rxd : std_logic := '1';
-	 
+
     -------------------------------------------------------------------------
     -- FIFO SIGNALS
     -------------------------------------------------------------------------
@@ -310,8 +309,7 @@ begin
     reset_out <= reset;
     game_started_out <= game_started;
     game_over_out <= game_over;
-	 
-	 alu1_o <= ALU1_out(12 downto 5);
+    alu1_o <= ALU1_out(12 downto 5);
 
     -------------------------------------------------------------------------
     -- TEMP AND TESTING
@@ -320,9 +318,8 @@ begin
     --new_IN <= tmp_has_next_data;
     --IN_reg <= tmp_IN;
     --tmp_request_next_data <= fbart_request_next_data;
+    fbart_request_next_data <= '1' when buss_code = "110" else '0';
 
-		fbart_request_next_data <= '1' when buss_code = "110" else '0';
-		
 
     -------------------------------------------------------------------------
     -- COMPONENT INITIATION
@@ -466,13 +463,13 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-			if reset = '1' then
-				rxd <= '1';
-			else
-				rxd <= fbart_in;
-			end if;
-             
-				 
+            if reset = '1' then
+                rxd <= '1';
+            else
+                rxd <= fbart_in;
+            end if;
+
+
             -- Set load status
             if reset = '1' then
                 load <= '0';

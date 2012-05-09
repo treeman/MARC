@@ -105,9 +105,9 @@ begin
 --                            "00100011" when active_player = "10" and data_sync(7 downto 4) = "0000" else    -- Weak blue when player 2 and data
 --                            "00111011" when active_player = "10" else                                       -- Red when player 1 and code
 --                            "10011111";                                                                     -- Blue when player 2 and code
-									 
-	calculated_color <= active_player & data_sync(7 downto 4) & "00";
-	
+
+    calculated_color <= active_player & data_sync(7 downto 4) & "00";
+
     PROCESS(clk) begin
         if(rising_edge(clk)) then
 
