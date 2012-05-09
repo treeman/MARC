@@ -2,8 +2,6 @@
 Todo
 ====
 
-* VGA output
-* Test fbart longer input
 * Write compiler to generate useful object code for fbart  
     Pad 13 bit instr -> 16 bit  
     Use two source code files, randomize a PC for each one and output as  
@@ -20,7 +18,16 @@ Todo
 
     pad msb  
 * Start/Reset handling may not be satisfactory
-* Reset memory when restarting
+* Color coding in memory; different color for different code?  Player1 - Red; Player2 - Green
+* DAT Dark red
+* ADD, SUB
+* JPM,JMZ,JMN,DJN
+* CMP,SLT,SPL
+* Color PC and memory access:
+* PC Bright RED / GREEN
+* MEMORY: Grey
+* Game over visual output
+* Slow down! ! !
 
 Schema
 ------
