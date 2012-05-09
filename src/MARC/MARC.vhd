@@ -13,9 +13,9 @@ entity MARC is
             fbart_in : in std_logic;
 
             -- Test upstart load without fbart
-            tmp_has_next_data : in std_logic;
-            tmp_IN : in std_logic_vector(12 downto 0);
-            tmp_request_next_data : out std_logic;
+            --tmp_has_next_data : in std_logic;
+            --tmp_IN : in std_logic_vector(12 downto 0);
+            --tmp_request_next_data : out std_logic;
 
             -- VGA output
             red : out std_logic_vector(2 downto 0);
@@ -28,7 +28,8 @@ entity MARC is
             reset_out : out std_logic;
             game_started_out : out std_logic;
             active_player_out : out std_logic_vector(1 downto 0);
-            pad_error : out STD_LOGIC_VECTOR(2 downto 0)
+            pad_error : out STD_LOGIC_VECTOR(2 downto 0);
+	    game_over_out : out std_logic
     );
 end MARC;
 
@@ -305,14 +306,15 @@ begin
     active_player_out <= active_player;
     reset_out <= reset;
     game_started_out <= game_started;
+    game_over_out <= game_over;
 
     -------------------------------------------------------------------------
     -- TEMP AND TESTING
     -------------------------------------------------------------------------
 
-    new_IN <= tmp_has_next_data;
-    IN_reg <= tmp_IN;
-    tmp_request_next_data <= fbart_request_next_data;
+    --new_IN <= tmp_has_next_data;
+    --IN_reg <= tmp_IN;
+    --tmp_request_next_data <= fbart_request_next_data;
 
     -------------------------------------------------------------------------
     -- COMPONENT INITIATION
@@ -384,7 +386,7 @@ begin
                     data_in => memory1_data_in,
                     data_out => OP,
                     data_gpu => data_gpu,
-                    read_gpu => '1', -- TODO change?!
+                    read_gpu => '1',
                     address_gpu => address_gpu,
                     active_player => active_player
         );
@@ -418,8 +420,8 @@ begin
                     control_signals => fbart_control_signals,
 
                     -- Commented when testing
-                    --buss_out => IN_reg,
-                    --has_next_data => new_IN,
+                    buss_out => IN_reg,
+                    has_next_data => new_IN,
 
                     rxd => fbart_in,
                     padding_error_out => pad_error
