@@ -7,7 +7,6 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity MARC is
     Port (  clk : in std_logic;
             reset_a : in std_logic;
-            start : in std_logic;
 
             uCount_limit : in std_logic_vector(7 downto 0);
             fbart_in : in std_logic;
@@ -265,7 +264,7 @@ architecture Behavioral of MARC is
     signal active_player : std_logic_vector(1 downto 0);
     -- Are we executing code as playing?
     signal game_started : std_logic := '0';
-    -- Do we want to load in from fbart?
+    -- Sould we load?
     signal load : std_logic := '0';
     -- Did the play stop? (Will not be game over after reset)
     signal game_over : std_logic := '0';
@@ -423,8 +422,8 @@ begin
                     control_signals => fbart_control_signals,
 
                     -- Commented when testing
-                    --buss_out => IN_reg,
-                    --has_next_data => new_IN,
+                    buss_out => IN_reg,
+                    has_next_data => new_IN,
 
                     rxd => rxd,
                     padding_error_out => pad_error
@@ -470,8 +469,8 @@ begin
 
             -- Set load status
             if reset = '1' then
-                load <= '0';
-            elsif start = '1' then
+		load <= '0';
+            elsif game_code = "11" then
                 load <= '1';
             end if;
 

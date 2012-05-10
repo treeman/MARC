@@ -11,7 +11,7 @@
         ALU1 -> PC, jmpZ $LOADP                 ; If 0 we're done looping
         jmp $CLRMEM                             ; Else continue
 
-:LOADP  jmpL $POLL                              ; If we should start polling (start is pressed)
+:LOADP  shall_load, jmp $POLL                   ; If we should start polling (start is pressed)
         jmp -1
 
 ; Load in program to memory

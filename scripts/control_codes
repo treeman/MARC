@@ -92,6 +92,7 @@ my %singles = (
     fifo_next => "FIFO",
     game_started => "game",
     check_gameover => "game",
+    shall_load => "game",
 );
 
 my %registers = (
@@ -175,6 +176,7 @@ my %registers = (
     game => {
         game_started => "01",
         check_gameover => "10",
+	shall_load => "11",
     },
 );
 
