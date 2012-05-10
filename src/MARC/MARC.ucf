@@ -57,7 +57,7 @@ Net "uCount_limit<7>" LOC = T5 | IOSTANDARD = LVCMOS33; #Bank = MISC, pin name =
 ##
 Net "reset_a" LOC = A8 | IOSTANDARD = LVCMOS33; #Bank = 0, pin name = IO_L33N, Sch name = BTNU
 #Net "reset_a" LOC = B8 | IOSTANDARD = LVCMOS33; #Bank = 0, pin name = IO_L33P, Sch name = BTNS
-Net "start" LOC = C9 | IOSTANDARD = LVCMOS33;
+#Net "start" LOC = C9 | IOSTANDARD = LVCMOS33;
 
 
 Net "reset_out" LOC = U16 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L2P_CMPCLK, Sch name = LD0
