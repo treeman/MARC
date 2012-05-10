@@ -660,8 +660,9 @@ begin
     -- COLOR HANDLING
     ---------------------------------------------------------------------------
 
-    data_gpu_out <= "01011111" when PC = address_gpu and active_player = "01" else
-		    "01111011" when PC = address_gpu and active_player = "10" else
+    data_gpu_out <= "10001001" when address_gpu = memory_address and (memory1_read = '1' or memory1_read = '1' or memory1_read = '1') else
+		    "11011111" when PC = address_gpu and active_player = "01" else
+		    "11111011" when PC = address_gpu and active_player = "10" else
 		    data_gpu;
     
 
