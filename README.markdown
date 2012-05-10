@@ -2,9 +2,12 @@
 Todo
 ====
 
-* Start/Reset handling may not be satisfactory
-    Is it ok to press reset then to press start again?!
-    Maybe Maybe could work without it?!
+* Rapport
+    * Huvudblockschema  
+        Med inritad ALU, mikrominne, primärminne, buss ??
+    * VGA blockschema
+    * FIFO blockschema
+    * fbart + inmatning
 
 * Color coding in memory; different color for different code?  Player1 - Red; Player2 - Green
 * DAT Dark red
@@ -14,8 +17,6 @@ Todo
 * Color PC and memory access:
 * PC Bright RED / GREEN
 * MEMORY: Grey
-* Game over visual output
-* Slow down! ! !
 * More flashy and badass warriors!
 
 Schema
@@ -62,6 +63,7 @@ Schema
 
 ## v19
 - skriva VHDL, 4:e byggveckan
+    DONE
 - strax före redovisningen finns beslutspunkt 2, där vi kollar att ert bygge uppfyller kravspecen
 
 ## v20

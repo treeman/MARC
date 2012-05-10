@@ -80,9 +80,9 @@ architecture Behavioral of Microcontroller is
         "00000000000000000000000000100000000000000000000", -- ALU++
         "00000000000000000000000000000100010001100001001", -- ALU1 -> buss, buss -> PC, jmpZ LOADP(09)
         "00000000000000000000000000000000000001000000100", -- jmp CLRMEM(04)
-	--"00000000000000000000000000000000000000000000000", -- nothing, skip clearing memory
+    --"00000000000000000000000000000000000000000000000", -- nothing, skip clearing memory
 
-	"11000000000000000000000000000000000001000001011", -- shall_load, jmp POLL(0b)
+    "11000000000000000000000000000000000001000001011", -- shall_load, jmp POLL(0b)
         "00000000000000000000000000000000000001000001001", -- jmp -1(09)
 
         -- Load in program to memory
@@ -455,7 +455,7 @@ begin
                 reset <= '0';
             end if;
 
-	    uCount_limit_sync <= uCount_limit;
+        uCount_limit_sync <= uCount_limit;
 
             -------------------------------------------------------------------------
             -- SIGNAL MULTIPLEXERS
@@ -464,7 +464,6 @@ begin
             -- Update uPC
             if reset_a = '1' then
                 uPC <= "00000000";
-
             elsif uPC_code = "00001" then
                 uPC <= op_addr;
             elsif uPC_code = "00010" then
@@ -482,7 +481,7 @@ begin
             elsif uPC_code = "01000" and both_Z = '1' then
                 uPC <= uPC_addr;
             -- elsif uPC_code = "01001" and  = '1' then
-	    elsif uPC_code = "01001" then -- Deprecated
+            elsif uPC_code = "01001" then -- Deprecated
                 uPC <= uPC_addr;
             elsif uPC_code = "01010" and game_over = '1' then
                 uPC <= uPC_addr;
