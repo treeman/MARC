@@ -296,6 +296,7 @@ architecture Behavioral of MARC is
     -------------------------------------------------------------------------
 
     signal data_gpu : std_logic_vector (7 downto 0);
+    signal data_gpu_out : std_logic_vector (7 downto 0);
     signal address_gpu : std_logic_vector (12 downto 0);
     
 begin
@@ -444,7 +445,7 @@ begin
      GPU: vga
             port map (  clk => clk,
                         rst => reset,
-                        data_gpu => data_gpu,
+                        data_gpu => data_gpu_out,
                         address_gpu => address_gpu,
                         red => red,
                         grn => grn,
@@ -650,10 +651,9 @@ begin
     -- Färg Handling --
     ---------------------------------------------------------------------------
 
-    with fifo_current_pc select
-      data_gpu <=
-      "11111111" when fifo_current_pc = address_gpu,
-      data_gpu when others;
+    data_gpu_out <= "01011111" when PC = address_gpu and active_player = "01" else
+		    "01111011" when PC = address_gpu and active_player = "10" else
+		    data_gpu;
     
 
     
