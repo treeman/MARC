@@ -12,7 +12,6 @@ architecture behavior of MARC_test is
         Port(
             clk : in std_logic;
             reset_a : in std_logic;
-            start : in std_logic;
 
             uCount_limit : in std_logic_vector(7 downto 0);
             fbart_in : in std_logic;
@@ -41,7 +40,6 @@ architecture behavior of MARC_test is
     -- Inputs
     signal clk : std_logic := '0';
     signal reset_a : std_logic := '0';
-    signal start : std_logic := '0';
     signal uCount_limit : std_logic_vector(7 downto 0) := "00000000";
     signal fbart_in : std_logic := '1';
 
@@ -128,7 +126,6 @@ begin
     uut: MARC Port map (
         clk => clk,
         reset_a => reset_a,
-        start => start,
         uCount_limit => uCount_limit,
         fbart_in => fbart_in,
 
@@ -227,9 +224,6 @@ begin
 
         -- Test async reset
         reset_a <= '0', '1' after 3 ns, '0' after 15 ns;
-
-        -- Press start button
-        start <= '0', '1' after 20 ns, '0' after 40 ns;
 
         wait;
     end process;
