@@ -102,7 +102,7 @@ begin
                 unit_cnt <= (others => '0'); -- reset the unit_cnt(not nessessary, but just in case)
               elsif column_cnt >= 320 and column_cnt < 640 then
                 column_cnt <= column_cnt + 1;
-                colorpix(7 downto 0) <= border_color;
+                colorpix(7 downto 0) <= "00111111";
               else
                 -- this is the blanking are, just incrase the column_cnt here, output nothing
                 column_cnt <= column_cnt + 1;
@@ -146,7 +146,7 @@ begin
                 unit_cnt <= (others => '0'); -- reset the unit_cnt(not nessessary, but just in case)
               elsif column_cnt >= 320 and column_cnt < 640 then
                 column_cnt <= column_cnt + 1;
-                colorpix(7 downto 0) <= border_color;
+                colorpix(7 downto 0) <= "00111111";
               else
                 -- this is the blanking area, just incrase the column_cnt here, output nothing
                 column_cnt <= column_cnt + 1;
