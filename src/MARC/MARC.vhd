@@ -298,7 +298,7 @@ architecture Behavioral of MARC is
 
     signal data_gpu : std_logic_vector (7 downto 0);
     signal address_gpu : std_logic_vector (12 downto 0);
-
+    
 begin
 
     -------------------------------------------------------------------------
@@ -647,6 +647,16 @@ begin
                     fifo_out when "101",
                     IN_reg when "110",
                     "0000000000000" when others;
+    ---------------------------------------------------------------------------
+    -- Färg Handling --
+    ---------------------------------------------------------------------------
 
+    with fifo_current_pc select
+      data_gpu <=
+      "11111111" when fifo_current_pc = address_gpu,
+      data_gpu when others;
+    
+
+    
 end Behavioral;
 
