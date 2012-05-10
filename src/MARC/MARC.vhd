@@ -29,7 +29,8 @@ entity MARC is
             active_player_out : out std_logic_vector(1 downto 0);
             pad_error : out STD_LOGIC_VECTOR(2 downto 0);
             game_over_out : out std_logic;
-            alu1_o : out stD_LOGIC_VECTOR(7 downto 0)
+            alu1_o : out stD_LOGIC_VECTOR(7 downto 0);
+	    player_victory_out : out std_logic_vector(1 downto 0)
     );
 end MARC;
 
@@ -467,6 +468,14 @@ begin
                 rxd <= fbart_in;
             end if;
 
+	    -- Set victory status
+	    if reset = '1' then
+		player_victory_out <= "00";
+	    elsif game_over = '1' and active_player = "01" then
+		player_victory_out <= "10";
+	    elsif game_over = '1' and active_player = "10" then
+		player_victory_out <= "01";
+	    end if;
 
             -- Set load status
             if reset = '1' then
@@ -648,7 +657,7 @@ begin
                     IN_reg when "110",
                     "0000000000000" when others;
     ---------------------------------------------------------------------------
-    -- Färg Handling --
+    -- COLOR HANDLING
     ---------------------------------------------------------------------------
 
     data_gpu_out <= "01011111" when PC = address_gpu and active_player = "01" else
