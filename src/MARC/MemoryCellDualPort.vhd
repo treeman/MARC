@@ -98,15 +98,24 @@ begin
     address_out <= address_sync;
     data_out <= data_sync;
 
+  -- B2 G3 R3
 --    -- This determines the color depending on what player put what there and what kind of OP code it is (data / non data)
---    calculated_color <=     "00000000" when active_player = "00" else
---                            "11111111" when data_sync(7 downto 4) = "1000" else
---                            "10011101" when active_player = "01" and data_sync(7 downto 4) = "0000" else    -- Weak red when player 1 and data
---                            "00100011" when active_player = "10" and data_sync(7 downto 4) = "0000" else    -- Weak blue when player 2 and data
---                            "00111011" when active_player = "10" else                                       -- Red when player 1 and code
---                            "10011111";                                                                     -- Blue when player 2 and code
+    calculated_color <=     "00000000" when active_player = "00" else					    -- DAT 0 0, black!
 
-    calculated_color <= active_player & data_sync(7 downto 4) & "00";
+                            "00000010" when active_player = "01" and data_sync(7 downto 4) = "0000" else    -- Player 1 data
+                            "00000101" when active_player = "01" and (data_sync(7 downto 4) = "0010" or data_sync(7 downto 4) = "0011") else    -- Player 1 aritmetic
+                            "00000111" when active_player = "01" and (data_sync(7 downto 4) = "0100" or data_sync(7 downto 4) = "0101" or data_sync(7 downto 4) = "0110" or data_sync(7 downto 4) = "1001")  else    -- Player 1 Jumps
+                            --"00000110" when active_player = "01" and (data_sync(7 downto 4) = "0111" or data_sync(7 downto 4) = "1000")  else    -- Player 1 Compares
+                 
+                            "00000110" when active_player = "01" else    -- Player 1 misc
+
+                            "00010000" when active_player = "10" and data_sync(7 downto 4) = "0000" else    -- Player 2 data
+                            "00101000" when active_player = "10" and (data_sync(7 downto 4) = "0010" or data_sync(7 downto 4) = "0011") else    -- Player 2 aritmetic
+                            "00111000" when active_player = "10" and (data_sync(7 downto 4) = "0100" or data_sync(7 downto 4) = "0101" or data_sync(7 downto 4) = "0110" or data_sync(7 downto 4) = "1001")  else    -- Player 2 Jumps
+                            "00110000" when active_player = "10" else    -- Player 2 misc
+                            "11111111";
+
+    --calculated_color <= active_player & data_sync(7 downto 4) & "00";
 
     PROCESS(clk) begin
         if(rising_edge(clk)) then
