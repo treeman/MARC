@@ -504,9 +504,9 @@ begin
 
             -- Update uCounter
             if reset_a = '1' then
-                uCounter <= "0000000000000";
+                uCounter <= "00000000000000000";
             elsif uPC = "00000000" then
-                uCounter <= "0000000000000";
+                uCounter <= "00000000000000000";
             else
                 uCounter <= uCounter + 1;
             end if;
