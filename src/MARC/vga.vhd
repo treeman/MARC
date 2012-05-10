@@ -15,6 +15,7 @@ entity vga is
            clk : in  STD_LOGIC;
            data_gpu : in  STD_LOGIC_VECTOR (7 downto 0);
            address_gpu : out  STD_LOGIC_VECTOR (12 downto 0);
+	   border_color : in std_logic_vector (7 downto 0);
            red : out  STD_LOGIC_VECTOR (2 downto 0);
            grn : out  STD_LOGIC_VECTOR (2 downto 0);
            blu : out  STD_LOGIC_VECTOR (1 downto 0);
@@ -28,8 +29,9 @@ architecture Behavioral of vga is
 			rst : in std_logic;
 			clk : in std_logic;
 			indata : in  STD_LOGIC_VECTOR (7 downto 0);
-         colorpix : out  STD_LOGIC_VECTOR (7 downto 0);
-         address : out  STD_LOGIC_VECTOR (12 downto 0));
+			border_color : in std_logic_vector (7 downto 0);
+			colorpix : out  STD_LOGIC_VECTOR (7 downto 0);
+			address : out  STD_LOGIC_VECTOR (12 downto 0));
 	end component;
 	
 	component vgaController
@@ -55,6 +57,7 @@ begin
 					rst => rst,
 					indata => data_gpu,
 					colorpix => colorpix,
+					border_color => border_color,
 					address => address_gpu
 	);
 	

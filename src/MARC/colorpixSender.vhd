@@ -18,6 +18,7 @@ entity colorpixSender is
       clk : in std_logic;
       indata : in  STD_LOGIC_VECTOR (7 downto 0);
       colorpix : out  STD_LOGIC_VECTOR (7 downto 0);
+      border_color : in std_logic_vector (7 downto 0);
       address : out  STD_LOGIC_VECTOR (12 downto 0));
 end colorpixSender;
 
@@ -31,8 +32,6 @@ signal address_mem : STD_LOGIC_VECTOR (12 downto 0) := (others => '0');
 
 -- use the same clk as vga_controller
 signal pixel_cnt : std_logic_vector(1 downto 0) := "00";
-
-signal border_color : std_logic_vector(7 downto 0) := "00100111";
 
 begin
   process(clk)

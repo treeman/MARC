@@ -167,6 +167,7 @@ architecture Behavioral of MARC is
                 clk : in  STD_LOGIC;
                 data_gpu : in  STD_LOGIC_VECTOR (7 downto 0);
                 address_gpu : out  STD_LOGIC_VECTOR (12 downto 0);
+		border_color : in std_logic_vector (7 downto 0);
                 red : out  STD_LOGIC_VECTOR (2 downto 0);
                 grn : out  STD_LOGIC_VECTOR (2 downto 0);
                 blu : out  STD_LOGIC_VECTOR (1 downto 0);
@@ -269,6 +270,7 @@ architecture Behavioral of MARC is
     signal load : std_logic := '0';
     -- Did the play stop? (Will not be game over after reset)
     signal game_over : std_logic := '0';
+    signal player_victory : std_logic_vector(1 downto 0);
 
     signal new_IN : std_logic := '0';
     signal reset : std_logic := '0';
@@ -299,6 +301,9 @@ architecture Behavioral of MARC is
     signal data_gpu : std_logic_vector (7 downto 0);
     signal data_gpu_out : std_logic_vector (7 downto 0);
     signal address_gpu : std_logic_vector (12 downto 0);
+
+    signal border_color : std_logic_vector(7 downto 0) := "00100111";
+
     
 begin
 
@@ -448,6 +453,7 @@ begin
                         rst => '0',
                         data_gpu => data_gpu_out,
                         address_gpu => address_gpu,
+			border_color => border_color,
                         red => red,
                         grn => grn,
                         blu => blu,
@@ -468,13 +474,21 @@ begin
                 rxd <= fbart_in;
             end if;
 
+	    if reset = '1' then
+		border_color <= "00100111";
+	    elsif player_victory = "01" then
+		border_color <= "00000111";
+	    elsif player_victory = "10" then
+		border_color <= "00111000";
+	    end if;
+
 	    -- Set victory status
 	    if reset = '1' then
-		player_victory_out <= "00";
+		player_victory <= "00";
 	    elsif game_over = '1' and active_player = "01" then
-		player_victory_out <= "10";
+		player_victory <= "10";
 	    elsif game_over = '1' and active_player = "10" then
-		player_victory_out <= "01";
+		player_victory <= "01";
 	    end if;
 
             -- Set load status
@@ -670,11 +684,13 @@ begin
     -- COLOR HANDLING
     ---------------------------------------------------------------------------
 
-    data_gpu_out <= "01110111" when active_player = "01" and (address_gpu = ADR1 or address_gpu = ADR2) else
-		    "01111110" when active_player = "10" and (address_gpu = ADR1 or address_gpu = ADR2) else
-		    "11011111" when PC = address_gpu and active_player = "01" else
+    data_gpu_out <= "11011111" when PC = address_gpu and active_player = "01" else
 		    "11111011" when PC = address_gpu and active_player = "10" else
+		    "01110111" when active_player = "01" and (address_gpu = ADR1 or address_gpu = ADR2) else
+		    "01111110" when active_player = "10" and (address_gpu = ADR1 or address_gpu = ADR2) else
 		    data_gpu;
+
+    player_victory_out <= player_victory;
     
 
     
