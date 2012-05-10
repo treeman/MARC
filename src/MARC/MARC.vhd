@@ -526,19 +526,29 @@ begin
                 PC <= (others => '0');
             end if;
 
-            case ADR1_code is
-                when "01" => ADR1 <= main_buss;
-                when "10" => ADR1 <= M1;
-                when "11" => ADR1 <= ALU1_out;
-                when others => ADR1 <= ADR1;
-            end case;
+	    if reset_a = '1' then
+		ADR1 <= (others => '0');
+	    elsif ADR1_code = "01" then
+		ADR1 <= main_buss;
+	    elsif ADR1_code = "10" then
+		ADR1 <= M1;
+	    elsif ADR1_code = "11" then
+		ADR1 <= ALU1_out;
+	    else
+		ADR1 <= ADR1;
+	    end if;
 
-            case ADR2_code is
-                when "01" => ADR2 <= main_buss;
-                when "10" => ADR2 <= M2;
-                when "11" => ADR2 <= ALU2_out;
-                when others => ADR2 <= ADR2;
-            end case;
+	    if reset_a = '1' then
+		ADR2 <= (others => '0');
+	    elsif ADR2_code = "01" then
+		ADR2 <= main_buss;
+	    elsif ADR2_code = "10" then
+		ADR2 <= M2;
+	    elsif ADR2_code = "11" then
+		ADR2 <= ALU2_out;
+	    else
+		ADR2 <= ADR2;
+	    end if;
 
         end if;
     end process;
@@ -660,7 +670,8 @@ begin
     -- COLOR HANDLING
     ---------------------------------------------------------------------------
 
-    data_gpu_out <= "11111111" when address_gpu = ADR1 or address_gpu = ADR2 else
+    data_gpu_out <= "01110111" when active_player = "01" and (address_gpu = ADR1 or address_gpu = ADR2) else
+		    "01111110" when active_player = "10" and (address_gpu = ADR1 or address_gpu = ADR2) else
 		    "11011111" when PC = address_gpu and active_player = "01" else
 		    "11111011" when PC = address_gpu and active_player = "10" else
 		    data_gpu;
