@@ -445,7 +445,7 @@ begin
 
      GPU: vga
             port map (  clk => clk,
-                        rst => reset,
+                        rst => '0',
                         data_gpu => data_gpu_out,
                         address_gpu => address_gpu,
                         red => red,

@@ -353,7 +353,7 @@ architecture Behavioral of Microcontroller is
 
     signal IR_code : std_logic;
 
-    signal uCounter : std_logic_vector(19 downto 0);
+    signal uCounter : std_logic_vector(21 downto 0);
 
     -- Registers
     signal IR : std_logic_vector(7 downto 0);
@@ -472,8 +472,7 @@ begin
                 uPC <= uPC_addr;
             elsif uPC_code = "00100" and new_IN = '1' then
                 uPC <= uPC_addr;
-            elsif uPC_code = "00101" and '0' & uCounter >= '0' & uCount_limit_sync & "111111111111" then
-                --elsif uPC_code = "00101" and uCounter >= " then
+            elsif uPC_code = "00101" and '0' & uCounter >= '0' & uCount_limit_sync & "11000000000000" then
                 uPC <= uPC_addr;
             elsif uPC_code = "00110" and game_started = '1' then
                 uPC <= uPC_addr;
