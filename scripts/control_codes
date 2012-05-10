@@ -107,7 +107,7 @@ my %registers = (
         jmpS => "00110",
         jmpN => "00111",
         jmpE => "01000",
-        jmpL => "01001",
+        jmpL => "01001", # Deprecated!
         jmpO => "01010",
 
         jmpAimm => "10000",
@@ -176,7 +176,7 @@ my %registers = (
     game => {
         game_started => "01",
         check_gameover => "10",
-	shall_load => "11",
+        shall_load => "11",
     },
 );
 

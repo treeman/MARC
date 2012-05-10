@@ -11,7 +11,7 @@ uPC
     00110   jmp if game started         (jmpS)
     00111   jmp on N (negative)         (jmpN)
     01000   jmp if both ALU 0           (jmpE)
-    01001   jmp if we shall load        (jmpL)
+    01001   jmp if we shall load        (jmpL)    deprecated!! (will be a jmp)
     01010   jmp if game over            (jmpO)
 
     10000   jmp if A immediate          (jmpAimm)
@@ -123,25 +123,8 @@ game
     00      nothing
     01      set game as started
     10      check and update game over (check if fifo queue flags game over)
+    11      set shall_load
 
 Totalt
-    xx bit bredd
-
-FIXME!
-Kontrollera signalerna under
-FIXME!
-
-FBART: (nothing needed as control signals)
-    IN:
-        1 bit next_address (we have writen our data to the memory, now we want the next data to write).
-        1 bit reset (global)
-
-    OUT signals (to µComputer):
-        1 bit has_data (we have recived 13 (16) bits of data and are ready to put them on the main_buss)
-        3 bits control_signals (The 3 first bits of the first reciving (used for special commands))
-
-    Control Signals commands:
-        000 Noting special
-        001 First transmission, start at top of memory (maybe not needed).
-        010 End of transmission, quit recieving loop and wait for the player to start the game.
+    39 bit bredd
 
