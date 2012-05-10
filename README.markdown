@@ -2,7 +2,9 @@
 Todo
 ====
 
-* Rapport
+* Boka redovisningstid (tisdag?!)
+* Visa handledaren att allt funkar (måndag? boka tid?)
+* Rapport!
     * Huvudblockschema  
         Med inritad ALU, mikrominne, primärminne, buss ??
     * VGA blockschema
