@@ -85,6 +85,19 @@ begin
             if alu_operation = "01" then
                 alu1_register <= alu1_operand; -- ALU1 = OP1
                 alu2_register <= alu2_operand; -- ALU1 = OP1
+
+		if alu1_operand = "0000000000000" then
+                    alu1_zeroFlag <= '1';
+                else
+                    alu1_zeroFlag <= '0';
+                end if;
+
+		if alu2_operand = "0000000000000" then
+                    alu2_zeroFlag <= '1';
+                else
+                    alu2_zeroFlag <= '0';
+                end if;
+			
             elsif alu_operation = "10" then
                 alu1_register <= alu1_register + alu1_operand; -- ALU1 += OP1
                 alu2_register <= alu2_register + alu2_operand; -- ALU2 += OP2
@@ -95,7 +108,7 @@ begin
                     alu1_zeroFlag <= '0';
                 end if;
 
-                if alu2_register - alu2_operand = "0000000000000" then
+                if alu2_register + alu2_operand = "0000000000000" then
                     alu2_zeroFlag <= '1';
                 else
                     alu2_zeroFlag <= '0';
