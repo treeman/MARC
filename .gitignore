@@ -2,3 +2,5 @@ blockschema.svg
 *~
 .~lock.*#
 ~*.doc
+~*.docx
+~*.tmp
