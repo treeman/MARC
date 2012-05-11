@@ -1,0 +1,212 @@
+# //  ModelSim SE 6.5c Aug 27 2009 Linux 2.6.18-308.4.1.el5PAE
+# //
+# //  Copyright 1991-2009 Mentor Graphics Corporation
+# //              All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND 
+# //  PROPRIETARY INFORMATION WHICH IS THE PROPERTY
+# //  OF MENTOR GRAPHICS CORPORATION OR ITS LICENSORS
+# //  AND IS SUBJECT TO LICENSE TERMS.
+# //
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/ALU.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package std_logic_unsigned
+# -- Compiling entity alu
+# -- Compiling architecture behavioral of alu
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/colorpixSender.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package std_logic_unsigned
+# -- Compiling entity colorpixsender
+# -- Compiling architecture behavioral of colorpixsender
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/FBARTController.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Compiling entity fbartcontroller
+# -- Compiling architecture behavioral of fbartcontroller
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/fbartrx.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package std_logic_unsigned
+# -- Compiling entity fbartrx
+# -- Compiling architecture behavioral of fbartrx
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/MARC.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package std_logic_unsigned
+# -- Compiling entity marc
+# -- Compiling architecture behavioral of marc
+# ** Error: /edu/jonhi121/Digital-konstruktion/src/MARC/MARC.vhd(480): near "is": expecting "<=" or ":="
+# ** Error: /edu/jonhi121/Digital-konstruktion/src/MARC/MARC.vhd(728): VHDL Compiler exiting
+# /sw/mentor/modelsim_6.5e/modeltech/linux/vcom failed.
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/MARC-sim-test.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package std_logic_unsigned
+# -- Compiling entity marc_test
+# -- Compiling architecture behavior of marc_test
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/MemoryCell.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package numeric_std
+# -- Compiling entity memory_cell
+# -- Compiling architecture behavioral of memory_cell
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/MemoryCellDualPort.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package numeric_std
+# -- Compiling entity memory_cell_dualport
+# -- Compiling architecture behavioral of memory_cell_dualport
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/microcontroller.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package std_logic_unsigned
+# -- Compiling entity microcontroller
+# -- Compiling architecture behavioral of microcontroller
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/PlayerFIFO.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package numeric_std
+# -- Loading package std_logic_arith
+# -- Loading package std_logic_unsigned
+# -- Compiling entity playerfifo
+# -- Compiling architecture behavioral of playerfifo
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/vga.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Compiling entity vga
+# -- Compiling architecture behavioral of vga
+vcom -work work -2002 -explicit /edu/jonhi121/Digital-konstruktion/src/MARC/vgaController.vhd
+# Model Technology ModelSim SE vcom 6.5c Compiler 2009.08 Aug 27 2009
+# -- Loading package standard
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package std_logic_unsigned
+# -- Compiling entity vgacontroller
+# -- Compiling architecture behavioral of vgacontroller
+# Loading project work
+# Compile of ALU.vhd was successful.
+# Compile of colorpixSender.vhd was successful.
+# Compile of FBARTController.vhd was successful.
+# Compile of fbartrx.vhd was successful.
+# Compile of leddriver.vhd was successful.
+# Compile of MARC-sim-test.vhd was successful.
+# Compile of MARC.vhd failed with 1 errors.
+# Compile of MemoryCell.vhd was successful.
+# Compile of MemoryCellDualPort.vhd was successful.
+# Compile of microcontroller.vhd was successful.
+# Compile of PlayerFIFO.vhd was successful.
+# Compile of tb_print7seg.vhd was successful.
+# Compile of vga.vhd was successful.
+# Compile of vgaController.vhd was successful.
+# 14 compiles, 1 failed with 1 error. 
+# Compile of MARC.vhd failed with 1 errors.
+# Compile of MARC.vhd was successful.
+# Compile of ALU.vhd was successful.
+# Compile of colorpixSender.vhd was successful.
+# Compile of FBARTController.vhd was successful.
+# Compile of fbartrx.vhd was successful.
+# Compile of leddriver.vhd was successful.
+# Compile of MARC-sim-test.vhd was successful.
+# Compile of MARC.vhd was successful.
+# Compile of MemoryCell.vhd was successful.
+# Compile of MemoryCellDualPort.vhd was successful.
+# Compile of microcontroller.vhd was successful.
+# Compile of PlayerFIFO.vhd was successful.
+# Compile of tb_print7seg.vhd was successful.
+# Compile of vga.vhd was successful.
+# Compile of vgaController.vhd was successful.
+# 14 compiles, 0 failed with no errors. 
+# Compile of leddriver.vhd was successful.
+# Compile of MARC.vhd was successful.
+# Compile of MARC-led.vhd failed with 1 errors.
+# 2 compiles, 1 failed with 1 error. 
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd was successful.
+# Compile of ALU.vhd was successful.
+# Compile of colorpixSender.vhd was successful.
+# Compile of FBARTController.vhd was successful.
+# Compile of fbartrx.vhd was successful.
+# Compile of leddriver.vhd was successful.
+# Compile of MARC-sim-test.vhd was successful.
+# Compile of MARC.vhd failed with 1 errors.
+# Compile of MemoryCell.vhd was successful.
+# Compile of MemoryCellDualPort.vhd was successful.
+# Compile of microcontroller.vhd was successful.
+# Compile of PlayerFIFO.vhd was successful.
+# Compile of tb_print7seg.vhd was successful.
+# Compile of vga.vhd was successful.
+# Compile of vgaController.vhd was successful.
+# Compile of MARCled.vhd was successful.
+# 15 compiles, 1 failed with 1 error. 
+# Compile of MARC.vhd was successful.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd failed with 2 errors.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd was successful.
+# Compile of ALU.vhd was successful.
+# Compile of colorpixSender.vhd was successful.
+# Compile of FBARTController.vhd was successful.
+# Compile of fbartrx.vhd was successful.
+# Compile of leddriver.vhd was successful.
+# Compile of MARC-sim-test.vhd was successful.
+# Compile of MARC.vhd was successful.
+# Compile of MemoryCell.vhd was successful.
+# Compile of MemoryCellDualPort.vhd was successful.
+# Compile of microcontroller.vhd was successful.
+# Compile of PlayerFIFO.vhd was successful.
+# Compile of tb_print7seg.vhd was successful.
+# Compile of vga.vhd was successful.
+# Compile of vgaController.vhd was successful.
+# Compile of MARCled.vhd was successful with warnings.
+# 15 compiles, 0 failed with no errors. 
+# Compile of ALU.vhd was successful.
+# Compile of colorpixSender.vhd was successful.
+# Compile of FBARTController.vhd was successful.
+# Compile of fbartrx.vhd was successful.
+# Compile of leddriver.vhd was successful.
+# Compile of MARC-sim-test.vhd was successful.
+# Compile of MARC.vhd was successful.
+# Compile of MemoryCell.vhd was successful.
+# Compile of MemoryCellDualPort.vhd was successful.
+# Compile of microcontroller.vhd was successful.
+# Compile of PlayerFIFO.vhd was successful.
+# Compile of tb_print7seg.vhd was successful.
+# Compile of vga.vhd was successful.
+# Compile of vgaController.vhd was successful.
+# Compile of MARCled.vhd failed with 2 errors.
+# 15 compiles, 1 failed with 2 errors. 
+# Compile of MARCled.vhd was successful with warnings.
+# Compile of MARC.vhd was successful.
+# Compile of MARCled.vhd was successful.
+# 2 compiles, 0 failed with no errors. 
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd was successful.
+# Compile of MARCled.vhd was successful with warnings.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd was successful.

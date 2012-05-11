@@ -48,9 +48,6 @@ Net "uCount_limit<5>" LOC = U8 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO
 Net "uCount_limit<6>" LOC = V8 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L41N_VREF, Sch name = SW6
 Net "uCount_limit<7>" LOC = T5 | IOSTANDARD = LVCMOS33; #Bank = MISC, pin name = IO_L48N_RDWR_B_VREF_2, Sch name = SW7
 
-
-
-
 ######################################
 ## Buttons		             #
 ######################################
@@ -60,6 +57,9 @@ Net "reset_a" LOC = A8 | IOSTANDARD = LVCMOS33; #Bank = 0, pin name = IO_L33N, S
 #Net "start" LOC = C9 | IOSTANDARD = LVCMOS33;
 
 
+######################################
+## Leds			             #
+######################################
 Net "reset_out" LOC = U16 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L2P_CMPCLK, Sch name = LD0
 Net "game_started_out" LOC = V16 |  IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L2N_CMPMOSI, Sch name = LD1
 Net "player_victory_out<0>" LOC = U15 |  IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L5P, Sch name = LD2
@@ -68,4 +68,20 @@ Net "game_over_out" LOC = M11 |  IOSTANDARD = LVCMOS33;
 Net "pad_error<0>" LOC = N11 |  IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L15P, Sch name = LD4
 Net "pad_error<1>" LOC = R11 |  IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L15N, Sch name = LD5
 Net "pad_error<2>" LOC = T11 |  IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L16P, Sch name = LD6
+
+######################################
+## Hex display			             #
+######################################
+Net "ca" LOC = T17 | IOSTANDARD = LVCMOS33;
+Net "cb" LOC = T18 | IOSTANDARD = LVCMOS33;
+Net "cc" LOC = U17 | IOSTANDARD = LVCMOS33;
+Net "cd" LOC = U18 | IOSTANDARD = LVCMOS33;
+Net "ce" LOC = M14 | IOSTANDARD = LVCMOS33;
+Net "cf" LOC = N14 | IOSTANDARD = LVCMOS33;
+Net "cg" LOC = L14 | IOSTANDARD = LVCMOS33;
+Net "dp" LOC = M13 | IOSTANDARD = LVCMOS33;
+Net "an<0>" LOC = N16 | IOSTANDARD = LVCMOS33;
+Net "an<1>" LOC = N15 | IOSTANDARD = LVCMOS33;
+Net "an<2>" LOC = P18 | IOSTANDARD = LVCMOS33;
+Net "an<3>" LOC = P17 | IOSTANDARD = LVCMOS33;
 
