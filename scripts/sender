@@ -1,0 +1,38 @@
+#!/usr/bin/perl -w
+
+use utf8;
+
+# Modern Perl
+use strict;
+use warnings;
+
+sub say { print "$_\n" for @_; }
+
+use Getopt::Long;
+
+# Command line options
+my $help;
+
+GetOptions(
+    'help|h' => \$help,
+);
+
+if ($help || scalar @ARGV != 2) {
+    my ($name) = $0 =~ /([^\/]+$)/;
+
+    say "Specify two redcode files, it will assemble and then send through fbart.";
+    say "  usage:";
+    say "   $name [file1] [file2]";
+    exit;
+}
+
+my ($f1, $f2) = @ARGV;
+
+# Assemble stuff into temporary bin file
+`./assembler $f1 $f2 -o tmp.bin`;
+
+# Settings etc?
+`stty -onlcr -parenb -parodd cs8 hupcl -cstopb cread clocal -crtscts -ignbrk -brkint -ignpar -parmrk -inpck -istrip -inlcr -igncr icrnl ixon -ixoff -iuclc -ixany -imaxbel -iutf8 opost -olcuc -ocrnl -onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0 isig icanon iexten echo echoe echok -echonl -noflsh -xcase -tostop -echoprt echoctl echoke -F /dev/ttyUSB0 115200`;
+
+`dd of=/dev/ttyUSB0 if=tmp.bin`;
+
