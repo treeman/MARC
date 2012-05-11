@@ -12,7 +12,7 @@ entity tb_print7seg IS
   port (
     clk : in std_logic;
     ca,cb,cc,cd,ce,cf,cg,dp : in std_logic;
-    an                             : in std_logic_vector(3 downto 0));
+    an : in std_logic_vector(3 downto 0));
 end tb_print7seg;
 
 architecture behavioral of tb_print7seg is
@@ -55,15 +55,15 @@ begin  -- behavioral
 
   -------------------------------------------------------------------------------
   ---- Testbänken skriver ut värdet på LEDdarna i följande format:
-  ----    _    _    _    _  
-  ----   /_/  /_/  /_/  /_/ 
+  ----    _    _    _    _
+  ----   /_/  /_/  /_/  /_/
   ----  /_/. /_/. /_/. /_/.
   ----
   ---- Notera att du måste titta på utskriften i en monospaced font för att det ska
   ---- se vettigt ut. (Exempelvis, kör du make lab.simc kommer det se bra ut.)
   -----------------------------------------------------------------------------
 
-  
+
   printleds : process
     variable i : integer;
     variable s : line;
@@ -155,9 +155,9 @@ begin  -- behavioral
       write(s,string'(""));
       writeline(output,s);
       writeline(output,s);
-      
+
     end if;
   end process;
-  
+
 end behavioral;
 
