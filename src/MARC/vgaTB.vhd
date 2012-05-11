@@ -59,7 +59,7 @@ ARCHITECTURE behavior OF vgaTB IS
    signal clk : std_logic := '0';
    signal data_gpu : std_logic_vector(7 downto 0) := (others => '0');
 
- 	--Outputs
+    --Outputs
    signal address_gpu : std_logic_vector(12 downto 0);
    signal red : std_logic_vector(2 downto 0);
    signal grn : std_logic_vector(2 downto 0);
@@ -72,7 +72,7 @@ ARCHITECTURE behavior OF vgaTB IS
  
 BEGIN
  
-	-- Instantiate the Unit Under Test (UUT)
+    -- Instantiate the Unit Under Test (UUT)
    uut: VGA PORT MAP (
           rst => rst,
           clk => clk,
@@ -88,22 +88,22 @@ BEGIN
    -- Clock process definitions
    clk_process :process
    begin
-		clk <= '0';
-		wait for clk_period/2;
-		clk <= '1';
-		wait for clk_period/2;
+        clk <= '0';
+        wait for clk_period/2;
+        clk <= '1';
+        wait for clk_period/2;
    end process;
  
 
    -- Stimulus process
    stim_proc: process
-   begin		
+   begin        
       -- hold reset state for 100 ns.
-      wait for 10 ns;	
+      wait for 10 ns;   
 
       -- insert stimulus here 
-		rst <= '1' after 10 ns, '0' after 20 ns;
-		data_gpu <= "11111111" after 50 ns, "00000000" after 250 ns, "11111111" after 450 ns, "00000000" after 650 ns, "11111111" after 850 ns, "00000000" after 1050 ns, "11111111" after 1250 ns;
+        rst <= '1' after 10 ns, '0' after 20 ns;
+        data_gpu <= "11111111" after 50 ns, "00000000" after 250 ns, "11111111" after 450 ns, "00000000" after 650 ns, "11111111" after 850 ns, "00000000" after 1050 ns, "11111111" after 1250 ns;
 
       wait;
    end process;

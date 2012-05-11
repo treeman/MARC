@@ -30,15 +30,15 @@ use ieee.numeric_std.all;
 --use UNISIM.VComponents.all;
 
 entity Memory_Cell is
-    Port (  clk             	: in std_logic;
-				reset					: in std_logic;
-				read            	: in STD_LOGIC;			-- This does nothing! :<
-				write       		: in  STD_LOGIC;
-				address_in  		: in  STD_LOGIC_VECTOR (12 downto 0);
-				address_out 		: out  STD_LOGIC_VECTOR (12 downto 0);
-				data_in         	: in  STD_LOGIC_VECTOR (12 downto 0);
-				data_out    		: out  STD_LOGIC_VECTOR (12 downto 0));
-				--dataOut : out  STD_LOGIC_VECTOR (12 downto 0));
+    Port (  clk         : in std_logic;
+            reset       : in std_logic;
+            read        : in STD_LOGIC;         -- This does nothing! :<
+            write       : in  STD_LOGIC;
+            address_in  : in  STD_LOGIC_VECTOR (12 downto 0);
+            address_out : out  STD_LOGIC_VECTOR (12 downto 0);
+            data_in     : in  STD_LOGIC_VECTOR (12 downto 0);
+            data_out    : out  STD_LOGIC_VECTOR (12 downto 0));
+            --dataOut : out  STD_LOGIC_VECTOR (12 downto 0));
 end Memory_Cell;
 
 architecture Behavioral of memory_cell is
@@ -84,74 +84,74 @@ begin
 
     PROCESS(clk) begin
         if(rising_edge(clk)) then
-	  
-				address_sync <= address_in;
-				data_sync <= data_in;
+      
+                address_sync <= address_in;
+                data_sync <= data_in;
 
-				if (address_sync(12 downto 10) = "000") then
-					 if(write='1') then
-						  ram_block_0(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
-					 end if;
-					 if (read='1') then
-						  data_sync <= ram_block_0(to_integer(unsigned(address_sync(9 downto 0))));
-					 end if;
+                if (address_sync(12 downto 10) = "000") then
+                     if(write='1') then
+                          ram_block_0(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
+                     end if;
+                     if (read='1') then
+                          data_sync <= ram_block_0(to_integer(unsigned(address_sync(9 downto 0))));
+                     end if;
 
-				elsif (address_sync(12 downto 10) = "001") then
-					 if(write='1') then
-						  ram_block_1(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
-					 end if;
-					 if (read='1') then
-						  data_sync <= ram_block_1(to_integer(unsigned(address_sync(9 downto 0))));
-					 end if;
+                elsif (address_sync(12 downto 10) = "001") then
+                     if(write='1') then
+                          ram_block_1(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
+                     end if;
+                     if (read='1') then
+                          data_sync <= ram_block_1(to_integer(unsigned(address_sync(9 downto 0))));
+                     end if;
 
-				elsif (address_sync(12 downto 10) = "010") then
-					 if(write='1') then
-						  ram_block_2(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
-					 end if;
-					 if (read='1') then
-						  data_sync <= ram_block_2(to_integer(unsigned(address_sync(9 downto 0))));
-					 end if;
+                elsif (address_sync(12 downto 10) = "010") then
+                     if(write='1') then
+                          ram_block_2(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
+                     end if;
+                     if (read='1') then
+                          data_sync <= ram_block_2(to_integer(unsigned(address_sync(9 downto 0))));
+                     end if;
 
-				elsif (address_sync(12 downto 10) = "011") then
-					 if(write='1') then
-						  ram_block_3(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
-					 end if;
-					 if (read='1') then
-						  data_sync <= ram_block_3(to_integer(unsigned(address_sync(9 downto 0))));
-					 end if;
+                elsif (address_sync(12 downto 10) = "011") then
+                     if(write='1') then
+                          ram_block_3(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
+                     end if;
+                     if (read='1') then
+                          data_sync <= ram_block_3(to_integer(unsigned(address_sync(9 downto 0))));
+                     end if;
 
-				elsif (address_sync(12 downto 10) = "100") then
-					 if(write='1') then
-						  ram_block_4(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
-					 end if;
-					 if (read='1') then
-						  data_sync <= ram_block_4(to_integer(unsigned(address_sync(9 downto 0))));
-					 end if;
+                elsif (address_sync(12 downto 10) = "100") then
+                     if(write='1') then
+                          ram_block_4(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
+                     end if;
+                     if (read='1') then
+                          data_sync <= ram_block_4(to_integer(unsigned(address_sync(9 downto 0))));
+                     end if;
 
-				elsif (address_sync(12 downto 10) = "101") then
-					 if(write='1') then
-						  ram_block_5(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
-					 end if;
-					 if (read='1') then
-						  data_sync <= ram_block_5(to_integer(unsigned(address_sync(9 downto 0))));
-					 end if;
+                elsif (address_sync(12 downto 10) = "101") then
+                     if(write='1') then
+                          ram_block_5(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
+                     end if;
+                     if (read='1') then
+                          data_sync <= ram_block_5(to_integer(unsigned(address_sync(9 downto 0))));
+                     end if;
 
-				elsif (address_sync(12 downto 10) = "110") then
-					 if(write='1') then
-						  ram_block_6(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
-					 end if;
-					 if (read='1') then
-						  data_sync <= ram_block_6(to_integer(unsigned(address_sync(9 downto 0))));
-					 end if;
+                elsif (address_sync(12 downto 10) = "110") then
+                     if(write='1') then
+                          ram_block_6(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
+                     end if;
+                     if (read='1') then
+                          data_sync <= ram_block_6(to_integer(unsigned(address_sync(9 downto 0))));
+                     end if;
 
-				else
-					 if(write='1') then
-						  ram_block_7(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
-					 end if;
-					 if (read='1') then
-						  data_sync <= ram_block_7(to_integer(unsigned(address_sync(9 downto 0))));
-					 end if;
-				end if;
+                else
+                     if(write='1') then
+                          ram_block_7(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync;
+                     end if;
+                     if (read='1') then
+                          data_sync <= ram_block_7(to_integer(unsigned(address_sync(9 downto 0))));
+                     end if;
+                end if;
         end if;
     END PROCESS;
 

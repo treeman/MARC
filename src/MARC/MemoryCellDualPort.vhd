@@ -100,7 +100,7 @@ begin
 
   -- B2 G3 R3
 --    -- This determines the color depending on what player put what there and what kind of OP code it is (data / non data)
-    calculated_color <=     "00000000" when active_player = "00" else					    -- DAT 0 0, black!
+    calculated_color <=     "00000000" when active_player = "00" else                       -- DAT 0 0, black!
 
                             "00000010" when active_player = "01" and data_sync(7 downto 4) = "0000" else    -- Player 1 data
                             "00000101" when active_player = "01" and (data_sync(7 downto 4) = "0010" or data_sync(7 downto 4) = "0011") else    -- Player 1 aritmetic

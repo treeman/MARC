@@ -18,9 +18,9 @@ entity leddriver is
 end leddriver;
 
 architecture Behavioral of leddriver is
-	signal segments : STD_LOGIC_VECTOR (6 downto 0);
-	signal counter_r :  unsigned(17 downto 0) := "000000000000000000";
-	signal v : STD_LOGIC_VECTOR (3 downto 0);
+    signal segments : STD_LOGIC_VECTOR (6 downto 0);
+    signal counter_r :  unsigned(17 downto 0) := "000000000000000000";
+    signal v : STD_LOGIC_VECTOR (3 downto 0);
 begin
    ca <= segments(6);
    cb <= segments(5);
@@ -30,10 +30,10 @@ begin
    cf <= segments(1);
    cg <= segments(0);
    dp <= '1';
-	
+    
    with counter_r(17 downto 16) select
      v <= ledvalue(15 downto 12) when "00",
-          ledvalue(11 downto 8) when "01",	
+          ledvalue(11 downto 8) when "01",  
           ledvalue(7 downto 4) when "10",
           ledvalue(3 downto 0) when others;
 
@@ -67,6 +67,6 @@ begin
        end case;
      end if;
    end process;
-	
+    
 end Behavioral;
 

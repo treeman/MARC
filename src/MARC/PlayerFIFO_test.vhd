@@ -62,7 +62,7 @@ ARCHITECTURE behavior OF PlayerFIFO_test IS
    signal clk : std_logic := '0';
    signal reset : std_logic := '0';
 
- 	--Outputs
+    --Outputs
    signal current_pc_out : std_logic_vector(12 downto 0);
    signal current_player_out : std_logic;
    signal game_over_out : std_logic;
@@ -72,7 +72,7 @@ ARCHITECTURE behavior OF PlayerFIFO_test IS
  
 BEGIN
  
-	-- Instantiate the Unit Under Test (UUT)
+    -- Instantiate the Unit Under Test (UUT)
    uut: PlayerFIFO PORT MAP (
           current_pc_in => current_pc_in,
           current_pc_out => current_pc_out,
@@ -88,18 +88,18 @@ BEGIN
    -- Clock process definitions
    clk_process :process
    begin
-		clk <= '0';
-		wait for clk_period/2;
-		clk <= '1';
-		wait for clk_period/2;
+        clk <= '0';
+        wait for clk_period/2;
+        clk <= '1';
+        wait for clk_period/2;
    end process;
  
 
    -- Stimulus process
    stim_proc: process
-   begin		
+   begin        
       -- hold reset state for 100 ns.
-      wait for clk_period ;	
+      wait for clk_period ; 
       
       current_pc_in <= "0000000000001";
       write_pc <= '1';
@@ -120,7 +120,7 @@ BEGIN
       write_pc <= '1';
      -- change_player <= '1';
       
-      wait for clk_period ;	
+      wait for clk_period ; 
       
       current_pc_in <= "0000000000101";
       write_pc <= '1';

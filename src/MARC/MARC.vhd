@@ -11,11 +11,6 @@ entity MARC is
             uCount_limit : in std_logic_vector(7 downto 0);
             fbart_in : in std_logic;
 
-            -- Test upstart load without fbart
-            --tmp_has_next_data : in std_logic;
-            --tmp_IN : in std_logic_vector(12 downto 0);
-            --tmp_request_next_data : out std_logic;
-
             -- VGA output
             red : out std_logic_vector(2 downto 0);
             grn : out std_logic_vector(2 downto 0);
@@ -33,8 +28,8 @@ entity MARC is
             player_victory_out : out std_logic_vector(1 downto 0);
 
             -- Hex display output
-           ca,cb,cc,cd,ce,cf,cg,dp : out  STD_LOGIC;
-           an : out  STD_LOGIC_VECTOR (3 downto 0)
+            ca,cb,cc,cd,ce,cf,cg,dp : out  STD_LOGIC;
+            an : out  STD_LOGIC_VECTOR (3 downto 0)
     );
 end MARC;
 
