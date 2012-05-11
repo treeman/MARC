@@ -30,7 +30,11 @@ entity MARC is
             pad_error : out STD_LOGIC_VECTOR(2 downto 0);
             game_over_out : out std_logic;
             alu1_o : out stD_LOGIC_VECTOR(7 downto 0);
-	    player_victory_out : out std_logic_vector(1 downto 0)
+	    player_victory_out : out std_logic_vector(1 downto 0);
+
+	    -- Hex display output
+           ca,cb,cc,cd,ce,cf,cg,dp : out  STD_LOGIC;
+           an : out  STD_LOGIC_VECTOR (3 downto 0)
     );
 end MARC;
 
@@ -176,6 +180,15 @@ architecture Behavioral of MARC is
              );
         end component;
 
+	component MARCled is
+	    Port ( clk,rst : in  STD_LOGIC;
+		   ca,cb,cc,cd,ce,cf,cg,dp : out  STD_LOGIC;
+		   an : out  STD_LOGIC_VECTOR (3 downto 0);
+		   game_over : in std_logic;
+		   active_player : in std_logic_vector(1 downto 0)
+	    );
+	end component;
+
     -------------------------------------------------------------------------
     -- DATA SIGNALS
     -------------------------------------------------------------------------
@@ -294,7 +307,7 @@ architecture Behavioral of MARC is
     signal fifo_write_pc : std_logic := '0';
     signal fifo_change_player : std_logic := '0';
 
-     -------------------------------------------------------------------------
+    -------------------------------------------------------------------------
     -- VGA SIGNALS
     -------------------------------------------------------------------------
 
@@ -304,6 +317,11 @@ architecture Behavioral of MARC is
 
     signal border_color : std_logic_vector(7 downto 0) := "00100111";
 
+    -------------------------------------------------------------------------
+    -- HEX DISPLAY
+    -------------------------------------------------------------------------
+
+    signal ledvalue : std_logic_vector(15 downto 0) := "1111111111111111";
     
 begin
 
@@ -461,6 +479,22 @@ begin
                         VS => VS
          );
 
+     hexdisplay : MARCled
+	    port map ( clk => clk,
+		   rst => reset,
+		   ca => ca,
+		   cb => cb,
+		   cc => cc,
+		   cd => cd,
+		   ce => ce,
+		   cf => cf,
+		   cg => cg,
+		   dp => dp,
+		   an => an,
+		   game_over => game_over,
+		   active_player => active_player
+	);
+
     -------------------------------------------------------------------------
     -- CLOCK EVENT
     -------------------------------------------------------------------------
@@ -511,13 +545,6 @@ begin
             elsif game_code = "10" then
                 game_over <= fifo_game_over;
             end if;
-
-            -- Generating fbart_request_next_data when we read the buss.
---            if buss_code = "110" then
---                fbart_request_next_data <= '1';
---            else
---                fbart_request_next_data <= '0';
---            end if;
 
             -- Sync reset
             if reset_a = '1' then

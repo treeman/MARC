@@ -33,7 +33,7 @@ XILINX_INIT = source /sw/xilinx/ise_12.4i/ISE_DS/settings32.sh;
 PART=xc6slx16-3-csg324
 
 
-lab.%: S=MARC.vhd ALU.vhd colorpixSender.vhd colorTSB.vhd FBARTController.vhd fbartrx.vhd MemoryCell.vhd MemoryCellDualPort.vhd microcontroller.vhd PlayerFIFO.vhd vga.vhd vgaController.vhd vgaTB.vhd
+lab.%: S=MARC.vhd ALU.vhd colorpixSender.vhd colorTSB.vhd FBARTController.vhd fbartrx.vhd MemoryCell.vhd MemoryCellDualPort.vhd microcontroller.vhd PlayerFIFO.vhd vga.vhd vgaController.vhd vgaTB.vhd MARCled.vhd
 lab.%: T=lab_tb.vhd
 lab.%: U=MARC.ucf
 
