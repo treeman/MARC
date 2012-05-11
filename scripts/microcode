@@ -76,9 +76,9 @@
         ALU1 += PC                          ; so add PC
         ALU1 -> M1
         jmpAdir $BMOD                       ; If direct, we're done
-        M1 -> mem_addr, mem -> M2           ; Check B address
-        M2 -> M1                            ; Move it to A's place
-        jmpApre $APRE                       ; If pre-decr decr and come back
+        M1 -> mem_addr
+	mem -> M2           ; Check B address
+        M2 -> M1, jmpApre $APRE             ; Move it to A's place. If pre-decr decr and come back
 :AOFF   M1 -> ALU1                          ; Relative offset, add mem_addr
         ALU1 += mem_addr
         ALU1 -> M1

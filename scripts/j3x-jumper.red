@@ -9,6 +9,6 @@ CPY   MOV <SIZ, <PTR
       SPL @PTR, 0
       ADD STEP, PTR
 PTR   DAT  #50, #50
-STEP  DAT  #50, #50
+STEP  DAT  #8, #8
 DAT1  DAT  #1, #1
 DAT7  DAT  #12, #12
