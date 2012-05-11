@@ -59,7 +59,7 @@ ARCHITECTURE behavior OF FbartController_test IS
    signal clk : std_logic := '0';
    signal rxd : std_logic := '1';
 
- 	--Outputs
+    --Outputs
    signal control_signals : std_logic_vector(2 downto 0);
    signal buss_out : std_logic_vector(12 downto 0);
    signal has_next_data : std_logic;
@@ -67,14 +67,14 @@ ARCHITECTURE behavior OF FbartController_test IS
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
-	--                                     <----- READ Only the DATA this WAY!
-	--signal data : std_logic_vector(0 to 19) := "1 0110 0011 0 1 0111 1110 0"; -- "1 110001101 0 1 01111110 0";
-	-- signal data : std_logic_vector(0 to 19) := "1 0110 0010 0 1 0111 1110 0";
-	--signal data : std_logic_vector(0 to 34) := "0 0000 1111 1 0 1111 0000 1 0 1100 0011 1";
+    --                                     <----- READ Only the DATA this WAY!
+    --signal data : std_logic_vector(0 to 19) := "1 0110 0011 0 1 0111 1110 0"; -- "1 110001101 0 1 01111110 0";
+    -- signal data : std_logic_vector(0 to 19) := "1 0110 0010 0 1 0111 1110 0";
+    --signal data : std_logic_vector(0 to 34) := "0 0000 1111 1 0 1111 0000 1 0 1100 0011 1";
    signal data : std_logic_vector(0 to 31) := "00000111110111100001011000011111";
 BEGIN
  
-	-- Instantiate the Unit Under Test (UUT)
+    -- Instantiate the Unit Under Test (UUT)
    uut: FBARTController PORT MAP (
           request_next_data => request_next_data,
           reset => reset,
@@ -89,18 +89,18 @@ BEGIN
    -- Clock process definitions
    clk_process :process
    begin
-		clk <= '0';
-		wait for clk_period/2;
-		clk <= '1';
-		wait for clk_period/2;
+        clk <= '0';
+        wait for clk_period/2;
+        clk <= '1';
+        wait for clk_period/2;
    end process;
  
 
    -- Stimulus process
    stim_proc: process
-   begin		
+   begin        
       -- hold reset state for 100 ns.
-      wait for 100 ns;	
+      wait for 100 ns;  
 
       wait for clk_period*10;
       
@@ -109,39 +109,39 @@ BEGIN
       wait for 0.1 us;
       
       reset <= '0';
-		
-		wait for 0.1 us;
-		
+        
+        wait for 0.1 us;
+        
       request_next_data <= '1';
       
       wait for 10 ns;
       request_next_data <= '0';
       
       wait for 21.2 us;
-		for i in 0 to 19 loop
-			rxd <= data(i);
-			wait for 8.86 us;
-		end loop;
-		--rxd <= data(19);
-		wait for 40 ns;
-		request_next_data <= '1';
+        for i in 0 to 19 loop
+            rxd <= data(i);
+            wait for 8.86 us;
+        end loop;
+        --rxd <= data(19);
+        wait for 40 ns;
+        request_next_data <= '1';
       
       wait for 10 ns;
       request_next_data <= '0';
-		wait;
+        wait;
 
       wait;
    end process;
    
 --   read_data: process(clk)
 --   begin
---		if rising_edge(clk) then
---			if request_next_data = '1' then
---				request_next_data <= '0';
---			elsif (has_next_data = '1') then
---			 request_next_data <= '1';
---		  end if;
---	  end if;
+--      if rising_edge(clk) then
+--          if request_next_data = '1' then
+--              request_next_data <= '0';
+--          elsif (has_next_data = '1') then
+--           request_next_data <= '1';
+--        end if;
+--    end if;
 --   end process;
    
 END;

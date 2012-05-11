@@ -7,14 +7,14 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity vgaController is
 port(
-   rst   : in std_logic;
-   clk   : in std_logic;
+    rst : in std_logic;
+    clk : in std_logic;
     colorpix : in std_logic_vector(7 downto 0);  -- 8 colorpixel bits
-   red : out std_logic_vector(2 downto 0);
-   grn : out std_logic_vector(2 downto 0);
-   blu : out std_logic_vector(1 downto 0);
-   HS          : out std_logic; -- HS = '0' for display enabled
-   VS          : out std_logic -- VS = '0' for display enabled
+    red : out std_logic_vector(2 downto 0);
+    grn : out std_logic_vector(2 downto 0);
+    blu : out std_logic_vector(1 downto 0);
+    HS : out std_logic; -- HS = '0' for display enabled
+    VS : out std_logic -- VS = '0' for display enabled
 );
 end vgaController;
 
@@ -60,55 +60,55 @@ begin
     process(clk)
     begin
       if(rising_edge(clk)) then
-			--reset everything
-			if rst = '1' then
-				hcounter <= "00000000000";
-				vcounter <= "00000000000";
-				pixel_cnt <= "00";
-			end if;
-			
+            --reset everything
+            if rst = '1' then
+                hcounter <= "00000000000";
+                vcounter <= "00000000000";
+                pixel_cnt <= "00";
+            end if;
+            
          --generate pixel_counter
-			if pixel_cnt = "11" then
-				pixel_cnt <= "00";
-				-- do vga
-				
-				--increase h_counter
-				if hcounter = HMAX then
-					hcounter <= "00000000000";
+            if pixel_cnt = "11" then
+                pixel_cnt <= "00";
+                -- do vga
+                
+                --increase h_counter
+                if hcounter = HMAX then
+                    hcounter <= "00000000000";
                --increase v_counter                   
                if vcounter = VMAX then
-						vcounter <= "00000000000";
-					else
-						vcounter <= vcounter + 1;
+                        vcounter <= "00000000000";
+                    else
+                        vcounter <= vcounter + 1;
                end if;
-				else
-					hcounter <= hcounter + 1;
-				end if;
-				
-				-- h_sync
-				if hcounter >= HFP and hcounter < HSP then
-					HS <= SPP;  -- VS = 0				
-				else
-					HS <= not SPP;  -- VS = 1
-				end if;
-				
-				-- v_sync
-				if vcounter >= VFP and vcounter < VSP then
-					VS <= SPP;  -- VS = 0				
-				else
-					VS <= not SPP;  -- VS = 1
-				end if;				
-				
-            -- output horizontal and vertical counters
-				--hcount <= hcounter;
-            --vcount <= vcounter;
+                else
+                    hcounter <= hcounter + 1;
+                end if;
+                
+                -- h_sync
+                if hcounter >= HFP and hcounter < HSP then
+                    HS <= SPP;  -- VS = 0               
+                else
+                    HS <= not SPP;  -- VS = 1
+                end if;
+                
+                -- v_sync
+                if vcounter >= VFP and vcounter < VSP then
+                    VS <= SPP;  -- VS = 0               
+                else
+                    VS <= not SPP;  -- VS = 1
+                end if;             
+                
+                -- output horizontal and vertical counters
+                --hcount <= hcounter;
+                --vcount <= vcounter;
                 if hcounter < HLINES and vcounter < VLINES then
                     --video_enable <= '1';
                     --blank <= '0';  -- input pixecolor signals when blank = 0, 4 clk each input
                     
                     if vcounter < 476 then --otherwise border area
                         -- print colorpixels here
-								red <= colorpix (2 downto 0);
+                                red <= colorpix (2 downto 0);
                         grn <= colorpix (5 downto 3);
                         blu <= colorpix (7 downto 6);
                     else
@@ -125,10 +125,10 @@ begin
                     grn <= "000";
                     blu <= "00";
                 end if;         
-			else
-				pixel_cnt <= pixel_cnt + 1;
-		   end if;
+            else
+                pixel_cnt <= pixel_cnt + 1;
+           end if;
             
-		end if;
+        end if;
     end process;
 end Behavioral;
