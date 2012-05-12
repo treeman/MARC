@@ -15,10 +15,10 @@ entity Memory_Cell is
             reset       : in std_logic;
             read        : in STD_LOGIC;
             write       : in  STD_LOGIC;
-            address_in  : in  STD_LOGIC_VECTOR (12 downto 0);
-            address_out : out  STD_LOGIC_VECTOR (12 downto 0);
+            address_in  : in  STD_LOGIC_VECTOR (12 downto 0);  
+            address_out : out  STD_LOGIC_VECTOR (12 downto 0);  -- Connect address_in to address_out via a multiplexer
             data_in     : in  STD_LOGIC_VECTOR (12 downto 0);
-            data_out    : out  STD_LOGIC_VECTOR (12 downto 0));
+            data_out    : out  STD_LOGIC_VECTOR (12 downto 0)); -- Connect data_in to data_out via a multiplexer
 end Memory_Cell;
 
 architecture Behavioral of memory_cell is
