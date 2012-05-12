@@ -12,6 +12,7 @@ d       equ 2667
 d2      equ 1143
 impp1   equ 1000+97+139
 impp2   equ 2033+97+153+65
+jmp     start
         dat #2
         dat #0
         add #2,ptrcl

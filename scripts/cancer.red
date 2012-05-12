@@ -39,6 +39,7 @@
 ;
 ;                              -=(*)=-
 ;
+        JMP     START
         JMP     -1,     0       ;"wall" to stop marching SPL 0
 START   SPL     COPY2,  0       ;kick off second copy of self
 ;
