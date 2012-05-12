@@ -1,0 +1,11 @@
+Minnet
+Vi valde att använda en core size(1) Storlek på spelplan på 8192 rader, detta brukar vara standard i duell spel men ibland avrundar man till 8000 rader. Om man kör fler än 2 spelare brukar minnet vara betyderlig större, vi ska dock endast ha 2 spelare stöd. Vi behöver enligt (1) 13 bitar för att kunna adressera hela detta område. Då minnet i FPGAN är indelade i block mindre än detta fick vi dela upp minnet på flera block.
+(1) log2(8192) = 13
+Varje rad Redcode delades upp i 4 delar; instruktion och adresseringsmoder 8 bitar, operand A 13 bitar, operand B 13 bitar och 8 bitar RGB färgning. Det som bäst stämde överens med vår uppdelning var att använda minnesblock utav storleken 1024 x 16 bitar (de 3 sista bitarna används ej dock i operandminnena).
+[memory_cell.dia]
+Figur 1 Operandminnen
+De tre mest signifikanta bitarna styr muxarna och ser till att rätt minne skriver och läses ifrån. Våra minnen var lite bättre än vad vi först förväntade oss, därför har vi en adress_sync och data_sync register, vi skulle kunna koppla dessa direkt till bussen och därmed snabba upp datorn vid minnesaccess.
+Då vi har olika färg beroende på vilken instruktion vi har i minner var det naturligt att slå samman instruktion och grafikminnena då båda var på 8 bitar. 
+[memory_cell_dual.dia]
+Figur 2. Instruktions och färgminne
+
