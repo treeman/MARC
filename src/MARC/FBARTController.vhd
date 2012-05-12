@@ -57,13 +57,13 @@ begin
     buss_out <= register1(4 downto 0) & register2;
    
     control_signals <= register1(7 downto 5);
-    inverted_reset <= not reset;  -- FBART reset is inverted
+    inverted_reset <= not reset;  -- FBART reset is inverted (why would you do that!?)
   
     process(clk)
     begin
         if rising_edge(clk) then
         
-                         
+            -- Reset our FBART  
             if (reset='1') then
                 state <= "000";
                 has_next_data <= '0';

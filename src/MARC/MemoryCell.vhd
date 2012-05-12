@@ -12,7 +12,7 @@ use ieee.numeric_std.all;
 
 entity Memory_Cell is
     Port (  clk         : in std_logic;
-            reset       : in std_logic;
+            reset       : in std_logic;  -- This does nothing at the moment, would be nice if one could reset the whole memory with this signal but I don't know how to tell VHDL that.
             read        : in STD_LOGIC;
             write       : in  STD_LOGIC;
             address_in  : in  STD_LOGIC_VECTOR (12 downto 0);  
