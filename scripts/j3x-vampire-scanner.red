@@ -1,3 +1,6 @@
+;name Vampire bomber gate replicator
+;author Jesper Tingvall
+;description Does not work.
         SPL VAMP, 0
         JMP CAGE1, 0
         DAT 0,0

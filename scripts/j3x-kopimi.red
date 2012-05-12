@@ -1,6 +1,13 @@
-; This one gets all lovey-dovey with the enemy warroir, inseminate that code!
+;name Kopimi
+;author Jesper Tingvall
+;description Scans the memory after code and creates a copy of it!
+;              a 
+;            a C a
+;          a a a a a
+;        a a a a a a a 
+;      a a a a a a a a a
 
-START SUB STEP, PTR
+START SUB STEP,   PTR
       JMZ START,  @PTR
 COPY  MOV @PTR,   <SPAWN
 	  JMN COPY,   <PTR
