@@ -1,34 +1,14 @@
 ----------------------------------------------------------------------------------
--- Company: LIU
--- Engineer: Jesper Tingvall
---
--- Create Date: 11:56:42 04/17/2012
--- Design Name:
--- Module Name: ALU - Behavioral
--- Project Name:
--- Target Devices:
--- Tool versions:
--- Description:
---
--- Dependencies:
---
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
---
+-- Course:      TSEA43
+-- Student:     Jesper Tingvall
+-- Design Name: MARC
+-- Module Name: ALU
+-- Description: Aritmetic logic unit for MARC, consists of two Single Instruction Multiple data ALUs.
 ----------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 
 entity ALU is
@@ -41,10 +21,16 @@ entity ALU is
             -- 10 +
             -- 11 -
 
+            -- ALU1 answer is zero
             alu1_zeroFlag_out : out STD_LOGIC;
+
+            -- ALU1 answer is negative
             alu1_negFlag : out STD_LOGIC;
+			
+            -- Both ALU answers are zero
             alu_zeroFlag : out STD_LOGIC;
 
+            -- Operands to add, subtract or load into the ALU
             alu1_operand : in STD_LOGIC_VECTOR(12 downto 0);
             alu2_operand : in STD_LOGIC_VECTOR(12 downto 0);
 
@@ -61,6 +47,7 @@ architecture Behavioral of ALU is
     signal alu2_zeroFlag : STD_LOGIC;
 
     -- Temporary signals for calculating negative flag for alu1
+    -- This is a temporary 'fulhax' solution and will result in extra ALU units being created.
     signal add_res : STD_LOGIC_VECTOR (12 downto 0);
     signal sub_res : STD_LOGIC_VECTOR (12 downto 0);
 	 
