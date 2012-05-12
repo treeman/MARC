@@ -1,21 +1,12 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity vga is
     Port ( rst : in  STD_LOGIC;
            clk : in  STD_LOGIC;
            data_gpu : in  STD_LOGIC_VECTOR (7 downto 0);
            address_gpu : out  STD_LOGIC_VECTOR (12 downto 0);
-       border_color : in std_logic_vector (7 downto 0);
+           border_color : in std_logic_vector (7 downto 0);
            red : out  STD_LOGIC_VECTOR (2 downto 0);
            grn : out  STD_LOGIC_VECTOR (2 downto 0);
            blu : out  STD_LOGIC_VECTOR (1 downto 0);
@@ -45,9 +36,10 @@ architecture Behavioral of vga is
             HS : out  STD_LOGIC;
             VS : out  STD_LOGIC );
     end  component;
-------------------------------------------------------------------------
--- SIGNALS
-------------------------------------------------------------------------
+
+-------------
+-- SIGNALS --
+-------------
 signal colorpix: std_logic_vector (7 downto 0);
 
     
