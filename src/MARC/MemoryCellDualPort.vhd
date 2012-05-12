@@ -1,81 +1,42 @@
 ----------------------------------------------------------------------------------
--- Company:
--- Engineer:
---
--- Create Date:    11:38:38 04/18/2012
--- Design Name:
--- Module Name:    Memory_Cell_DualPort - Behavioral
--- Project Name:
--- Target Devices:
--- Tool versions:
--- Description:
---
--- Dependencies:
---
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
---
+-- Course:      TSEA43
+-- Student:     Jesper Tingvall
+-- Design Name: MARC
+-- Module Name: Memory Cell Dual Port
+-- Description: This will behave like a 8192 x 8 bit memory for our OP + addressing modes. It will automagickally calculate some pretty colors for our code. Since this is a dual port memory can our GPU ask it whenever it wants what colors a address holds.
 ----------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity Memory_Cell_DualPort is
     Port ( clk              : in  STD_LOGIC;
            read             : in  STD_LOGIC;
            write            : in  STD_LOGIC;
-           active_player    : in STD_LOGIC_VECTOR(1 downto 0);
-           address_in       : in  STD_LOGIC_VECTOR (12 downto 0);
-           address_out      : out  STD_LOGIC_VECTOR (12 downto 0);
-           data_in          : in  STD_LOGIC_VECTOR (7 downto 0);
-           data_out         : out  STD_LOGIC_VECTOR (7 downto 0);
-           address_gpu      : in  STD_LOGIC_VECTOR (12 downto 0);
-           data_gpu         : out  STD_LOGIC_VECTOR (7 downto 0);
-           read_gpu         : in  STD_LOGIC);
+           active_player    : in  STD_LOGIC_VECTOR(1 downto 0);  -- So we can color our code in pretty colors!
+           address_in       : in  STD_LOGIC_VECTOR(12 downto 0);
+           address_out      : out STD_LOGIC_VECTOR(12 downto 0);  -- Connect address_in to address_out via a multiplexer
+           data_in          : in  STD_LOGIC_VECTOR(7 downto 0);
+           data_out         : out STD_LOGIC_VECTOR(7 downto 0); -- Connect data_in to data_out via a multiplexer
+           address_gpu      : in  STD_LOGIC_VECTOR(12 downto 0); -- This is not delayed
+           data_gpu         : out STD_LOGIC_VECTOR(7 downto 0); -- This is not delayed
+           read_gpu         : in  STD_LOGIC);  
 end Memory_Cell_DualPort;
 
 architecture Behavioral of Memory_Cell_DualPort is
     signal address_sync         : STD_LOGIC_VECTOR (12 downto 0);
     signal data_sync            : STD_LOGIC_VECTOR (7 downto 0);
-    -- signal address_gpu_sync : STD_LOGIC_VECTOR (12 downto 0);
 
     signal calculated_color : STD_LOGIC_VECTOR (7 downto 0);
 
     type ram_block_type is array (0 to 1023) of std_logic_vector(15 downto 0);
 
-    --signal ram_block_0 : ram_block_type := (others => (others => '0'));
+    
 
-    -- Direct                  00
-    -- Immediate               01
-    -- Indirect                10
-    -- pre-decrement indirect  11
-
-    -- Testing purposes!
-    signal ram_block_0 : ram_block_type := (
-        --"00000001XXXXXXXX", -- DAT
-        --"00010010XXXXXXXX", -- MOV
-        --"00100010XXXXXXXX", -- ADD
-        --"00110100XXXXXXXX", -- SUB
-        --"01000000XXXXXXXX", -- JMP
-        --"01010000XXXXXXXX", -- JMPZ
-        --"01100000XXXXXXXX", -- JMN
-        --"01110000XXXXXXXX", -- CMP
-        --"10000000XXXXXXXX", -- SLT
-        --"10010000XXXXXXXX", -- DJN
-        --"10100101XXXXXXXX", -- SPL
-        -- "xxxxxxxx11111111",
-
-        others => (others => '0')
-    );
+	
+    signal ram_block_0 : ram_block_type := (others => (others => '0'));
     signal ram_block_1 : ram_block_type := (others => (others => '0'));
     signal ram_block_2 : ram_block_type := (others => (others => '0'));
     signal ram_block_3 : ram_block_type := (others => (others => '0'));
@@ -84,22 +45,14 @@ architecture Behavioral of Memory_Cell_DualPort is
     signal ram_block_6 : ram_block_type := (others => (others => '0'));
     signal ram_block_7 : ram_block_type := (others => (others => '0'));
 
-    -- Color block test
-    --signal ram_block_0 : ram_block_type := (others => "0000000010100111");
-    --signal ram_block_1 : ram_block_type := (others => "0000000011111000");
-    --signal ram_block_2 : ram_block_type := (others => "0000000011000111");
-    --signal ram_block_3 : ram_block_type := (others => "0000000000111111");
-    --signal ram_block_4 : ram_block_type := (others => "0000000000000111");
-    --signal ram_block_5 : ram_block_type := (others => "0000000000111000");
-    --signal ram_block_6 : ram_block_type := (others => "0000000011000000");
-    --signal ram_block_7 : ram_block_type := (others => "0000000011111111");
 begin
 
     address_out <= address_sync;
     data_out <= data_sync;
 
-  -- B2 G3 R3
---    -- This determines the color depending on what player put what there and what kind of OP code it is (data / non data)
+    -- Colorifier
+    -- COLOR IS LIKE THIS BB GGG RRR
+    -- This determines the color depending on what player put what there and what kind of OP code it is (data / non data)
     calculated_color <=     "00000000" when active_player = "00" else                       -- DAT 0 0, black!
 
                             "00000010" when active_player = "01" and data_sync(7 downto 4) = "0000" else    -- Player 1 data
@@ -115,6 +68,7 @@ begin
                             "00110000" when active_player = "10" else    -- Player 2 misc
                             "11111111";
 
+    -- Use this if we want even prettier colors!
     --calculated_color <= active_player & data_sync(7 downto 4) & "00";
 
     PROCESS(clk) begin
@@ -122,11 +76,12 @@ begin
 
             address_sync <= address_in;
             data_sync <= data_in;
-            -- address_gpu_sync <= address_gpu;
 
+            -- Write and read OP
+			
             if (address_sync(12 downto 10) = "000") then
                 if(write='1') then
-                    ram_block_0(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color;
+                    ram_block_0(to_integer(unsigned( address_sync(9 downto 0) ))) <= data_sync & calculated_color; -- First OP then color!
                 end if;
                 if (read='1') then
                     data_sync <= ram_block_0(to_integer(unsigned(address_sync(9 downto 0))))(15 downto 8);
@@ -198,7 +153,7 @@ begin
             end if;
 
 
-            -- GPU ADDRESS
+            -- Read GPU
             if (address_gpu(12 downto 10) = "000") then
                 if (read_gpu='1') then
                     data_gpu <= ram_block_0(to_integer(unsigned(address_gpu(9 downto 0))))(7 downto 0);

@@ -14,7 +14,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity PlayerFIFO is
      Port ( current_pc_in : in  STD_LOGIC_VECTOR (12 downto 0);
             current_pc_out : out  STD_LOGIC_VECTOR (12 downto 0);
-            current_player_out : out STD_LOGIC; -- CUrrent player (0 is player 1, 1 is player 2)
+            current_player_out : out STD_LOGIC; -- Current player (0 is player 1, 1 is player 2)
             game_over_out : out STD_LOGIC;  -- One player (or both) is dead
             next_pc : in  STD_LOGIC;      -- Removes the first PC in the current players FIFO and write it to current_pc_out.
             write_pc : in STD_LOGIC;      -- Add current_pc_in last to the current players FIFO, if it's full then this does nothing.
