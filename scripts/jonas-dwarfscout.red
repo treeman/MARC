@@ -1,5 +1,6 @@
 ;name Dwarf Scout
 ;description Will dwarf bomb, and flee if it spots any changes.
+;author Jonas Hietala
 
 dist        EQU start-160               ; how for ahead of us will the carpet be laid
 csize       EQU 8                       ; carpet size

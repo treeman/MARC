@@ -1,5 +1,6 @@
 ;name Earthworm Jim
 ;description Will setup a length 3 imp worm. Gogo!
+;author Jonas Hietala
 
 start   SPL second
         SPL third

@@ -1,5 +1,6 @@
 ;name Replicator
 ;description Watch stargate dawg
+;author Jonas Hietala
 
 step    EQU 417
 space   EQU 19

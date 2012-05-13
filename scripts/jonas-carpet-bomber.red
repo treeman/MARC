@@ -1,9 +1,10 @@
 ;name carpet bomber
+;author Jonas Hietala
 
 step    EQU -31
 
 start   ADD #step,scan
-scan    JMZ start,-10
+scan    JMZ start,-100
 
 bombit  MOV bomb, @scan
         MOV loop, <scan

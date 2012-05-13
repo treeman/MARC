@@ -1,5 +1,6 @@
 ;name Survivor
 ;description Will lay a carpet of data and if someone changes it the program will copy itself away and flee!
+;author Jonas Hietala
 
 dist        EQU start-100               ; how for ahead of us will the carpet be laid
 csize       EQU 8                       ; carpet size

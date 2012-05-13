@@ -1,5 +1,6 @@
 ;name Suck on this!
 ;description A clever vampire which will make you bomb for it, and it will start bombing itself as well. Will also change stuff in memory to screw your code.
+;author Jonas Hietala
 
 decoy   EQU 1337                ; fill mem with random numbers
 step    EQU 211

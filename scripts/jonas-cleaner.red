@@ -1,6 +1,7 @@
 
 ;name Cleaner
 ;description A core cleaner. Will split bomb then dat bomb the whole memory except ourselves
+;author Jonas Hietala
 
 size    EQU     -9
 
