@@ -1,3 +1,15 @@
+Teori RS232
+
+Vårt FPGA kort har en USB till RS232 port. Vi använde denna för att föra över den assemblerade spelarkoden till kortet. En överförning inleds av en startbit, därefter följer 8 databitar och en stoppbit. Hastigheten mäts i baud, tecken (på 8 bitar) per sekund. I vårt fall var ledningen hög när ingen överförning var igång (1). Överförningen inleds med att ledningen jordas (2), därefter följer 8 databitar i vald hastighet (3). I slutet av överförningen kommer en stoppbit som är hög (4). Se figur 3.
+
+[rs232.psd]
+
+Figur 3. En RS232 överförning.
+
+Man har ingen gemensam klocka utan överför endast data, sändaren och mottagaren känner dock till vilken baud rate man överför med. I vårt fall använder vi 115 200 baud.
+
+----------------------------------------------------------------------
+
 Minnet
 
 Vi valde att använda en core size(1) Storlek på spelplan på 8192 rader, detta brukar vara standard i duell spel men ibland avrundar man till 8000 rader. Om man kör fler än 2 spelare brukar minnet vara betyderlig större, vi ska dock endast ha 2 spelare stöd. Vi behöver enligt (1) 13 bitar för att kunna adressera hela detta område. Då minnet i FPGAN är indelade i block mindre än detta fick vi dela upp minnet på flera block.
@@ -16,3 +28,26 @@ Då vi har olika färg beroende på vilken instruktion vi har i minnet var det natu
 [memory_cell_dual.dia]
 Figur 2. Instruktions och färgminne
 
+----------------------------------------------------------------------
+
+
+* UART (+fbart?)
+
+Vår dator använder en 13 bitars buss, det skulle därmed vara trevligt om indatat ifrån vår värddator skulle vara i detta med. Då vi använder Anders Nilssons FBART vilken arbetar i 8 bitar skulle det vara trevligt att slå samman två sändningar till en. Det gör vi med modulen i figur 43434. Modulen väntar på en data begäran, tar emot två 8 bitars överförningar, slår samman dem till 13 bitar (den kastar iväg 3 bitar) och signalerar att data finns.
+
+[uart.dia]
+Figur 324234. UART controll circuit. Slår samman två FBART överförningar till en 16 bits överförning
+
+VI fick även ändra i FBARTen då den gick på en 25 Mhz klocka och vårt bygga kör på 100 Mhz. Vi behövde endast öka antalet bitar i en räknade och ändra på en konstant.
+
+ * FIFO
+
+Då en spelare kan ha flera olika processer igång behöver vi ett sätt att lagra alla programräknare. Vi har implementerat två stycken ”first in first out” köer i vår hårdvara, se figur 999.
+
+[player FIFO.dia]
+Figur 999. Player FIFOs.
+
+Headregistret pekar på den översta programräknaren och tailregistret pekar på en sista. När man begär nästa programräknare ökas den nuvarande spelarens head och den översta PCn skrivs till current_pc_out. När man skriver in en PC kollas först att den nuvarande spelars kö ej är full, om den ej är full skrivs PC in och tailregistret ökas annars görs ingenting. Om någon spelares kö är tom, dvs. headregistret är lika med tailsregistret så signaleras game_over. Man kan även byta aktiv spelare.
+
+
+5. Mjukvara
