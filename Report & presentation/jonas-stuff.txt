@@ -3,7 +3,31 @@
 
 (Tror vi ska skriva vad som gick bra och vad som gick dåligt, vad som skulle kunna göras bättre?)
 
-Vi gjorde en dator som implementerar CoreWars '88 standarden och exekverar redcode warriors. Hela standarden 
+Vi gjorde en dator som implementerar CoreWars '88 standarden och exekverar redcode warriors. Alla instruktioner och adresseringsmoder fungerar och vi ..... T.T
+
+Arbetet med projektet gick bra, CoreWars var väldigt roligt.
+
+Tillbakablick på arbetet:
+
+* Kul! CoreWars är awesome
+* vhdl är jobbigt
+    Kompilatorn är dum
+    Ej säker på modellbeskrivning (beskriver vhdl verkligen?)
+
+Förbättringar:
+
+* Snabba upp minnesaccess
+* Rensa upp i vhdl
+* Möjligt att komprimera och förbättra mikrod
+
+Förslag till fortsatt arbete:
+
+* Fixa allt som är crap i koden
+* Implementera en mera modern standard
+* Större coresize
+* Fler spelare
+* Expandera kommunikation till datorn (koth server?!)
+* Finns regler om timeout och liknande
 
 --------------------------------------------------------------------------------
 
