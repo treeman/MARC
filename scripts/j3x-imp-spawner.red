@@ -8,4 +8,4 @@ START ADD STEP,  PTR
       JMP START, 0
 IMP   MOV 0,     1
 PTR   DAT 50,    50
-STEP  DAT 50,    50
+STEP  DAT 553,    553

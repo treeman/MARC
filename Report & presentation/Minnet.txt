@@ -38,7 +38,10 @@ Vår dator använder en 13 bitars buss, det skulle därmed vara trevligt om indatat
 [uart.dia]
 Figur 324234. UART controll circuit. Slår samman två FBART överförningar till en 16 bits överförning
 
-VI fick även ändra i FBARTen då den gick på en 25 Mhz klocka och vårt bygga kör på 100 Mhz. Vi behövde endast öka antalet bitar i en räknade och ändra på en konstant.
+Vi fick även ändra i FBARTen då den gick på en 25 Mhz klocka och vårt bygga kör på 100 Mhz. Vi behövde endast öka antalet bitar i en räknade och ändra på en konstant.
+
+----------------------------------------------------------------------
+
 
  * FIFO
 
@@ -51,3 +54,28 @@ Headregistret pekar på den översta programräknaren och tailregistret pekar på en
 
 
 5. Mjukvara
+
+Det är en hel vetenskap att skriva effektiva redcode warriors och vi har endast skrapat på ytan. Vi har dock lyckats programmera ett antal exempel warriors som demonstrerar de vanligaste strategierna och blandningar mellan dem. 
+
+
+Factory Bomber
+Factory bomber (eller bomber factory då den bygger bombers) formaterar hela minnet via att masskopiera en massa ’little bombers’ till minnet. Dessa databombar minnet och kommer efter ett tag bomba isär orginalkoden. Denna warrior är därmed en blandning mellan en bombare och en replicator och en bombare.
+
+Imp Spawner
+Denna warrior är ej offensiv och har som stategi att skapar en massa imps. Imp spawner fungerar ungefär som factory bomber fast har en annan payload.
+
+Vampire Bomber Gate Replicator
+
+Denna otympliga warrior startade som ett skämt då vi ville se vad som hände om man inkluderade så många strategier som möjligt i en warrior. Dock blev den inte så dålig som vi trodde. Först så skapar warriors en kopia av sig själv, denna kopia kan dock ej kopiera sig själv, något som borde kunna lösas med hjälp av lite hjärnverksamhet och en texteditor. Efter kopiatorn så har warriorn en ”bomber cage”, dessa två rader databombar minnet bakåt. Efter cagen kommer vampyrkoden. En vampyr JMP bombar minnet i hopp om att fienden skall hoppa in i dess cage. Den kan därmed sno klockcykler ifrån motståndarens kod. Sist finns en gate ifall resten av koden skulle bli överkörd av en imp.
+
+Kopimi
+
+[KOPIMI]
+
+Denna warrior scannar minnet efter information, kopierar den och börjar sen exekvera den. Den kan därmed härma en fientlig warrior om den skulle hitta den. Fungerar skapligt trots att den utvecklades mest för att se vad som hände om man skulle tolka Det Missionerande Kopimistsamfundet missionsbudskap; ”Kopiera och sprid”. Denna warrior använder replicator stategin.
+
+Inseminator
+
+Ännu en warrior som skapades på skoj men som visade sig vara rätt så effektiv. Den letar upp motståndarens kod och injicerar en massa processer i den i hopp om att motståndaren ej ska förstöra sig egna kod. Detta brukar dock förstöra funktionaliteten i motståndarens kod då den förutsätter oftast att koden exekveras sekventiellt.
+
+

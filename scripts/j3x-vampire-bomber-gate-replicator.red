@@ -6,16 +6,18 @@
       SPL GATE,      0
       SPL CPY,       0
       JMP CAGE1,     0
-SIZ   DAT #24,       #24
+SIZ   DAT #29,       #29
 CPY   MOV <SIZ,      <PTR2
       JMN CPY,       SIZ
       ADD DAT7,      @PTR2
       ADD DAT1,      PTR2
-      SPL @PTR2,     0
+      SPL @PTR2,     0          ; cage
       ADD DAT3,      PTR2
-      SPL @PTR2,     0
-      ADD STEP2,     PTR2
-PTR2  DAT  #4000,    #4000
+      SPL @PTR2,     0          ; vampire
+	  
+      ADD DATX,      PTR2
+	  SPL @PTR2,     0
+PTR2  DAT  #4000+8192, #4000+8192
 STEP2 DAT  #21,      #21
 DAT1  DAT  #14,      #14
 DAT7  DAT  #12,      #12
@@ -31,6 +33,6 @@ STEP  DAT 5,         5
 BOMB  JMP CAGE1-148, 0
       DAT 0,         0
 DAT3  DAT 2,         2
-      DAT 0,         0
+DATX  DAT 76,        76
       DAT 0,         0
 GATE  JMP 0,         <-2
