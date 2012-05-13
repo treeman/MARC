@@ -55,7 +55,7 @@ Headregistret pekar på den översta programräknaren och tailregistret pekar på en
 
 5. Mjukvara
 
-Det är en hel vetenskap att skriva effektiva redcode warriors och vi har endast skrapat på ytan. Vi har dock lyckats programmera ett antal exempel warriors som demonstrerar de vanligaste strategierna och blandningar mellan dem. 
+Det är en hel vetenskap att skriva effektiva redcode warriors och vi har endast skrapat på ytan. Vi har dock lyckats programmera ett antal exempel warriors som demonstrerar de vanligaste strategierna och olika blandningar mellan dem. 
 
 
 Factory Bomber
