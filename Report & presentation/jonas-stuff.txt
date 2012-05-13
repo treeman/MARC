@@ -27,3 +27,17 @@ Schemat visar även var vga, FIFO och fbart controller ansluts.
 
 CoreWars '88 standarden specifierar utseendet av Redcode, CoreWars programmeringsspråk, som vi har gjort en assembler till. Assemblern kan generera en binärfil från två warriors där vi randomiserar deras startläge som vi sedan kan skicka till MARC genom uart. (referera till bilagan för att se source code!)
 
+-------------------------------------------------------------------------------
+
+* Warriors
+
+# Carpet bomber
+
+# Core cleaner
+
+# Dwarf scout
+
+# Imp worm
+
+# Replicator
+
