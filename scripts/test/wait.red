@@ -1,2 +1,0 @@
-wait JMP wait
-end
