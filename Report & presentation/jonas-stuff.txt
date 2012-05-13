@@ -3,9 +3,9 @@
 
 (Tror vi ska skriva vad som gick bra och vad som gick dåligt, vad som skulle kunna göras bättre?)
 
-Vi gjorde en dator som implementerar CoreWars '88 standarden och exekverar redcode warriors. Alla instruktioner och adresseringsmoder fungerar och vi ..... T.T
+Arbetet med projektet gick bra, vhdl var lite motsträvigt men vi lyckades implementera hela CoreWars '88 standarden och få våra redcode warriors att fungera. CoreWars var väldigt kul, både att implementera och att skapa warriors till.
 
-Arbetet med projektet gick bra, CoreWars var väldigt roligt.
+Implementationen skulle kunna förbättras. Mikrokodningen är inte alls optimerad då det kändes lite onödigt då vi hade en 27 bitars delay räknare efter varje exekverad instruktion. Minnesaccessen skulle kunna förbättras och vhdl koden är onödigt komplex.
 
 Tillbakablick på arbetet:
 
@@ -57,11 +57,17 @@ CoreWars '88 standarden specifierar utseendet av Redcode, CoreWars programmering
 
 # Carpet bomber
 
+Carpet bombers är en blandning mellan bombers och scanners. De traverserar minnet och lägger in bombers där minnet har ändrats. Denna warrior är smartare än en vanlig bomber då den inte kommer att bomba ute i tomma minnet. Den kommer också vara lite snabbare än en traditionell bomber som behöver kopiera ut data.
+
 # Core cleaner
+
+En core cleaner är ett program som databombar hela minnet. Ofta går man igenom minnet två gånger, den första fyller man minnet med split instruktioner för att slöa ner motståndaren och sedan med DAT-instruktioner för att göra slut på honom.
+
+# Replicator
+
+Replicators skapar kopior av sig själva och förökar sig i minnet. De motverkar bombers då bombers inte kan förstöra replicatorn tillräckligt snabbt.
 
 # Dwarf scout
 
-# Imp worm
-
-# Replicator
+En dwarf scout är en vanlig bomber som skyddar sig mot andra bombers genom att se om någon ändrar i minnet i dess närhet. Om så är fallet så kommer den att hoppa till en ny plats i minnet och ta med sig sina processer.
 
