@@ -5,3 +5,20 @@
 \contentsline {section}{\numberline {3}Teori}{4}
 \contentsline {subsection}{\numberline {3.1}VGA}{4}
 \contentsline {subsection}{\numberline {3.2}RS232}{5}
+\contentsline {section}{\numberline {4}Beskrivning av h\IeC {\r a}rdvara (M.A.R.C)}{6}
+\contentsline {subsection}{\numberline {4.1}Mikrodatorn}{6}
+\contentsline {subsection}{\numberline {4.2}VGA}{7}
+\contentsline {subsection}{\numberline {4.3}Minnen}{8}
+\contentsline {subsection}{\numberline {4.4}UART}{9}
+\contentsline {subsection}{\numberline {4.5}FIFO}{10}
+\contentsline {section}{\numberline {5}Slutsatser}{11}
+\contentsline {section}{\numberline {A}Warriors}{12}
+\contentsline {subsection}{\numberline {A.1}Factory bomber}{12}
+\contentsline {subsection}{\numberline {A.2}Imp spawner}{12}
+\contentsline {section}{\numberline {B}VHDL}{13}
+\contentsline {subsection}{\numberline {B.1}ALU.vhd}{13}
+\contentsline {subsection}{\numberline {B.2}colorpixSender.vhd}{16}
+\contentsline {section}{\numberline {C}Script}{22}
+\contentsline {subsection}{\numberline {C.1}Assembler}{22}
+\contentsline {subsection}{\numberline {C.2}Mikrokod}{30}
+\contentsline {subsection}{\numberline {C.3}Mikrokodningshj\IeC {\"a}lp}{36}
