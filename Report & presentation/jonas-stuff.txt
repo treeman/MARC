@@ -1,33 +1,11 @@
 
 * Slutsatser
 
-(Tror vi ska skriva vad som gick bra och vad som gick dåligt, vad som skulle kunna göras bättre?)
-
 Arbetet med projektet gick bra, vhdl var lite motsträvigt men vi lyckades implementera hela CoreWars '88 standarden och få våra redcode warriors att fungera. CoreWars var väldigt kul, både att implementera och att skapa warriors till.
 
 Implementationen skulle kunna förbättras. Mikrokodningen är inte alls optimerad då det kändes lite onödigt då vi hade en 27 bitars delay räknare efter varje exekverad instruktion. Minnesaccessen skulle kunna förbättras och vhdl koden är onödigt komplex.
 
-Tillbakablick på arbetet:
-
-* Kul! CoreWars är awesome
-* vhdl är jobbigt
-    Kompilatorn är dum
-    Ej säker på modellbeskrivning (beskriver vhdl verkligen?)
-
-Förbättringar:
-
-* Snabba upp minnesaccess
-* Rensa upp i vhdl
-* Möjligt att komprimera och förbättra mikrod
-
-Förslag till fortsatt arbete:
-
-* Fixa allt som är crap i koden
-* Implementera en mera modern standard
-* Större coresize
-* Fler spelare
-* Expandera kommunikation till datorn (koth server?!)
-* Finns regler om timeout och liknande
+Vid fortsatt arbete kan mikrokoden göras snabbare geonom mikrokodsoptimering. En nyare standard skulle kunna implementeras då den ger möjligheter till nya variationer av warriors. Det finns regler om timeouts som vi inte tar hänsyn till. Om kommunikationen till datorn skulle kunna utökas skulle MARC kunna användas som en king of the hill server för att ställa warriors mot varandra och ranka dem. Man skulle kunna utöka stödet till mer än två spelare och köra en free for all. En utökad coresize och stöd för fler samtidiga processer skulle kunna läggas till.
 
 --------------------------------------------------------------------------------
 

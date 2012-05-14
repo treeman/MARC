@@ -7,14 +7,13 @@ step    EQU 211
 mem     EQU start - 2000        ; we will change B op in memory with DJN from here
 
 start   SPL 0                   ; process generator, necessary for we will go into
-                                ; our trap sometimes
 vamp    MOV ptr, @ptr           ; lay our fang
         ADD stepp, ptr          ; add in offset
         DJN vamp, <mem          ; DJN bomb
 
 ptr     JMP trap, ptr
 
-trap    SPL 1, -100             ; suck the life out of them
+trap    SPL 0, -100             ; suck the life out of them
         MOV bomb, <trap         ; make them bomb for us
         JMP trap                ; forever...
 

@@ -30,8 +30,8 @@ architecture Behavioral of MARCled is
     signal segments : STD_LOGIC_VECTOR (6 downto 0);
     signal counter_r : std_logic_vector(17 downto 0) := (others => '0');
 
-    --alias state is counter_r(17 downto 16);
-    alias led_state is counter_r(1 downto 0);
+    alias led_state is counter_r(17 downto 16);
+    --alias led_state is counter_r(1 downto 0);
     signal scroll_counter : std_logic_vector(26 downto 0) := (others => '0');
     signal scroll_offset : std_logic_vector(5 downto 0) := (others => '0');
     signal current_char : std_logic_vector(5 downto 0) := (others => '0');
@@ -49,7 +49,7 @@ architecture Behavioral of MARCled is
 
     type IdData is array (0 to 7) of DataLine;
     signal id : IdData := (
-       "0110000", -- M
+       "0110000", -- M (E)
        "0001000", -- A
        "1111010", -- r
        "0110001", -- C
@@ -162,7 +162,7 @@ architecture Behavioral of MARCled is
        "0111001", -- T
 
        "1111111", --
-       "0110000", -- M (E)
+       "0001001", -- m (N)
        "0000001", -- O
        "1100011", -- v (u)
 
