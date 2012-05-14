@@ -15,7 +15,7 @@
 \renewcommand{\contentsname}{Innehållsförteckning}
 \renewcommand{\figurename}{Figur}
 \renewcommand{\tablename}{Tabell}
-%\lstset{columns=fullflexible,basicstyle=\ttfamily}
+
 \lstset{
          basicstyle=\footnotesize\ttfamily, % Standardstil
          %numbers=left,                     % Visa inte radnummer
@@ -40,21 +40,20 @@
 \begin{center}
 
 
-\vspace*{4cm}
+\vspace*{1cm}
 
 % Title
-{ \huge \bfseries Core Wars}\\[0.2cm]
+%{ \huge \bfseries Core Wars}\\[0.2cm]
 { \Large \bfseries TSEA43}\\[0.2cm]
 { Projektrapport}\\[0.2cm]
 
 
-
-%\begin{figure}[h]
-%    \begin{center}
-%        \includegraphics[width=10cm]{Logo01.eps}
-%        \label{fig:Logo01}
-%    \end{center}
-%\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=15cm]{Logo01.eps}
+        \label{fig:Logo01}
+    \end{center}
+\end{figure}
 
 \vspace*{2cm}
 
@@ -65,7 +64,7 @@ Jizhi Li
 \vfill
 
 % Bottom of the page
-{\large 7 Maj, 2012}
+{\large 15 April, 2012}
 
 \end{center}
 
@@ -134,6 +133,14 @@ Denna Warrior är ej offensiv och har som stategi att skapar en massa imps. Imp 
 
 \textbf{Vampire Bomber Gate Replicator} \\
 Denna otympliga Warrior startade som ett skämt då vi ville se vad som hände om man inkluderade så många strategier som möjligt i en Warrior. Dock blev den inte så dålig som vi först trodde. Först så skapar Warriorn en kopia av sig själv, denna kopia kan dock ej kopiera sig själv, något som borde kunna lösas med hjälp av lite hjärnverksamhet och en texteditor. Efter kopiatorn så har Warriorn en ”bomber cage”, dessa två rader databombar minnet bakåt. Efter cagen kommer vampyrkoden. En vampyr JMP bombar minnet i hopp om att fienden skall hoppa in i dess cage. Den kan därmed sno klockcykler ifrån motståndarens kod. Sist finns en gate ifall resten av koden skulle bli överkörd av en Imp.
+
+\newpage
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=3cm]{Kopimi.eps}
+    \end{center}
+\end{figure}
 
 \textbf{Kopimi} \\
 Denna Warrior scannar minnet efter information, kopierar den och börjar sen exekvera den. Den kan därmed härma en fientlig Warrior om den skulle hitta den. Fungerar skapligt trots att den utvecklades mest för att se vad som hände om man skulle tolka Det Missionerande Kopimistsamfundet missionsbudskap\footnote{http://kopimistsamfundet.se}; ”Kopiera och sprid” i form av Redcode. Denna Warrior använder replicator strategin.
@@ -208,32 +215,46 @@ Datorn är en mikroprogrammerad dator med 39 styrsignaler + 8 signaler för hopp
     \end{center}
 \end{figure}
 
+% Formating
+\newpage
+
 Blockschemat beskriver vilka register (alla osynliga för programmeraren) som finns och hur de är kopplade med omgivningen. Det finns två ALU:s för att korta ner på antalet klockcykler det krävs för att göra parallella operationer på A och B operanderna. På samma sätt har de flesta registren multiplexade ingångar för att spara tid och för att öka förmågan för parallellism.
 
 Mikrominnet har en mängd olika hopp som den kan göra, den kan bland annat hoppa på både A och B's olika adresseringsmoder eller ALU:ns olika flaggor. För att sakta ner exekveringen fördröjs exekveringen av varje instruktion genom att jämföra en räknare med en fördröjningssignal "instr delay". Detta för man ska kunna följa spelet gång på skärmen.
 
 Vid exekvering av en instruktion laddas instruktionen först in till IR, sedan beräknas adresseringsmoderna för A och B och därefter utförs instruktionen. Adressmodsberäkningen är besvärlig då både A och B operanderna kan vara en av de fyra olika moderna. Detta kompliceras ytterligare då vissa instruktioner gör olika saker beroende på vilka adresseringsmoder som används. Efter beräkningen lagras operanderna i M1 och M2, om immediate, och annars i adressregistren ADR1 och ADR2. Schemat visar även var vga, FIFO och fbart controller ansluts.
 
+\newpage
 \subsection{VGA}
 
-VGA är uppdelad i två delar: vga\_controller och pixelsender. Vga\_controller tar hand om timing av signaler till VGA-port och pixelsender använder samma timing som vga\_controller samt hämta färg data urifrån huvudminne. Se figur 2 för detaljer.
+VGA är uppdelad i två delar: vga\_controller och pixelsender. Vga\_controller tar hand om timing av signaler till VGA-port och pixelsender använder samma timing som vga\_controller samt hämta färg data urifrån huvudminne. Se figur \ref{fig:vga2} för detaljer.
 
 I vga\_controller finns det två räknare: h\_counter som räknar antalet horisontella pixlar och v\_counter som räknar antalet vertikala pixlar. Varje gång när h\_counter räknar upp till HMAX, dvs. maximalt antal pixlar på en rad, så kommer h\_counter nollställas och skicka en +1 insignal till v\_counter; v\_counter kommer att nollställas när den uppnå VMAX. (antalet pixel för varje kolumn)
 
-HFP(slutpunkt till horisontal front porch), HSP(slutpunkt till horisontal synkpuls), VFP(slutpunkt till vertikal front porch), VSP(slutpunkt till vertikal synkpuls) kommer vi att använda i vga\_controller. HFP kommer att aktiveras när h\_counter \> HFP och skicka jordsignal till H-sync och HSP kommer att aktiveras när h\_counter > HSP eller h\_counter < HFP och skicka högsignal till H-sync. VFP och VSP kommer att skicka sync signal till V-sync med på samma sätt.
+HFP(slutpunkt till horisontal front porch), HSP(slutpunkt till horisontal synkpuls), VFP(slutpunkt till vertikal front porch), VSP(slutpunkt till vertikal synkpuls) kommer vi att använda i vga\_controller. HFP kommer att aktiveras när h\_counter > HFP och skicka jordsignal till H-sync och HSP kommer att aktiveras när h\_counter > HSP eller h\_counter < HFP och skicka högsignal till H-sync. VFP och VSP kommer att skicka sync signal till V-sync med på samma sätt.
 
-% Picture here....
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=11cm]{vga2.eps}
+        \caption{VGA blockschema}
+        \label{fig:vga2}
+    \end{center}
+\end{figure}
+
+% Formating
+\vspace{4cm}
 
 VGA-port kommer endast ta emot färg data när h\_counter < HLINES(640 enligt upplösning vi valde) och v\_counter < VLINES(480 enligt upplösning vi valde) med hjälp av en enable signal från HLINE och VLINE.
 Pixelsender använder samma timing och klocka som vga\_controller och skickar en 13 bitars adress till vårt färgminne, hämtar 8 bitars data på detta adress och då skickar denna data till vga-porten endast när räknare in vga\_controller ligger inom display-ytan.
 
 PixelSender tar hand om address hämtning och färg kod sändning. För att alla data i minnet ska se bra ut på skärmen bestämde vi att visa varje instruktion ska vara 5 pixlar bred och 7 pixlar hög. I så fall kommer vi att visa 128 data per rad och vi behöver 7*64 = 448 rader för att visa 213 = 8192 adresser. PixelSender skickar data till skärmen var 5:e klockpuls och upprepar detta för varje 128 data 7 gånger, i så fall kan vi ha varje instruktion med 5*7 pixel storlek. På ”border area” visar vi vilken spelare vinner CoreWar.
 
+\newpage
 \subsection{Minnen}
 
 Vi valde att använda en core size (storlek på spelplan) på 8192 rader, detta brukar vara standard i duell spel men ibland avrundar man till 8000 rader. Om man kör fler än 2 spelare brukar minnet vara betyderlig större, vi ska dock endast ha 2 spelare stöd. Vi behöver enligt (1) 13 bitar för att kunna adressera hela detta område. Då minnet i FPGAN är indelade i block mindre än detta fick vi dela upp minnet på flera block.
 
-Varje rad Redcode delades upp i 4 delar; instruktion och adresseringsmoder på 8 bitar, operand A på 13 bitar, operand B på 13 bitar och 8 bitar RGB färgning. Det som bäst stämde överens med vår uppdelning var att använda minnesblock utav storleken 1024 x 16 bitar (de 3 sista bitarna används ej dock i operandminnena), se figur 5.
+Varje rad Redcode delades upp i 4 delar; instruktion och adresseringsmoder på 8 bitar, operand A på 13 bitar, operand B på 13 bitar och 8 bitar RGB färgning. Det som bäst stämde överens med vår uppdelning var att använda minnesblock utav storleken 1024 x 16 bitar (de 3 sista bitarna används ej dock i operandminnena), se figur \ref{fig:memory_cell}.
 
 \begin{figure}[h]
     \begin{center}
@@ -245,7 +266,7 @@ Varje rad Redcode delades upp i 4 delar; instruktion och adresseringsmoder på 8
 
 De tre mest signifikanta bitarna styr multiplexern och ser till att rätt minne skriver och läses ifrån. Våra minnen var lite bättre än vad vi först förväntade oss, därför har vi en adress\_sync och data\_sync register, vi skulle kunna ta bort dessa och därmed snabba upp datorns minnesaccess.
 
-Då vi har olika färg beroende på vilken instruktion vi har i instruktionsminnet var det naturligt att slå samman instruktionsminnet och färgminnet då båda var på 8 bitar. Den resulterande maskinen ses i figur 6. Skillnaden mellan den och operandminnena är att den använder ett dualportminne med den andra adressingången kopplad till GPUn. Färgen skrivs automatiskt till minnet när man skriver in en instruktion i minnet.
+Då vi har olika färg beroende på vilken instruktion vi har i instruktionsminnet var det naturligt att slå samman instruktionsminnet och färgminnet då båda var på 8 bitar. Den resulterande maskinen ses i figur \ref{fig:memory_cell_dual}. Skillnaden mellan den och operandminnena är att den använder ett dualportminne med den andra adressingången kopplad till GPUn. Färgen skrivs automatiskt till minnet när man skriver in en instruktion i minnet.
 
 \begin{figure}[h]
     \begin{center}
@@ -258,7 +279,7 @@ Då vi har olika färg beroende på vilken instruktion vi har i instruktionsminn
 \newpage
 \subsection{UART}
 
-Vår dator använder en 13 bitars buss, det skulle därmed vara trevligt om indatat ifrån vår värddator skulle vara 13 bitar detta med. Då vi använder Anders Nilssons FBART vilken arbetar i 8 bitar skulle det vara trevligt att slå samman två sändningar till en. Det gör vi med modulen i figur 7. Modulen väntar på en databegäran, tar emot två 8 bitars överförningar, slår samman dem till 13 bitar (den kastar iväg 3 bitar) och signalerar att data finns.
+Vår dator använder en 13 bitars buss, det skulle därmed vara trevligt om indatat ifrån vår värddator skulle vara 13 bitar detta med. Då vi använder Anders Nilssons FBART vilken arbetar i 8 bitar skulle det vara trevligt att slå samman två sändningar till en. Det gör vi med modulen i figur \ref{fig:uart}. Modulen väntar på en databegäran, tar emot två 8 bitars överförningar, slår samman dem till 13 bitar (den kastar iväg 3 bitar) och signalerar att data finns.
 
 \begin{figure}[h]
     \begin{center}
@@ -271,7 +292,7 @@ Vår dator använder en 13 bitars buss, det skulle därmed vara trevligt om inda
 \newpage
 \subsection{FIFO}
 
-Då en spelare kan ha flera olika processer igång behöver vi ett sätt att lagra alla programräknare. Vi har implementerat två stycken ”first in first out” köer i vår hårdvara, se figur 8.
+Då en spelare kan ha flera olika processer igång behöver vi ett sätt att lagra alla programräknare. Vi har implementerat två stycken ”first in first out” köer i vår hårdvara, se figur \ref{fig:fifo}.
 
 \begin{figure}[h]
     \begin{center}
@@ -300,58 +321,134 @@ Vid fortsatt arbete kan mikrokoden göras snabbare genom mikrokodsoptimering. Ti
 \appendix
 \section{Warriors}
 
+% Warriors of the world!
+
+% stones
+
+\subsection{Little bomber}
+\lstinputlisting{../scripts/j3x-little_bomber.red}
+
 \subsection{Factory bomber}
 \lstinputlisting{../scripts/j3x-factory-bomber.red}
 
+\subsection{Carpet bomber}
+\lstinputlisting{../scripts/jonas-carpet-bomber.red}
+
+\newpage
+\subsection{Core Cleaner}
+\lstinputlisting{../scripts/jonas-cleaner.red}
+
+\subsection{Dwarf scout}
+\lstinputlisting{../scripts/jonas-dwarfscout.red}
+
+\subsection{Stone of ages}
+\lstinputlisting{../scripts/jonas-stone-of-ages.red}
+
+% paper
+
+\newpage
+\subsection{Jumper}
+\lstinputlisting{../scripts/j3x-jumper.red}
+
+\subsection{Jumper gate}
+\lstinputlisting{../scripts/j3x-jumper-gate.red}
+
+\subsection{Inseminator}
+\lstinputlisting{../scripts/j3x-inseminator.red}
+
+\subsection{Kopimi}
+\lstinputlisting{../scripts/j3x-kopimi.red}
+
+\subsection{Replicator}
+\lstinputlisting{../scripts/jonas-replicator.red}
+
+% scissors
+
+\subsection{Scanner}
+\lstinputlisting{../scripts/j3x-scanner1.red}
+
+\subsection{Vampire}
+\lstinputlisting{../scripts/j3x-vampire.red}
+
+\subsection{Suck on this}
+\lstinputlisting{../scripts/jonas-suck-on-this.red}
+
+% mixes +imps
+
+\newpage
 \subsection{Imp spawner}
 \lstinputlisting{../scripts/j3x-imp-spawner.red}
 
-% Samma för...
+\subsection{Imp worm}
+\lstinputlisting{../scripts/jonas-impworm.red}
 
-% j3x-inseminator.red
-% j3x-jumper.red
-% j3x-jumper-gate.red
-% j3x-kopimi.red
-% j3x-little_bomber.red
-% j3x-scanner1.red
-% j3x-vampire.red
-% j3x-vampire-bomber.red
-% j3x-vampire-bomber-gate.red
-% j3x-vampire-bomber-gate-replicator.red
-% jonas-carpet-bomber.red
-% jonas-cleaner.red
-% jonas-dwarfscout.red
-% jonas-impworm.red
-% jonas-replicator.red
-% jonas-stone-of-ages.red
-% jonas-suck-on-this.red
-% jonas-survivor.red
-% jonas-the-big-maker.red
+\subsection{Vampire bomber}
+\lstinputlisting{../scripts/j3x-vampire-bomber.red}
 
-% VHDL code here
+\newpage
+\subsection{Vampire bomber gate}
+\lstinputlisting{../scripts/j3x-vampire-bomber-gate.red}
+
+\subsection{Vampire bomber gate replicator}
+\lstinputlisting{../scripts/j3x-vampire-bomber-gate-replicator.red}
+
+\subsection{The big maker}
+\lstinputlisting{../scripts/jonas-the-big-maker.red}
+
+
 \newpage
 \section{VHDL}
 
+% main computer
+\subsection{MARC.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/MARC.vhd}
+
+\newpage
+\subsection{microcontroller.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/microcontroller.vhd}
+
+\newpage
 \subsection{ALU.vhd}
 \lstinputlisting[language=VHDL]{../src/MARC/ALU.vhd}
+
+% Memory
+\newpage
+\subsection{MemoryCell.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/MemoryCell.vhd}
+
+\newpage
+\subsection{MemoryCellDualPort.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/MemoryCellDualPort.vhd}
+
+% aux stuff
+
+% fifo
+\newpage
+\subsection{PlayerFIFO.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/PlayerFIFO.vhd}
+
+% fbart
+\newpage
+\subsection{FBARTController.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/FBARTController.vhd}
+
+% VGA stuff here
+\newpage
+\subsection{vga.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/vga.vhd}
 
 \newpage
 \subsection{colorpixSender.vhd}
 \lstinputlisting[language=VHDL]{../src/MARC/colorpixSender.vhd}
 
-% Samma för...
+\newpage
+\subsection{vgaController.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/vgaController.vhd}
 
-% FBARTController.vhd
-% fbartrx.vhd
-% MARC.ucf
-% MARC.vhd
-% MARCled.vhd
-% MemoryCell.vhd
-% MemoryCellDualPort.vhd
-% microcontroller.vhd
-% PlayerFIFO.vhd
-% vga.vhd.vhd
-% vgaController.vhd
+% led
+\newpage
+\subsection{MARCled.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/MARCled.vhd}
 
 
 % Scripts
@@ -380,5 +477,6 @@ Vid fortsatt arbete kan mikrokoden göras snabbare genom mikrokodsoptimering. Ti
     \item Xilinx ISE Design Suite 13.4 Webpack
     \item ModelSim Student Edition 10.1b
     \item Digilent ADEPT
+    \item Fbart\footnote{Tillhandhållen VHDL kod för att kommunicera med UART.}
 \end{itemize}
 
