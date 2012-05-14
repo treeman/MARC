@@ -5,8 +5,9 @@
         SPL VAMP, 0
         JMP CAGE1, 0
         DAT 0,0
-CAGE1   MOV -1, <-1
-CAGE2   DJN CAGE1, -2
+CAGE1   SPL 0,<-4
+	MOV -2, <-1
+CAGE2   JMP CAGE1,<-6
 VAMP    ADD STEP, PTR
         SUB STEP, BOMB
         MOV BOMB, @PTR
