@@ -4,3 +4,5 @@ blockschema.svg
 ~*.doc
 ~*.docx
 ~*.tmp
+*.stackdump
+*.xps
