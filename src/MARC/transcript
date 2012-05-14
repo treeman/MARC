@@ -11,30 +11,28 @@
 # Loading project work
 # Compile of ALU.vhd was successful.
 # Compile of colorpixSender.vhd was successful.
+# Compile of colorTSB.vhd was successful.
 # Compile of FBARTController.vhd was successful.
 # Compile of fbartrx.vhd was successful.
-# Compile of MARC-sim-test.vhd was successful.
 # Compile of MARC.vhd was successful.
+# Compile of MARCled.vhd was successful.
 # Compile of MemoryCell.vhd was successful.
 # Compile of MemoryCellDualPort.vhd was successful.
 # Compile of microcontroller.vhd was successful.
 # Compile of PlayerFIFO.vhd was successful.
 # Compile of vga.vhd was successful.
 # Compile of vgaController.vhd was successful.
-# 12 compiles, 0 failed with no errors. 
-# Compile of ALU.vhd was successful.
-# Compile of colorpixSender.vhd was successful.
-# Compile of FBARTController.vhd was successful.
-# Compile of fbartrx.vhd was successful.
+# 13 compiles, 0 failed with no errors. 
 # Compile of MARC-sim-test.vhd was successful.
+# Compile of MARC.vhd failed with 1 errors.
+# Compile of MARC-sim-test.vhd failed with 1 errors.
+# 2 compiles, 2 failed with 2 errors. 
 # Compile of MARC.vhd was successful.
-# Compile of MemoryCell.vhd was successful.
-# Compile of MemoryCellDualPort.vhd was successful.
-# Compile of microcontroller.vhd was successful.
-# Compile of PlayerFIFO.vhd was successful.
-# Compile of vga.vhd was successful.
-# Compile of vgaController.vhd was successful.
-# 12 compiles, 0 failed with no errors. 
+# Compile of MARC-sim-test.vhd failed with 1 errors.
+# 2 compiles, 1 failed with 1 error. 
+# Compile of MARC-sim-test.vhd failed with 1 errors.
+# Compile of MARC-sim-test.vhd failed with 1 errors.
+# Compile of MARC-sim-test.vhd was successful.
 vsim work.marc_test
 # vsim work.marc_test 
 # ** Note: (vsim-3812) Design is being optimized...
@@ -50,40 +48,203 @@ vsim work.marc_test
 # Loading work.memory_cell(behavioral)#1
 # Loading work.fbartcontroller(behavioral)#1
 # Loading work.colorpixsender(behavioral)#1
-do /edu/jonhi121/Digital-konstruktion/src/MARC/MARC-wave.do
+# Loading work.marcled(behavioral)#1
+do /edu/jesti965/Digital-konstruktion/src/MARC/MARC-wave.do
 # ** Error: (vish-4014) No objects found matching '/marc_test/start'.
-# Executing ONERROR command at macro /edu/jonhi121/Digital-konstruktion/src/MARC/MARC-wave.do line 13
+# Executing ONERROR command at macro /edu/jesti965/Digital-konstruktion/src/MARC/MARC-wave.do line 13
 # ** Error: Unrecognized option: "-childformat" ignored.
 # (vish-4014) No objects found matching '{/marc_test/uut/micro/uPC_addr(7) -radix hexadecimal} {/marc_test/uut/micro/uPC_addr(6) -radix hexadecimal} {/marc_test/uut/micro/uPC_addr(5) -radix hexadecimal} {/marc_test/uut/micro/uPC_addr(4) -radix hexadecimal} {/marc_test/uut/micro/uPC_addr(3) -radix hexadecimal} {/marc_test/uut/micro/uPC_addr(2) -radix hexadecimal} {/marc_test/uut/micro/uPC_addr(1) -radix hexadecimal} {/marc_test/uut/micro/uPC_addr(0) -radix hexadecimal'.
 # Unrecognized option: "-subitemconfig" ignored.
 # (vish-4014) No objects found matching '/marc_test/uut/micro/uPC_addr(7) {-height 15 -radix hexadecimal} /marc_test/uut/micro/uPC_addr(6) {-height 15 -radix hexadecimal} /marc_test/uut/micro/uPC_addr(5) {-height 15 -radix hexadecimal} /marc_test/uut/micro/uPC_addr(4) {-height 15 -radix hexadecimal} /marc_test/uut/micro/uPC_addr(3) {-height 15 -radix hexadecimal} /marc_test/uut/micro/uPC_addr(2) {-height 15 -radix hexadecimal} /marc_test/uut/micro/uPC_addr(1) {-height 15 -radix hexadecimal} /marc_test/uut/micro/uPC_addr(0) {-height 15 -radix hexadecimal}'.
-# Executing ONERROR command at macro /edu/jonhi121/Digital-konstruktion/src/MARC/MARC-wave.do line 30
+# Executing ONERROR command at macro /edu/jesti965/Digital-konstruktion/src/MARC/MARC-wave.do line 30
 # ** Error: Unrecognized option: "-childformat" ignored.
 # (vish-4014) No objects found matching '{/marc_test/uut/IN_reg(12) -radix hexadecimal} {/marc_test/uut/IN_reg(11) -radix hexadecimal} {/marc_test/uut/IN_reg(10) -radix hexadecimal} {/marc_test/uut/IN_reg(9) -radix hexadecimal} {/marc_test/uut/IN_reg(8) -radix hexadecimal} {/marc_test/uut/IN_reg(7) -radix hexadecimal} {/marc_test/uut/IN_reg(6) -radix hexadecimal} {/marc_test/uut/IN_reg(5) -radix hexadecimal} {/marc_test/uut/IN_reg(4) -radix hexadecimal} {/marc_test/uut/IN_reg(3) -radix hexadecimal} {/marc_test/uut/IN_reg(2) -radix hexadecimal} {/marc_test/uut/IN_reg(1) -radix hexadecimal} {/marc_test/uut/IN_reg(0) -radix hexadecimal'.
 # Unrecognized option: "-subitemconfig" ignored.
 # (vish-4014) No objects found matching '/marc_test/uut/IN_reg(12) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(11) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(10) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(9) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(8) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(7) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(6) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(5) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(4) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(3) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(2) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(1) {-height 15 -radix hexadecimal} /marc_test/uut/IN_reg(0) {-height 15 -radix hexadecimal}'.
-# Executing ONERROR command at macro /edu/jonhi121/Digital-konstruktion/src/MARC/MARC-wave.do line 43
+# Executing ONERROR command at macro /edu/jesti965/Digital-konstruktion/src/MARC/MARC-wave.do line 43
 # ** Error: (vish-4014) No objects found matching '/marc_test/last_request'.
-# Executing ONERROR command at macro /edu/jonhi121/Digital-konstruktion/src/MARC/MARC-wave.do line 66
+# Executing ONERROR command at macro /edu/jesti965/Digital-konstruktion/src/MARC/MARC-wave.do line 66
 # ** Error: Unrecognized option: "-childformat" ignored.
 # (vish-4014) No objects found matching '{/marc_test/prog1_row(38) -radix hexadecimal} {/marc_test/prog1_row(37) -radix hexadecimal} {/marc_test/prog1_row(36) -radix hexadecimal} {/marc_test/prog1_row(35) -radix hexadecimal} {/marc_test/prog1_row(34) -radix hexadecimal} {/marc_test/prog1_row(33) -radix hexadecimal} {/marc_test/prog1_row(32) -radix hexadecimal} {/marc_test/prog1_row(31) -radix hexadecimal} {/marc_test/prog1_row(30) -radix hexadecimal} {/marc_test/prog1_row(29) -radix hexadecimal} {/marc_test/prog1_row(28) -radix hexadecimal} {/marc_test/prog1_row(27) -radix hexadecimal} {/marc_test/prog1_row(26) -radix hexadecimal} {/marc_test/prog1_row(25) -radix hexadecimal} {/marc_test/prog1_row(24) -radix hexadecimal} {/marc_test/prog1_row(23) -radix hexadecimal} {/marc_test/prog1_row(22) -radix hexadecimal} {/marc_test/prog1_row(21) -radix hexadecimal} {/marc_test/prog1_row(20) -radix hexadecimal} {/marc_test/prog1_row(19) -radix hexadecimal} {/marc_test/prog1_row(18) -radix hexadecimal} {/marc_test/prog1_row(17) -radix hexadecimal} {/marc_test/prog1_row(16) -radix hexadecimal} {/marc_test/prog1_row(15) -radix hexadecimal} {/marc_test/prog1_row(14) -radix hexadecimal} {/marc_test/prog1_row(13) -radix hexadecimal} {/marc_test/prog1_row(12) -radix hexadecimal} {/marc_test/prog1_row(11) -radix hexadecimal} {/marc_test/prog1_row(10) -radix hexadecimal} {/marc_test/prog1_row(9) -radix hexadecimal} {/marc_test/prog1_row(8) -radix hexadecimal} {/marc_test/prog1_row(7) -radix hexadecimal} {/marc_test/prog1_row(6) -radix hexadecimal} {/marc_test/prog1_row(5) -radix hexadecimal} {/marc_test/prog1_row(4) -radix hexadecimal} {/marc_test/prog1_row(3) -radix hexadecimal} {/marc_test/prog1_row(2) -radix hexadecimal} {/marc_test/prog1_row(1) -radix hexadecimal} {/marc_test/prog1_row(0) -radix hexadecimal'.
 # Unrecognized option: "-subitemconfig" ignored.
 # (vish-4014) No objects found matching '/marc_test/prog1_row(38) {-height 15 -radix hexadecimal} /marc_test/prog1_row(37) {-height 15 -radix hexadecimal} /marc_test/prog1_row(36) {-height 15 -radix hexadecimal} /marc_test/prog1_row(35) {-height 15 -radix hexadecimal} /marc_test/prog1_row(34) {-height 15 -radix hexadecimal} /marc_test/prog1_row(33) {-height 15 -radix hexadecimal} /marc_test/prog1_row(32) {-height 15 -radix hexadecimal} /marc_test/prog1_row(31) {-height 15 -radix hexadecimal} /marc_test/prog1_row(30) {-height 15 -radix hexadecimal} /marc_test/prog1_row(29) {-height 15 -radix hexadecimal} /marc_test/prog1_row(28) {-height 15 -radix hexadecimal} /marc_test/prog1_row(27) {-height 15 -radix hexadecimal} /marc_test/prog1_row(26) {-height 15 -radix hexadecimal} /marc_test/prog1_row(25) {-height 15 -radix hexadecimal} /marc_test/prog1_row(24) {-height 15 -radix hexadecimal} /marc_test/prog1_row(23) {-height 15 -radix hexadecimal} /marc_test/prog1_row(22) {-height 15 -radix hexadecimal} /marc_test/prog1_row(21) {-height 15 -radix hexadecimal} /marc_test/prog1_row(20) {-height 15 -radix hexadecimal} /marc_test/prog1_row(19) {-height 15 -radix hexadecimal} /marc_test/prog1_row(18) {-height 15 -radix hexadecimal} /marc_test/prog1_row(17) {-height 15 -radix hexadecimal} /marc_test/prog1_row(16) {-height 15 -radix hexadecimal} /marc_test/prog1_row(15) {-height 15 -radix hexadecimal} /marc_test/prog1_row(14) {-height 15 -radix hexadecimal} /marc_test/prog1_row(13) {-height 15 -radix hexadecimal} /marc_test/prog1_row(12) {-height 15 -radix hexadecimal} /marc_test/prog1_row(11) {-height 15 -radix hexadecimal} /marc_test/prog1_row(10) {-height 15 -radix hexadecimal} /marc_test/prog1_row(9) {-height 15 -radix hexadecimal} /marc_test/prog1_row(8) {-height 15 -radix hexadecimal} /marc_test/prog1_row(7) {-height 15 -radix hexadecimal} /marc_test/prog1_row(6) {-height 15 -radix hexadecimal} /marc_test/prog1_row(5) {-height 15 -radix hexadecimal} /marc_test/prog1_row(4) {-height 
 # 15 -radix hexadecimal} /marc_test/prog1_row(3) {-height 15 -radix hexadecimal} /marc_test/prog1_row(2) {-height 15 -radix hexadecimal} /marc_test/prog1_row(1) {-height 15 -radix hexadecimal} /marc_test/prog1_row(0) {-height 15 -radix hexadecimal}'.
-# Executing ONERROR command at macro /edu/jonhi121/Digital-konstruktion/src/MARC/MARC-wave.do line 68
+# Executing ONERROR command at macro /edu/jesti965/Digital-konstruktion/src/MARC/MARC-wave.do line 68
 # ** Error: Unrecognized option: "-childformat" ignored.
 # (vish-4014) No objects found matching '{/marc_test/uut/micro/signals(46) -radix binary} {/marc_test/uut/micro/signals(45) -radix binary} {/marc_test/uut/micro/signals(44) -radix binary} {/marc_test/uut/micro/signals(43) -radix binary} {/marc_test/uut/micro/signals(42) -radix binary} {/marc_test/uut/micro/signals(41) -radix binary} {/marc_test/uut/micro/signals(40) -radix binary} {/marc_test/uut/micro/signals(39) -radix binary} {/marc_test/uut/micro/signals(38) -radix binary} {/marc_test/uut/micro/signals(37) -radix binary} {/marc_test/uut/micro/signals(36) -radix binary} {/marc_test/uut/micro/signals(35) -radix binary} {/marc_test/uut/micro/signals(34) -radix binary} {/marc_test/uut/micro/signals(33) -radix binary} {/marc_test/uut/micro/signals(32) -radix binary} {/marc_test/uut/micro/signals(31) -radix binary} {/marc_test/uut/micro/signals(30) -radix binary} {/marc_test/uut/micro/signals(29) -radix binary} {/marc_test/uut/micro/signals(28) -radix binary} {/marc_test/uut/micro/signals(27) -radix binary} {/marc_test/uut/micro/signals(26) -radix binary} {/marc_test/uut/micro/signals(25) -radix binary} {/marc_test/uut/micro/signals(24) -radix binary} {/marc_test/uut/micro/signals(23) -radix binary} {/marc_test/uut/micro/signals(22) -radix binary} {/marc_test/uut/micro/signals(21) -radix binary} {/marc_test/uut/micro/signals(20) -radix binary} {/marc_test/uut/micro/signals(19) -radix binary} {/marc_test/uut/micro/signals(18) -radix binary} {/marc_test/uut/micro/signals(17) -radix binary} {/marc_test/uut/micro/signals(16) -radix binary} {/marc_test/uut/micro/signals(15) -radix binary} {/marc_test/uut/micro/signals(14) -radix binary} {/marc_test/uut/micro/signals(13) -radix binary} {/marc_test/uut/micro/signals(12) -radix binary} {/marc_test/uut/micro/signals(11) -radix binary} {/marc_test/uut/micro/signals(10) -radix binary} {/marc_test/uut/micro/signals(9) -radix binary} {/marc_test/uut/micro/signals(8) -radix binary} {/marc_test/uut/micro/signals(7) -radix binary} {/marc_test/uut/micro/signals(6) 
 # -radix binary} {/marc_test/uut/micro/signals(5) -radix binary} {/marc_test/uut/micro/signals(4) -radix binary} {/marc_test/uut/micro/signals(3) -radix binary} {/marc_test/uut/micro/signals(2) -radix binary} {/marc_test/uut/micro/signals(1) -radix binary} {/marc_test/uut/micro/signals(0) -radix binary'.
 # Unrecognized option: "-subitemconfig" ignored.
 # (vish-4014) No objects found matching '/marc_test/uut/micro/signals(46) {-height 15 -radix binary} /marc_test/uut/micro/signals(45) {-height 15 -radix binary} /marc_test/uut/micro/signals(44) {-height 15 -radix binary} /marc_test/uut/micro/signals(43) {-height 15 -radix binary} /marc_test/uut/micro/signals(42) {-height 15 -radix binary} /marc_test/uut/micro/signals(41) {-height 15 -radix binary} /marc_test/uut/micro/signals(40) {-height 15 -radix binary} /marc_test/uut/micro/signals(39) {-height 15 -radix binary} /marc_test/uut/micro/signals(38) {-height 15 -radix binary} /marc_test/uut/micro/signals(37) {-height 15 -radix binary} /marc_test/uut/micro/signals(36) {-height 15 -radix binary} /marc_test/uut/micro/signals(35) {-height 15 -radix binary} /marc_test/uut/micro/signals(34) {-height 15 -radix binary} /marc_test/uut/micro/signals(33) {-height 15 -radix binary} /marc_test/uut/micro/signals(32) {-height 15 -radix binary} /marc_test/uut/micro/signals(31) {-height 15 -radix binary} /marc_test/uut/micro/signals(30) {-height 15 -radix binary} /marc_test/uut/micro/signals(29) {-height 15 -radix binary} /marc_test/uut/micro/signals(28) {-height 15 -radix binary} /marc_test/uut/micro/signals(27) {-height 15 -radix binary} /marc_test/uut/micro/signals(26) {-height 15 -radix binary} /marc_test/uut/micro/signals(25) {-height 15 -radix binary} /marc_test/uut/micro/signals(24) {-height 15 -radix binary} /marc_test/uut/micro/signals(23) {-height 15 -radix binary} /marc_test/uut/micro/signals(22) {-height 15 -radix binary} /marc_test/uut/micro/signals(21) {-height 15 -radix binary} /marc_test/uut/micro/signals(20) {-height 15 -radix binary} /marc_test/uut/micro/signals(19) {-height 15 -radix binary} /marc_test/uut/micro/signals(18) {-height 15 -radix binary} /marc_test/uut/micro/signals(17) {-height 15 -radix binary} /marc_test/uut/micro/signals(16) {-height 15 -radix binary} /marc_test/uut/micro/signals(15) {-height 15 -radix binary} /marc_test/uut/micro/signals(14) {-height 
 # 15 -radix binary} /marc_test/uut/micro/signals(13) {-height 15 -radix binary} /marc_test/uut/micro/signals(12) {-height 15 -radix binary} /marc_test/uut/micro/signals(11) {-height 15 -radix binary} /marc_test/uut/micro/signals(10) {-height 15 -radix binary} /marc_test/uut/micro/signals(9) {-height 15 -radix binary} /marc_test/uut/micro/signals(8) {-height 15 -radix binary} /marc_test/uut/micro/signals(7) {-height 15 -radix binary} /marc_test/uut/micro/signals(6) {-height 15 -radix binary} /marc_test/uut/micro/signals(5) {-height 15 -radix binary} /marc_test/uut/micro/signals(4) {-height 15 -radix binary} /marc_test/uut/micro/signals(3) {-height 15 -radix binary} /marc_test/uut/micro/signals(2) {-height 15 -radix binary} /marc_test/uut/micro/signals(1) {-height 15 -radix binary} /marc_test/uut/micro/signals(0) {-height 15 -radix binary}'.
-# Executing ONERROR command at macro /edu/jonhi121/Digital-konstruktion/src/MARC/MARC-wave.do line 80
+# Executing ONERROR command at macro /edu/jesti965/Digital-konstruktion/src/MARC/MARC-wave.do line 80
 # ** Error: Unrecognized option: "-childformat" ignored.
 # (vish-4014) No objects found matching '{/marc_test/uut/memory3/address_out(12) -radix hexadecimal} {/marc_test/uut/memory3/address_out(11) -radix hexadecimal} {/marc_test/uut/memory3/address_out(10) -radix hexadecimal} {/marc_test/uut/memory3/address_out(9) -radix hexadecimal} {/marc_test/uut/memory3/address_out(8) -radix hexadecimal} {/marc_test/uut/memory3/address_out(7) -radix hexadecimal} {/marc_test/uut/memory3/address_out(6) -radix hexadecimal} {/marc_test/uut/memory3/address_out(5) -radix hexadecimal} {/marc_test/uut/memory3/address_out(4) -radix hexadecimal} {/marc_test/uut/memory3/address_out(3) -radix hexadecimal} {/marc_test/uut/memory3/address_out(2) -radix hexadecimal} {/marc_test/uut/memory3/address_out(1) -radix hexadecimal} {/marc_test/uut/memory3/address_out(0) -radix hexadecimal'.
 # Unrecognized option: "-subitemconfig" ignored.
 # (vish-4014) No objects found matching '/marc_test/uut/memory3/address_out(12) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(11) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(10) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(9) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(8) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(7) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(6) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(5) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(4) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(3) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(2) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(1) {-height 15 -radix hexadecimal} /marc_test/uut/memory3/address_out(0) {-height 15 -radix hexadecimal}'.
-# Executing ONERROR command at macro /edu/jonhi121/Digital-konstruktion/src/MARC/MARC-wave.do line 111
+# Executing ONERROR command at macro /edu/jesti965/Digital-konstruktion/src/MARC/MARC-wave.do line 111
+run
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/fbart/fbart
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/fbart/fbart
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
+# ** Warning: CONV_INTEGER: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, and it has been converted to 0.
+#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 2  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 2  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut/memory1
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 5 ns  Iteration: 2  Instance: /marc_test/uut
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 5 ns  Iteration: 2  Instance: /marc_test/uut
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 15 ns  Iteration: 1  Instance: /marc_test/uut/memory1
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 25 ns  Iteration: 1  Instance: /marc_test/uut/memory1
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 25 ns  Iteration: 5  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 25 ns  Iteration: 5  Instance: /marc_test/uut/alus
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 35 ns  Iteration: 1  Instance: /marc_test/uut/memory1
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
+# Compile of microcontroller.vhd was successful.
 restart -f
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading work.marc_test(behavior)#1
+# Loading ieee.numeric_std(body)
+# Loading work.marc(behavioral)#1
+# Loading work.microcontroller(behavioral)#1
+# Loading work.memory_cell_dualport(behavioral)#1
+# Loading work.memory_cell(behavioral)#1
+# Loading work.fbartcontroller(behavioral)#1
+# Loading work.colorpixsender(behavioral)#1
+# Loading work.marcled(behavioral)#1
 run 10 us
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
 #    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
@@ -246,7 +407,8 @@ restart -f
 # Loading work.memory_cell(behavioral)#1
 # Loading work.fbartcontroller(behavioral)#1
 # Loading work.colorpixsender(behavioral)#1
-run 4 us
+# Loading work.marcled(behavioral)#1
+run 10 us
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
 #    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
@@ -393,8 +555,7 @@ run 4 us
 #    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
 #    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# Compile of MARC-sim-test.vhd failed with 1 errors.
-# Compile of MARC-sim-test.vhd was successful.
+# Compile of microcontroller.vhd was successful.
 restart -f
 # ** Note: (vsim-3813) Design is being optimized due to module recompilation...
 # Loading std.standard
@@ -409,6 +570,7 @@ restart -f
 # Loading work.memory_cell(behavioral)#1
 # Loading work.fbartcontroller(behavioral)#1
 # Loading work.colorpixsender(behavioral)#1
+# Loading work.marcled(behavioral)#1
 run 10 us
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
 #    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
@@ -556,6 +718,7 @@ run 10 us
 #    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
 #    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
+# Compile of microcontroller.vhd was successful.
 restart -f
 # ** Note: (vsim-3813) Design is being optimized due to module recompilation...
 # Loading std.standard
@@ -570,6 +733,7 @@ restart -f
 # Loading work.memory_cell(behavioral)#1
 # Loading work.fbartcontroller(behavioral)#1
 # Loading work.colorpixsender(behavioral)#1
+# Loading work.marcled(behavioral)#1
 run 10 us
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
 #    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
@@ -717,6 +881,7 @@ run 10 us
 #    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
 #    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
+# Compile of microcontroller.vhd was successful.
 restart -f
 # ** Note: (vsim-3813) Design is being optimized due to module recompilation...
 # Loading std.standard
@@ -731,6 +896,7 @@ restart -f
 # Loading work.memory_cell(behavioral)#1
 # Loading work.fbartcontroller(behavioral)#1
 # Loading work.colorpixsender(behavioral)#1
+# Loading work.marcled(behavioral)#1
 run 10 us
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
 #    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
@@ -878,488 +1044,11 @@ run 10 us
 #    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
 # ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
 #    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
-restart -f
-# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
-# Loading std.standard
-# Loading ieee.std_logic_1164(body)
-# Loading ieee.std_logic_arith(body)
-# Loading ieee.std_logic_unsigned(body)
-# Loading work.marc_test(behavior)#1
-# Loading ieee.numeric_std(body)
-# Loading work.marc(behavioral)#1
-# Loading work.microcontroller(behavioral)#1
-# Loading work.memory_cell_dualport(behavioral)#1
-# Loading work.memory_cell(behavioral)#1
-# Loading work.fbartcontroller(behavioral)#1
-# Loading work.colorpixsender(behavioral)#1
-run 10 us
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/fbart/fbart
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/fbart/fbart
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: CONV_INTEGER: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, and it has been converted to 0.
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 2  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 2  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 2  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 2  Instance: /marc_test/uut
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 15 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 25 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 25 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 25 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 35 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# Compile of MARC-sim-test.vhd was successful.
-restart -f
-# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
-# Loading std.standard
-# Loading ieee.std_logic_1164(body)
-# Loading ieee.std_logic_arith(body)
-# Loading ieee.std_logic_unsigned(body)
-# Loading work.marc_test(behavior)#1
-# Loading ieee.numeric_std(body)
-# Loading work.marc(behavioral)#1
-# Loading work.microcontroller(behavioral)#1
-# Loading work.memory_cell_dualport(behavioral)#1
-# Loading work.memory_cell(behavioral)#1
-# Loading work.fbartcontroller(behavioral)#1
-# Loading work.colorpixsender(behavioral)#1
-run 10 us
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/fbart/fbart
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/fbart/fbart
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: CONV_INTEGER: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, and it has been converted to 0.
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 2  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 2  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 2  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 2  Instance: /marc_test/uut
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 15 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 25 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 25 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 25 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 35 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
-restart -f
-# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
-# Loading std.standard
-# Loading ieee.std_logic_1164(body)
-# Loading ieee.std_logic_arith(body)
-# Loading ieee.std_logic_unsigned(body)
-# Loading work.marc_test(behavior)#1
-# Loading ieee.numeric_std(body)
-# Loading work.marc(behavioral)#1
-# Loading work.microcontroller(behavioral)#1
-# Loading work.memory_cell_dualport(behavioral)#1
-# Loading work.memory_cell(behavioral)#1
-# Loading work.fbartcontroller(behavioral)#1
-# Loading work.colorpixsender(behavioral)#1
-run 10 us
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/fbart/fbart
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/fbart/fbart
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: CONV_INTEGER: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, and it has been converted to 0.
-#    Time: 0 ns  Iteration: 0  Instance: /marc_test/uut/micro
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 1  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 2  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 2  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 0 ns  Iteration: 3  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 5 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 2  Instance: /marc_test/uut
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 5 ns  Iteration: 2  Instance: /marc_test/uut
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 15 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 25 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 25 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 25 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 35 ns  Iteration: 1  Instance: /marc_test/uut/memory1
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
-# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
-#    Time: 35 ns  Iteration: 5  Instance: /marc_test/uut/alus
-run 10 us
+# Compile of MARC.vhd was successful.
+# Compile of microcontroller.vhd was successful.
+# 2 compiles, 0 failed with no errors. 
+# Compile of microcontroller.vhd was successful.
+# Compile of MARCled.vhd failed with 1 errors.
+# Compile of MARCled.vhd was successful.
+# Compile of MARCled.vhd was successful.
+# Compile of MARCled.vhd was successful.

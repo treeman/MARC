@@ -214,6 +214,8 @@ architecture Behavioral of MARCled is
        others => (others => '1')
     );
 
+    signal one : std_logic_vector(6 downto 0) := "1001111"; -- 1
+    signal two : std_logic_vector(6 downto 0) := "0010010"; -- 2
 begin
     ca <= segments(6);
     cb <= segments(5);
@@ -224,11 +226,12 @@ begin
     cg <= segments(0);
     dp <= '1';
 
-    with display_state select
-        segments <= id(conv_integer(current_char(2 downto 0))) when "00",
-                    player1_victory(conv_integer(current_char(5 downto 0))) when "01",
-                    player2_victory(conv_integer(current_char(5 downto 0))) when "10",
-                    instr(conv_integer(instr_char)) when others;
+        segments <= id(conv_integer(current_char(2 downto 0))) when display_state = "00" else
+                    player1_victory(conv_integer(current_char(5 downto 0))) when display_state = "01" else
+                    player2_victory(conv_integer(current_char(5 downto 0))) when display_state = "10" else
+		    one when led_state = "00" and display_state = "11" and active_player = "01" else
+		    two when led_state = "00" and display_state = "11" and active_player = "10" else
+                    instr(conv_integer(instr_char));
 
     with current_instr select
         instr_start <=  "000000" when "0000", -- DAT
