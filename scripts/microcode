@@ -240,14 +240,14 @@
 :DJN    jmpBimm $IDJN
         ADR2 -> mem_addr                    ; Fetch B field spec by B
         mem -> M2
-        M2 -> ALU1                          ; Decr
+:DODJN  M2 -> ALU1                          ; Decr
         ALU--
         ALU1 -> M2
         M2 -> mem                           ; Write back
-:CMPDJN jmpZ $ADDPC                         ; If zero, continue
+        jmpZ $ADDPC                         ; If zero, continue
         M1 -> FIFO, jmp $END                ; Else jump to A
 
-:IDJN   M2 -> ALU1, jmp $CMPDJN             ; Use B to set Z
+:IDJN   M2 -> ALU1, PC -> mem_addr, jmp $DODJN          ; B is immediate data, set PC as mem_addr
 
 ; SPL Place A in process queue
 :SPL    PC++

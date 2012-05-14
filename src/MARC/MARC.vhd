@@ -18,6 +18,11 @@ entity MARC is
             HS : out std_logic;
             VS : out std_logic;
 
+            -- Test upstart load without fbart
+            --tmp_has_next_data : in std_logic;
+            --tmp_IN : in std_logic_vector(12 downto 0);
+            --tmp_request_next_data : out std_logic;
+
             -- Output flags etc
             reset_out : out std_logic;
             game_started_out : out std_logic;
