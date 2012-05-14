@@ -145,7 +145,7 @@ En dwarf scout är en enkel bomber som skyddar sig mot andra bombers genom att s
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=14cm]{vga_teori.eps}
+        \includegraphics[width=11cm]{display_timing.eps}
         \caption{Display timing}
         \label{fig:display_timing}
     \end{center}
@@ -210,7 +210,7 @@ VGA är uppdelad i två delar: vga\_controller och pixelsender. Vga\_controller 
 
 I vga\_controller finns det två räknare: h\_counter som räknar antalet horisontella pixlar och v\_counter som räknar antalet vertikala pixlar. Varje gång när h\_counter räknar upp till HMAX, dvs. maximalt antal pixlar på en rad, så kommer h\_counter nollställas och skicka en +1 insignal till v\_counter; v\_counter kommer att nollställas när den uppnå VMAX. (antalet pixel för varje kolumn)
 
-HFP(slutpunkt till horisontal front porch), HSP(slutpunkt till horisontal synkpuls), VFP(slutpunkt till vertikal front porch), VSP(slutpunkt till vertikal synkpuls) kommer vi att använda i vga\_controller. HFP kommer att aktiveras när h\_counter > HFP och skicka jordsignal till H-sync och HSP kommer att aktiveras när h\_counter > HSP eller h\_counter < HFP och skicka högsignal till H-sync. VFP och VSP kommer att skicka sync signal till V-sync med på samma sätt.
+HFP(slutpunkt till horisontal front porch), HSP(slutpunkt till horisontal synkpuls), VFP(slutpunkt till vertikal front porch), VSP(slutpunkt till vertikal synkpuls) kommer vi att använda i vga\_controller. HFP kommer att aktiveras när h\_counter \> HFP och skicka jordsignal till H-sync och HSP kommer att aktiveras när h\_counter > HSP eller h\_counter < HFP och skicka högsignal till H-sync. VFP och VSP kommer att skicka sync signal till V-sync med på samma sätt.
 
 % Picture here....
 
@@ -245,6 +245,7 @@ Då vi har olika färg beroende på vilken instruktion vi har i instruktionsminn
     \end{center}
 \end{figure}
 
+\newpage
 \subsection{UART}
 
 Vår dator använder en 13 bitars buss, det skulle därmed vara trevligt om indatat ifrån vår värddator skulle vara 13 bitar detta med. Då vi använder Anders Nilssons FBART vilken arbetar i 8 bitar skulle det vara trevligt att slå samman två sändningar till en. Det gör vi med modulen i figur 7. Modulen väntar på en databegäran, tar emot två 8 bitars överförningar, slår samman dem till 13 bitar (den kastar iväg 3 bitar) och signalerar att data finns.
@@ -257,6 +258,7 @@ Vår dator använder en 13 bitars buss, det skulle därmed vara trevligt om inda
     \end{center}
 \end{figure}
 
+\newpage
 \subsection{FIFO}
 
 Då en spelare kan ha flera olika processer igång behöver vi ett sätt att lagra alla programräknare. Vi har implementerat två stycken ”first in first out” köer i vår hårdvara, se figur 8.
