@@ -1,14 +1,8 @@
 ﻿
 Todo
 ====
-* Rapport!  
-    * Kontrollera formatering av latex genererad pdf
-    * Kontrollera source code filer
-    * Kontrollera referenser till figurer och annat
-    * Kontrollera ordningen på de olika delarna, och även source/warriors etc.
 
-* PWN:er-point!  
-    Kontrollera!
+* Redovisa! MWahaha!
 
 Schema
 ------
@@ -49,18 +43,20 @@ Schema
     DONE
 
 ## v18
-- skriva VHDL, 3:e byggveckan
+- skriva VHDL, 3:e byggveckan  
     DONE
 
 ## v19
-- skriva VHDL, 4:e byggveckan
+- skriva VHDL, 4:e byggveckan  
     DONE
-- strax före redovisningen finns beslutspunkt 2, där vi kollar att ert bygge uppfyller kravspecen
+- strax före redovisningen finns beslutspunkt 2, där vi kollar att ert bygge uppfyller kravspecen  
+    DONE?
 
 ## v20
 - Redovisning
 - demonstrera apparaten
 - hålla en muntlig presentation
 - skriva en teknisk rapport
+    DONE
 - lämna tillbaka alla komponenter
 
