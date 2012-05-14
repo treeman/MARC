@@ -1,0 +1,264 @@
+PWD C:/Users/Ingram/Digital-konstruktion/Report & presentation
+INPUT C:/Users/Ingram/AppData/Local/MiKTeX/2.9/miktex/data/le/pdftex/pdflatex.fmt
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/rapport.tex
+OUTPUT rapport.log
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/article.cls
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/article.cls
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/size11.clo
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/size11.clo
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr10.tfm
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/inputenc.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/inputenc.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/utf8.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/utf8.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/t1enc.dfu
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/t1enc.dfu
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/ot1enc.dfu
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/ot1enc.dfu
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/omsenc.dfu
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/omsenc.dfu
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/preprint/fullpage.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/preprint/fullpage.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/psnfss/times.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/psnfss/times.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/graphicx.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/graphicx.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/keyval.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/keyval.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/graphics.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/graphics.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/trig.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/trig.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/00miktex/graphics.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/00miktex/graphics.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/pdftex-def/pdftex.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/pdftex-def/pdftex.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/infwarerr.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/infwarerr.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ltxcmds.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ltxcmds.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/multicol.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/multicol.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amsmath.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amsmath.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amstext.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amstext.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amsgen.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amsgen.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amsbsy.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amsbsy.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amsopn.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/ams/math/amsopn.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/tabularx.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/tabularx.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/array.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/array.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/setspace/setspace.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/setspace/setspace.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/listings.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/listings.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/listings.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/listings.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/epstopdf.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/epstopdf.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/epstopdf-base.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/epstopdf-base.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/grfext.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/grfext.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/kvdefinekeys.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/kvdefinekeys.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/kvoptions.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/kvoptions.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/kvsetkeys.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/kvsetkeys.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/etexcmds.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/etexcmds.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ifluatex.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ifluatex.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/pdftexcmds.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/pdftexcmds.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ifpdf.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ifpdf.sty
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/rapport.aux
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/rapport.aux
+OUTPUT rapport.aux
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/psnfss/ot1ptm.fd
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/psnfss/ot1ptm.fd
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
+INPUT C:/Program Files/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmb7t.tfm
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/Logo01.eps
+OUTPUT rapport.pdf
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/Logo01-eps-converted-to.pdf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/times/ptmb7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/times/ptmr7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr8r.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/times/ptmr7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr8r.tfm
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/rapport.toc
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/rapport.toc
+OUTPUT rapport.toc
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr8.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr6.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi10.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi8.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi6.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy10.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy8.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy6.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmex10.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr9.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi9.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy9.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex9.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/times/ptmr7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr8r.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/times/ptmr7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr8r.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/times/ptmr7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmr8r.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmb7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmb7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/times/ptmb7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/times/ptmb7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/Kopimi.eps
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/Kopimi-eps-converted-to.pdf
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/display_timing.eps
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/display_timing-eps-converted-to.pdf
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/psnfss/omsptm.fd
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/psnfss/omsptm.fd
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/rs232.eps
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/rs232-eps-converted-to.pdf
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/huvudblockschema.eps
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/huvudblockschema-eps-converted-to.pdf
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/vga2.eps
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/vga2-eps-converted-to.pdf
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/memory_cell.eps
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/memory_cell-eps-converted-to.pdf
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/memory_cell_dual.eps
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/memory_cell_dual-eps-converted-to.pdf
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/uart.eps
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/uart-eps-converted-to.pdf
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/fifo.eps
+INPUT C:/Users/Ingram/Digital-konstruktion/Report & presentation/fifo-eps-converted-to.pdf
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-little_bomber.red
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/psnfss/ot1pcr.fd
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/psnfss/ot1pcr.fd
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/courier/pcrr7t.tfm
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-little_bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-little_bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-factory-bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-factory-bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-factory-bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-carpet-bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-carpet-bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-carpet-bomber.red
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/courier/pcrr7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/courier/pcrr8r.tfm
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-cleaner.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-cleaner.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-cleaner.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-dwarfscout.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-dwarfscout.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-dwarfscout.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-stone-of-ages.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-stone-of-ages.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-stone-of-ages.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-jumper.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-jumper.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-jumper.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-jumper-gate.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-jumper-gate.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-jumper-gate.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-inseminator.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-inseminator.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-inseminator.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-kopimi.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-kopimi.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-kopimi.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-replicator.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-replicator.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-replicator.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-scanner1.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-scanner1.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-scanner1.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-suck-on-this.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-suck-on-this.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-suck-on-this.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-imp-spawner.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-imp-spawner.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-imp-spawner.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-impworm.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-impworm.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-impworm.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire-bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire-bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire-bomber.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire-bomber-gate.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire-bomber-gate.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire-bomber-gate.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire-bomber-gate-replicator.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire-bomber-gate-replicator.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/j3x-vampire-bomber-gate-replicator.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-the-big-maker.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-the-big-maker.red
+INPUT C:/Users/Ingram/Digital-konstruktion/scripts/jonas-the-big-maker.red
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MARC.vhd
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MARC.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MARC.vhd
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/courier/pcrb7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/courier/pcrro7t.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/courier/pcrb7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/courier/pcrb8r.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/vf/adobe/courier/pcrro7t.vf
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/adobe/courier/pcrro8r.tfm
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/microcontroller.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/microcontroller.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/microcontroller.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/ALU.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/ALU.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/ALU.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MemoryCell.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MemoryCell.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MemoryCell.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MemoryCellDualPort.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MemoryCellDualPort.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MemoryCellDualPort.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/PlayerFIFO.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/PlayerFIFO.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/PlayerFIFO.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/FBARTController.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/FBARTController.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/FBARTController.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/vga.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/vga.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/vga.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/colorpixSender.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/colorpixSender.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/colorpixSender.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/vgaController.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/vgaController.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/vgaController.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MARCled.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MARCled.vhd
+INPUT C:/Users/Ingram/Digital-konstruktion/src/MARC/MARCled.vhd
