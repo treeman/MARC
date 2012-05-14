@@ -8,12 +8,29 @@
 \usepackage{amsmath}
 \usepackage{tabularx}
 \usepackage{setspace}
+\usepackage{listings}
 \raggedright
 
 \renewcommand{\contentsname}{Innehållsförteckning}
 \renewcommand{\figurename}{Figur}
 \renewcommand{\tablename}{Tabell}
-
+%\lstset{columns=fullflexible,basicstyle=\ttfamily}
+\lstset{
+         basicstyle=\footnotesize\ttfamily, % Standardstil
+         %numbers=left,                     % Visa inte radnummer
+         numberstyle=\tiny,                 %
+         numbersep=5pt,                     %
+         tabsize=2,                         % Small tabs
+         extendedchars=true,                %
+         breaklines=true,                   %
+         showspaces=false,                  % Don't show ugly spaces thx
+         showtabs=false,                    % Or tabs
+         showstringspaces=false             % No spaces here either ffs
+         xleftmargin=17pt,
+         framexleftmargin=17pt,
+         framexrightmargin=5pt,
+         framexbottommargin=4pt,
+}
 \begin{document}
 
 % Frontpage
@@ -164,6 +181,192 @@ Vårt FPGA kort har en USB till RS232 port. Vi använde denna för att föra öv
     \end{center}
 \end{figure}
 
+\newpage
+
+
+\section{Beskrivning av hårdvara (M.A.R.C)}
+
+\subsection{Mikrodatorn}
+
+Datorn är en mikroprogrammerad dator med 39 styrsignaler + 8 signaler för hoppaddresser. Mikrominnet är 256 rader långt och mer än 200 rader är använt. Dess huduvuppgifter är att nollställa minnet vid en reset, slussa in program i minnet vid inladdning via fbart och hämtning och exekverande av instruktioner.
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=16cm]{huvudblockschema.eps}
+        \caption{Huvudblockschema}
+        \label{fig:huvud}
+    \end{center}
+\end{figure}
+
+Blockschemat beskriver vilka register (alla osynliga för programmeraren) som finns och hur de är kopplade med omgivningen. Det finns två ALU:s för att korta ner på antalet klockcykler det krävs för att göra parallella operationer på A och B operanderna. På samma sätt har de flesta registren multiplexade ingångar för att spara tid och för att öka förmågan för parallellism.
+
+Mikrominnet har en mängd olika hopp som den kan göra, den kan bland annat hoppa på både A och B's olika adresseringsmoder eller ALU:ns olika flaggor. För att sakta ner exekveringen fördröjs exekveringen av varje instruktion genom att jämföra en räknare med en fördröjningssignal "instr delay". Detta för man ska kunna följa spelet gång på skärmen.
+
+Vid exekvering av en instruktion laddas instruktionen först in till IR, sedan beräknas adresseringsmoderna för A och B och därefter utförs instruktionen. Adressmodsberäkningen är besvärlig då både A och B operanderna kan vara en av de fyra olika moderna. Detta kompliceras ytterligare då vissa instruktioner gör olika saker beroende på vilka adresseringsmoder som används. Efter beräkningen lagras operanderna i M1 och M2, om immediate, och annars i adressregistren ADR1 och ADR2. Schemat visar även var vga, FIFO och fbart controller ansluts.
+
+\subsection{VGA}
+
+VGA är uppdelad i två delar: vga\_controller och pixelsender. Vga\_controller tar hand om timing av signaler till VGA-port och pixelsender använder samma timing som vga\_controller samt hämta färg data urifrån huvudminne. Se figur 2 för detaljer.
+
+I vga\_controller finns det två räknare: h\_counter som räknar antalet horisontella pixlar och v\_counter som räknar antalet vertikala pixlar. Varje gång när h\_counter räknar upp till HMAX, dvs. maximalt antal pixlar på en rad, så kommer h\_counter nollställas och skicka en +1 insignal till v\_counter; v\_counter kommer att nollställas när den uppnå VMAX. (antalet pixel för varje kolumn)
+
+HFP(slutpunkt till horisontal front porch), HSP(slutpunkt till horisontal synkpuls), VFP(slutpunkt till vertikal front porch), VSP(slutpunkt till vertikal synkpuls) kommer vi att använda i vga\_controller. HFP kommer att aktiveras när h\_counter > HFP och skicka jordsignal till H-sync och HSP kommer att aktiveras när h\_counter > HSP eller h\_counter < HFP och skicka högsignal till H-sync. VFP och VSP kommer att skicka sync signal till V-sync med på samma sätt.
+
+% Picture here....
+
+VGA-port kommer endast ta emot färg data när h\_counter < HLINES(640 enligt upplösning vi valde) och v\_counter < VLINES(480 enligt upplösning vi valde) med hjälp av en enable signal från HLINE och VLINE.
+Pixelsender använder samma timing och klocka som vga\_controller och skickar en 13 bitars adress till vårt färgminne, hämtar 8 bitars data på detta adress och då skickar denna data till vga-porten endast när räknare in vga\_controller ligger inom display-ytan.
+
+PixelSender tar hand om address hämtning och färg kod sändning. För att alla data i minnet ska se bra ut på skärmen bestämde vi att visa varje instruktion ska vara 5 pixlar bred och 7 pixlar hög. I så fall kommer vi att visa 128 data per rad och vi behöver 7*64 = 448 rader för att visa 213 = 8192 adresser. PixelSender skickar data till skärmen var 5:e klockpuls och upprepar detta för varje 128 data 7 gånger, i så fall kan vi ha varje instruktion med 5*7 pixel storlek. På ”border area” visar vi vilken spelare vinner CoreWar.
+
+\subsection{Minnen}
+
+Vi valde att använda en core size (storlek på spelplan) på 8192 rader, detta brukar vara standard i duell spel men ibland avrundar man till 8000 rader. Om man kör fler än 2 spelare brukar minnet vara betyderlig större, vi ska dock endast ha 2 spelare stöd. Vi behöver enligt (1) 13 bitar för att kunna adressera hela detta område. Då minnet i FPGAN är indelade i block mindre än detta fick vi dela upp minnet på flera block.
+
+Varje rad Redcode delades upp i 4 delar; instruktion och adresseringsmoder på 8 bitar, operand A på 13 bitar, operand B på 13 bitar och 8 bitar RGB färgning. Det som bäst stämde överens med vår uppdelning var att använda minnesblock utav storleken 1024 x 16 bitar (de 3 sista bitarna används ej dock i operandminnena), se figur 5.
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=6cm]{memory_cell.eps}
+        \caption{Operandminnen}
+        \label{fig:memory_cell}
+    \end{center}
+\end{figure}
+
+De tre mest signifikanta bitarna styr multiplexern och ser till att rätt minne skriver och läses ifrån. Våra minnen var lite bättre än vad vi först förväntade oss, därför har vi en adress\_sync och data\_sync register, vi skulle kunna ta bort dessa och därmed snabba upp datorns minnesaccess.
+
+Då vi har olika färg beroende på vilken instruktion vi har i instruktionsminnet var det naturligt att slå samman instruktionsminnet och färgminnet då båda var på 8 bitar. Den resulterande maskinen ses i figur 6. Skillnaden mellan den och operandminnena är att den använder ett dualportminne med den andra adressingången kopplad till GPUn. Färgen skrivs automatiskt till minnet när man skriver in en instruktion i minnet.
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=10cm]{memory_cell_dual.eps}
+        \caption{Instruktions och färgminne}
+        \label{fig:memory_cell_dual}
+    \end{center}
+\end{figure}
+
+\subsection{UART}
+
+Vår dator använder en 13 bitars buss, det skulle därmed vara trevligt om indatat ifrån vår värddator skulle vara 13 bitar detta med. Då vi använder Anders Nilssons FBART vilken arbetar i 8 bitar skulle det vara trevligt att slå samman två sändningar till en. Det gör vi med modulen i figur 7. Modulen väntar på en databegäran, tar emot två 8 bitars överförningar, slår samman dem till 13 bitar (den kastar iväg 3 bitar) och signalerar att data finns.
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=13cm]{uart.eps}
+        \caption{UART kontrollerare. Vi fick även ändra i FBARTen då den gick på en 25 MHz klocka och vårt bygge kör på en 100 MHz klocka. Vi behövde endast öka antalet bitar i en räknare och ändra på en konstant.}
+        \label{fig:uart}
+    \end{center}
+\end{figure}
+
+\subsection{FIFO}
+
+Då en spelare kan ha flera olika processer igång behöver vi ett sätt att lagra alla programräknare. Vi har implementerat två stycken ”first in first out” köer i vår hårdvara, se figur 8.
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=14cm]{fifo.eps}
+        \caption{Player FIFOs.}
+        \label{fig:fifo}
+    \end{center}
+\end{figure}
+
+Headregistret pekar på den översta programräknaren och tailregistret pekar på en sista. När man begär nästa programräknare ökas den nuvarande spelarens head och den översta PCn skrivs till current\_pc\_out. När man skriver in en PC kollas först att den nuvarande spelars kö ej är full, om den ej är full skrivs PC in och tailregistret ökas. Om kön är full görs ingenting. Om någon spelares kö är tom, dvs. headregistret är lika med tailsregistret så signaleras game\_over. Man kan även byta aktiv spelare.
+
+
+\newpage
+
+\section{Slutsatser}
+
+Arbetet med projektet gick bra, VHDL var lite motsträvigt men vi lyckades implementera hela CoreWars 1988 standarden och få våra Redcode Warriors att fungera. Core Wars var väldigt kul, både att implementera och att skapa Warriors till.
+
+Implementationen skulle kunna förbättras. Mikrokodningen är inte alls optimerad då det kändes lite onödigt då vi hade en 27 bitars delayräknare efter varje exekverad instruktion. Minnesaccessen skulle kunna förbättras och VHDL koden är onödigt komplex på flera ställen.
+
+Vid fortsatt arbete kan mikrokoden göras snabbare genom mikrokodsoptimering. Till exempel skulle man kunna ha parallell adressavkodning då vi har dubbla ALUs. En nyare standard skulle kunna implementeras då den ger möjligheter till nya variationer av Warriors. Det finns regler om timeouts som vi inte tar hänsyn till. Om kommunikationen till datorn skulle kunna utökas skulle MARC kunna användas som en King of the Hill server för att ställa Warriors mot varandra och ranka dem. Man skulle kunna utöka stödet till mer än två spelare och köra en Free For All. En utökad core size och stöd för fler samtidiga processer skulle kunna läggas till.
+
+\newpage
+
+% Appendix here
+\appendix
+\section{Warriors}
+
+\subsection{Factory bomber}
+\lstinputlisting{../scripts/j3x-factory-bomber.red}
+
+\subsection{Imp spawner}
+\lstinputlisting{../scripts/j3x-imp-spawner.red}
+
+% Samma för...
+
+% j3x-inseminator.red
+% j3x-jumper.red
+% j3x-jumper-gate.red
+% j3x-kopimi.red
+% j3x-little_bomber.red
+% j3x-scanner1.red
+% j3x-vampire.red
+% j3x-vampire-bomber.red
+% j3x-vampire-bomber-gate.red
+% j3x-vampire-bomber-gate-replicator.red
+% jonas-carpet-bomber.red
+% jonas-cleaner.red
+% jonas-dwarfscout.red
+% jonas-impworm.red
+% jonas-replicator.red
+% jonas-stone-of-ages.red
+% jonas-suck-on-this.red
+% jonas-survivor.red
+% jonas-the-big-maker.red
+
+% VHDL code here
+\newpage
+\section{VHDL}
+
+\subsection{ALU.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/ALU.vhd}
+
+\newpage
+\subsection{colorpixSender.vhd}
+\lstinputlisting[language=VHDL]{../src/MARC/colorpixSender.vhd}
+
+% Samma för...
+
+% FBARTController.vhd
+% fbartrx.vhd
+% MARC.ucf
+% MARC.vhd
+% MARCled.vhd
+% MemoryCell.vhd
+% MemoryCellDualPort.vhd
+% microcontroller.vhd
+% PlayerFIFO.vhd
+% vga.vhd.vhd
+% vgaController.vhd
+
+
+% Scripts
+\newpage
+\section{Script}
+
+\subsection{Assembler}
+\lstinputlisting[language=Perl]{../scripts/assembler}
+
+\newpage
+\subsection{Mikrokod}
+\lstinputlisting{../scripts/microcode}
+
+\newpage
+\subsection{Mikrokodningshjälp}
+\lstinputlisting[language=Perl]{../scripts/control_codes}
 
 \end{document}
+
+
+% Used software
+\newpage
+\section{Använda mjukvaror}
+
+\begin{itemize}
+    \item Xilinx ISE Design Suite 13.4 Webpack
+    \item ModelSim Student Edition 10.1b
+    \item Digilent ADEPT
+\end{itemize}
 
