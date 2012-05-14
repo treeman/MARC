@@ -9,7 +9,9 @@
 \usepackage{tabularx}
 \usepackage{setspace}
 \usepackage{listings}
-\usepackage{mathtools}
+\usepackage{epstopdf}
+%\usepackage{amassymb}
+%\usepackage{latexsym}
 \raggedright
 
 \renewcommand{\contentsname}{Innehållsförteckning}
@@ -231,7 +233,7 @@ VGA är uppdelad i två delar: vga\_controller och pixelsender. Vga\_controller 
 
 I vga\_controller finns det två räknare: h\_counter som räknar antalet horisontella pixlar och v\_counter som räknar antalet vertikala pixlar. Varje gång när h\_counter räknar upp till HMAX, dvs. maximalt antal pixlar på en rad, så kommer h\_counter nollställas och skicka en +1 insignal till v\_counter; v\_counter kommer att nollställas när den uppnå VMAX. (antalet pixel för varje kolumn)
 
-HFP(slutpunkt till horisontal front porch), HSP(slutpunkt till horisontal synkpuls), VFP(slutpunkt till vertikal front porch), VSP(slutpunkt till vertikal synkpuls) kommer vi att använda i vga\_controller. HFP kommer att aktiveras när h\_counter > HFP och skicka jordsignal till H-sync och HSP kommer att aktiveras när h\_counter > HSP eller h\_counter < HFP och skicka högsignal till H-sync. VFP och VSP kommer att skicka sync signal till V-sync med på samma sätt.
+HFP(slutpunkt till horisontal front porch), HSP(slutpunkt till horisontal synkpuls), VFP(slutpunkt till vertikal front porch), VSP(slutpunkt till vertikal synkpuls) kommer vi att använda i vga\_controller. HFP kommer att aktiveras när h\_counter $>$ HFP och skicka jordsignal till H-sync och HSP kommer att aktiveras när h\_counter $>$ HSP eller h\_counter $<$ HFP och skicka högsignal till H-sync. VFP och VSP kommer att skicka sync signal till V-sync med på samma sätt.
 
 \begin{figure}[h]
     \begin{center}
@@ -244,7 +246,7 @@ HFP(slutpunkt till horisontal front porch), HSP(slutpunkt till horisontal synkpu
 % Formating
 \vspace{4cm}
 
-VGA-port kommer endast ta emot färg data när h\_counter < HLINES(640 enligt upplösning vi valde) och v\_counter < VLINES(480 enligt upplösning vi valde) med hjälp av en enable signal från HLINE och VLINE.
+VGA-port kommer endast ta emot färg data när h\_counter $<$ HLINES(640 enligt upplösning vi valde) och v\_counter $<$ VLINES(480 enligt upplösning vi valde) med hjälp av en enable signal från HLINE och VLINE.
 Pixelsender använder samma timing och klocka som vga\_controller och skickar en 13 bitars adress till vårt färgminne, hämtar 8 bitars data på detta adress och då skickar denna data till vga-porten endast när räknare in vga\_controller ligger inom display-ytan.
 
 PixelSender tar hand om address hämtning och färg kod sändning. För att alla data i minnet ska se bra ut på skärmen bestämde vi att visa varje instruktion ska vara 5 pixlar bred och 7 pixlar hög. I så fall kommer vi att visa 128 data per rad och vi behöver 7*64 = 448 rader för att visa 213 = 8192 adresser. PixelSender skickar data till skärmen var 5:e klockpuls och upprepar detta för varje 128 data 7 gånger, i så fall kan vi ha varje instruktion med 5*7 pixel storlek. På ”border area” visar vi vilken spelare vinner CoreWar.
