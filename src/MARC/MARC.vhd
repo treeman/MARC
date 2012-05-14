@@ -11,11 +11,6 @@ entity MARC is
             uCount_limit : in std_logic_vector(7 downto 0);
             fbart_in : in std_logic;
 
-            -- Test upstart load without fbart
-            --tmp_has_next_data : in std_logic;
-            --tmp_IN : in std_logic_vector(12 downto 0);
-            --tmp_request_next_data : out std_logic;
-
             -- VGA output
             red : out std_logic_vector(2 downto 0);
             grn : out std_logic_vector(2 downto 0);
@@ -30,7 +25,11 @@ entity MARC is
             pad_error : out STD_LOGIC_VECTOR(2 downto 0);
             game_over_out : out std_logic;
             alu1_o : out stD_LOGIC_VECTOR(7 downto 0);
-	    player_victory_out : out std_logic_vector(1 downto 0)
+            player_victory_out : out std_logic_vector(1 downto 0);
+
+            -- Hex display output
+            ca,cb,cc,cd,ce,cf,cg,dp : out  STD_LOGIC;
+            an : out  STD_LOGIC_VECTOR (3 downto 0)
     );
 end MARC;
 
@@ -83,7 +82,9 @@ architecture Behavioral of MARC is
                 new_IN : in std_logic;
                 game_started : in std_logic;
                 shall_load : in std_logic;
-                game_over : in std_logic
+                game_over : in std_logic;
+
+                current_instr : out std_logic_vector(3 downto 0)
         );
     end component;
 
@@ -167,7 +168,7 @@ architecture Behavioral of MARC is
                 clk : in  STD_LOGIC;
                 data_gpu : in  STD_LOGIC_VECTOR (7 downto 0);
                 address_gpu : out  STD_LOGIC_VECTOR (12 downto 0);
-		border_color : in std_logic_vector (7 downto 0);
+        border_color : in std_logic_vector (7 downto 0);
                 red : out  STD_LOGIC_VECTOR (2 downto 0);
                 grn : out  STD_LOGIC_VECTOR (2 downto 0);
                 blu : out  STD_LOGIC_VECTOR (1 downto 0);
@@ -175,6 +176,19 @@ architecture Behavioral of MARC is
                 VS : out  STD_LOGIC
              );
         end component;
+
+    component MARCled is
+        Port ( clk,rst : in  STD_LOGIC;
+            ca,cb,cc,cd,ce,cf,cg,dp : out  STD_LOGIC;
+            an : out  STD_LOGIC_VECTOR (3 downto 0);
+
+            game_started : in std_logic;
+            current_instr : in std_logic_vector(3 downto 0);
+
+            game_over : in std_logic;
+            active_player : in std_logic_vector(1 downto 0)
+        );
+    end component;
 
     -------------------------------------------------------------------------
     -- DATA SIGNALS
@@ -294,7 +308,7 @@ architecture Behavioral of MARC is
     signal fifo_write_pc : std_logic := '0';
     signal fifo_change_player : std_logic := '0';
 
-     -------------------------------------------------------------------------
+    -------------------------------------------------------------------------
     -- VGA SIGNALS
     -------------------------------------------------------------------------
 
@@ -304,7 +318,12 @@ architecture Behavioral of MARC is
 
     signal border_color : std_logic_vector(7 downto 0) := "00100111";
 
-    
+    -------------------------------------------------------------------------
+    -- HEX DISPLAY
+    -------------------------------------------------------------------------
+
+    signal current_instr : std_logic_vector(3 downto 0);
+
 begin
 
     -------------------------------------------------------------------------
@@ -369,7 +388,9 @@ begin
                     new_IN => new_IN,
                     game_started => game_started,
                     shall_load => load,
-                    game_over => game_over
+                    game_over => game_over,
+
+                    current_instr => current_instr
         );
 
     alus: ALU
@@ -453,13 +474,32 @@ begin
                         rst => '0',
                         data_gpu => data_gpu_out,
                         address_gpu => address_gpu,
-			border_color => border_color,
+                        border_color => border_color,
                         red => red,
                         grn => grn,
                         blu => blu,
                         HS => HS,
                         VS => VS
          );
+
+     hexdisplay : MARCled
+        port map (
+                clk => clk,
+                rst => reset,
+                ca => ca,
+                cb => cb,
+                cc => cc,
+                cd => cd,
+                ce => ce,
+                cf => cf,
+                cg => cg,
+                dp => dp,
+                an => an,
+                game_started => game_started,
+                current_instr => current_instr,
+                game_over => game_over,
+                active_player => active_player
+    );
 
     -------------------------------------------------------------------------
     -- CLOCK EVENT
@@ -474,26 +514,26 @@ begin
                 rxd <= fbart_in;
             end if;
 
-	    if reset = '1' then
-		border_color <= "00100111";
-	    elsif player_victory = "01" then
-		border_color <= "00000111";
-	    elsif player_victory = "10" then
-		border_color <= "00111000";
-	    end if;
+        if reset = '1' then
+            border_color <= "00100111";
+        elsif player_victory = "01" then
+            border_color <= "00000111";
+        elsif player_victory = "10" then
+            border_color <= "00111000";
+        end if;
 
-	    -- Set victory status
-	    if reset = '1' then
-		player_victory <= "00";
-	    elsif game_over = '1' and active_player = "01" then
-		player_victory <= "10";
-	    elsif game_over = '1' and active_player = "10" then
-		player_victory <= "01";
-	    end if;
+        -- Set victory status
+        if reset = '1' then
+            player_victory <= "00";
+        elsif game_over = '1' and active_player = "01" then
+            player_victory <= "10";
+        elsif game_over = '1' and active_player = "10" then
+            player_victory <= "01";
+        end if;
 
             -- Set load status
             if reset = '1' then
-		load <= '0';
+                load <= '0';
             elsif game_code = "11" then
                 load <= '1';
             end if;
@@ -511,13 +551,6 @@ begin
             elsif game_code = "10" then
                 game_over <= fifo_game_over;
             end if;
-
-            -- Generating fbart_request_next_data when we read the buss.
---            if buss_code = "110" then
---                fbart_request_next_data <= '1';
---            else
---                fbart_request_next_data <= '0';
---            end if;
 
             -- Sync reset
             if reset_a = '1' then
@@ -540,29 +573,29 @@ begin
                 PC <= (others => '0');
             end if;
 
-	    if reset_a = '1' then
-		ADR1 <= (others => '0');
-	    elsif ADR1_code = "01" then
-		ADR1 <= main_buss;
-	    elsif ADR1_code = "10" then
-		ADR1 <= M1;
-	    elsif ADR1_code = "11" then
-		ADR1 <= ALU1_out;
-	    else
-		ADR1 <= ADR1;
-	    end if;
+        if reset_a = '1' then
+            ADR1 <= (others => '0');
+        elsif ADR1_code = "01" then
+            ADR1 <= main_buss;
+        elsif ADR1_code = "10" then
+            ADR1 <= M1;
+        elsif ADR1_code = "11" then
+            ADR1 <= ALU1_out;
+        else
+            ADR1 <= ADR1;
+        end if;
 
-	    if reset_a = '1' then
-		ADR2 <= (others => '0');
-	    elsif ADR2_code = "01" then
-		ADR2 <= main_buss;
-	    elsif ADR2_code = "10" then
-		ADR2 <= M2;
-	    elsif ADR2_code = "11" then
-		ADR2 <= ALU2_out;
-	    else
-		ADR2 <= ADR2;
-	    end if;
+        if reset_a = '1' then
+            ADR2 <= (others => '0');
+        elsif ADR2_code = "01" then
+            ADR2 <= main_buss;
+        elsif ADR2_code = "10" then
+            ADR2 <= M2;
+        elsif ADR2_code = "11" then
+            ADR2 <= ALU2_out;
+        else
+            ADR2 <= ADR2;
+        end if;
 
         end if;
     end process;
@@ -685,14 +718,14 @@ begin
     ---------------------------------------------------------------------------
 
     data_gpu_out <= "11011111" when PC = address_gpu and active_player = "01" else
-		    "11111011" when PC = address_gpu and active_player = "10" else
-		    "01110111" when active_player = "01" and (address_gpu = ADR1 or address_gpu = ADR2) else
-		    "01111110" when active_player = "10" and (address_gpu = ADR1 or address_gpu = ADR2) else
-		    data_gpu;
+                    "11111011" when PC = address_gpu and active_player = "10" else
+                    "01110111" when active_player = "01" and (address_gpu = ADR1 or address_gpu = ADR2) else
+                    "01111110" when active_player = "10" and (address_gpu = ADR1 or address_gpu = ADR2) else
+                    data_gpu;
 
     player_victory_out <= player_victory;
-    
 
-    
+
+
 end Behavioral;
 

@@ -1,9 +1,6 @@
 ﻿
 Todo
 ====
-
-* Boka redovisningstid (tisdag?!)
-* Visa handledaren att allt funkar (måndag? boka tid?)
 * Rapport!
     * Huvudblockschema  
         Med inritad ALU, mikrominne, primärminne, buss ??
@@ -11,15 +8,7 @@ Todo
     * FIFO blockschema
     * fbart + inmatning
 
-* Color coding in memory; different color for different code?  Player1 - Red; Player2 - Green
-* DAT Dark red
-* ADD, SUB
-* JPM,JMZ,JMN,DJN
-* CMP,SLT,SPL
-* Color PC and memory access:
-* PC Bright RED / GREEN
-* MEMORY: Grey
-* More flashy and badass warriors!
+* PWN:er-point!
 
 Schema
 ------

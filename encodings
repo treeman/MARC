@@ -6,7 +6,7 @@ MOV         0001
 ADD         0010
 SUB         0011
 JMP         0100
-JMPZ        0101
+JMZ         0101
 JMN         0110
 CMP         0111
 SLT         1000

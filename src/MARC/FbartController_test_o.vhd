@@ -59,7 +59,7 @@ ARCHITECTURE behavior OF FbartController_test IS
    signal clk : std_logic := '0';
    signal rxd : std_logic := '0';
 
- 	--Outputs
+    --Outputs
    signal control_signals : std_logic_vector(2 downto 0);
    signal buss_out : std_logic_vector(12 downto 0);
    signal has_next_data : std_logic;
@@ -67,14 +67,14 @@ ARCHITECTURE behavior OF FbartController_test IS
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
-	--                                     <----- READ Only the DATA this WAY!
-	--signal data : std_logic_vector(0 to 19) := "1 0110 0011 0 1 0111 1110 0"; -- "1 110001101 0 1 01111110 0";
-	-- signal data : std_logic_vector(0 to 19) := "1 0110 0010 0 1 0111 1110 0";
-	signal data : std_logic_vector(0 to 18) := "1011000100111111000";
+    --                                     <----- READ Only the DATA this WAY!
+    --signal data : std_logic_vector(0 to 19) := "1 0110 0011 0 1 0111 1110 0"; -- "1 110001101 0 1 01111110 0";
+    -- signal data : std_logic_vector(0 to 19) := "1 0110 0010 0 1 0111 1110 0";
+    signal data : std_logic_vector(0 to 18) := "1011000100111111000";
  
 BEGIN
  
-	-- Instantiate the Unit Under Test (UUT)
+    -- Instantiate the Unit Under Test (UUT)
    uut: FBARTController PORT MAP (
           request_next_data => request_next_data,
           reset => reset,
@@ -89,18 +89,18 @@ BEGIN
    -- Clock process definitions
    clk_process :process
    begin
-		clk <= '0';
-		wait for clk_period/2;
-		clk <= '1';
-		wait for clk_period/2;
+        clk <= '0';
+        wait for clk_period/2;
+        clk <= '1';
+        wait for clk_period/2;
    end process;
  
 
    -- Stimulus process
    stim_proc: process
-   begin		
+   begin        
       -- hold reset state for 100 ns.
-      wait for 100 ns;	
+      wait for 100 ns;  
 
       wait for clk_period*10;
       
@@ -115,7 +115,7 @@ BEGIN
       request_next_data <= '0';
       
       wait for 1 us;
-		
+        
       -- insert stimulus here 
 
       wait;
@@ -136,10 +136,10 @@ BEGIN
    begin
      wait for 11.2 us;
      for i in 0 to 18 loop
-			rxd <= data(i);
-			wait for 8.86 us;
-		end loop;
-		wait;
-	end process;
+            rxd <= data(i);
+            wait for 8.86 us;
+        end loop;
+        wait;
+    end process;
 
 END;

@@ -61,18 +61,18 @@ ARCHITECTURE behavior OF memory_2_and_3_test IS
    signal address_in : std_logic_vector(12 downto 0) := (others => '0');
    signal data_in : std_logic_vector(12 downto 0) := (others => '0');
 
- 	--Outputs
+    --Outputs
    signal address_out : std_logic_vector(12 downto 0);
    signal data_out : std_logic_vector(12 downto 0);
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
    
-   	signal fill_signal : std_logic_vector(12 downto 0) := "0000000000000";
+    signal fill_signal : std_logic_vector(12 downto 0) := "0000000000000";
  
 BEGIN
  
-	-- Instantiate the Unit Under Test (UUT)
+    -- Instantiate the Unit Under Test (UUT)
    uut: Memory_Cell PORT MAP (
           clk => clk,
           read => read,
@@ -86,18 +86,18 @@ BEGIN
    -- Clock process definitions
    clk_process :process
    begin
-		clk <= '0';
-		wait for clk_period/2;
-		clk <= '1';
-		wait for clk_period/2;
+        clk <= '0';
+        wait for clk_period/2;
+        clk <= '1';
+        wait for clk_period/2;
    end process;
  
 
    -- Stimulus process
    stim_proc: process
-   begin		
+   begin        
       -- hold reset state for 100 ns.
-      wait for 100 ns;	
+      wait for 100 ns;  
 
       wait for clk_period*10;
 
@@ -110,21 +110,21 @@ BEGIN
    fill_process :process
    begin
      if write = '0' then
-		  fill_signal <= fill_signal + 1;
-	    write <='1';
-	    read <='0';
-	   data_in <= fill_signal;
-		  address_in <= fill_signal;
-	   else
-	      fill_signal <= fill_signal;
-	     write <='0';
-	     read <='1';
+          fill_signal <= fill_signal + 1;
+        write <='1';
+        read <='0';
+       data_in <= fill_signal;
+          address_in <= fill_signal;
+       else
+          fill_signal <= fill_signal;
+         write <='0';
+         read <='1';
 
-	     end if;
-	     		address_in <= fill_signal;
-		--read <= '1';
-		
-		wait for clk_period;
+         end if;
+                address_in <= fill_signal;
+        --read <= '1';
+        
+        wait for clk_period;
   end process;
 
 

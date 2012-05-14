@@ -1,0 +1,73 @@
+
+* Slutsatser
+
+(Tror vi ska skriva vad som gick bra och vad som gick dåligt, vad som skulle kunna göras bättre?)
+
+Arbetet med projektet gick bra, vhdl var lite motsträvigt men vi lyckades implementera hela CoreWars '88 standarden och få våra redcode warriors att fungera. CoreWars var väldigt kul, både att implementera och att skapa warriors till.
+
+Implementationen skulle kunna förbättras. Mikrokodningen är inte alls optimerad då det kändes lite onödigt då vi hade en 27 bitars delay räknare efter varje exekverad instruktion. Minnesaccessen skulle kunna förbättras och vhdl koden är onödigt komplex.
+
+Tillbakablick på arbetet:
+
+* Kul! CoreWars är awesome
+* vhdl är jobbigt
+    Kompilatorn är dum
+    Ej säker på modellbeskrivning (beskriver vhdl verkligen?)
+
+Förbättringar:
+
+* Snabba upp minnesaccess
+* Rensa upp i vhdl
+* Möjligt att komprimera och förbättra mikrod
+
+Förslag till fortsatt arbete:
+
+* Fixa allt som är crap i koden
+* Implementera en mera modern standard
+* Större coresize
+* Fler spelare
+* Expandera kommunikation till datorn (koth server?!)
+* Finns regler om timeout och liknande
+
+--------------------------------------------------------------------------------
+
+* µDator (+ALU)
+
+Datorn är en mikroprogrammerad dator med 39 styrsignaler + 8 signaler för hoppaddresser. Mikrominnet är 256 rader långt och mer än 200 rader är använt. Dess huduvuppgifter är att nollställa minnet vid en reset, slussa in program i minnet vid inladdning via fbart och hämtning och exekverande av instruktioner.
+
+(insert huvudblockschema)
+
+Blockschemat beskriver vilka register (alla osynliga för programmeraren) som finns och hur de är kopplade med omgivningen. Det finns två ALU:s för att korta ner på antalet klockcykler det krävs för att göra parallella operationer på A och B operanderna. På samma sätt har de flesta registren multiplexade ingångar för att spara tid och för att öka förmågan för parallelism.
+
+Mikrominnet har en mängd olika hopp den kan göra, den kan bland annat hoppa på både A och B's olika adresseringsmoder eller ALU:ns olika flaggor. För att sakta ner exekveringen fördröjs exekveringen av varje instruktion genom att jämföra en räknare med en fördröjningssignal "instr delay".
+
+Vid exekvering av en instruktion laddas instruktionen först in till IR, sedan beräknas adresseringsmoderna för A och B och därefter utförs instruktionen. Adressmodsberäkningen är besvärlig då både A och B operanderna kan vara en av de fyra olika moderna. Detta kompliceras ytterligare då vissa instruktioner gör olika saker beroende på vilka adresseringsmoder som används. Efter beräkningen lagras operanderna i M1 och M2, om immediate, och annars i adressregistrena ADR1 och ADR2.
+
+Schemat visar även var vga, FIFO och fbart controller ansluts.
+
+--------------------------------------------------------------------------------
+
+* Assembler
+
+CoreWars '88 standarden specifierar utseendet av Redcode, CoreWars programmeringsspråk, som vi har gjort en assembler till. Assemblern kan generera en binärfil från två warriors där vi randomiserar deras startläge som vi sedan kan skicka till MARC genom uart. (referera till bilagan för att se source code!)
+
+-------------------------------------------------------------------------------
+
+* Warriors
+
+# Carpet bomber
+
+Carpet bombers är en blandning mellan bombers och scanners. De traverserar minnet och lägger in bombers där minnet har ändrats. Denna warrior är smartare än en vanlig bomber då den inte kommer att bomba ute i tomma minnet. Den kommer också vara lite snabbare än en traditionell bomber som behöver kopiera ut data.
+
+# Core cleaner
+
+En core cleaner är ett program som databombar hela minnet. Ofta går man igenom minnet två gånger, den första fyller man minnet med split instruktioner för att slöa ner motståndaren och sedan med DAT-instruktioner för att göra slut på honom.
+
+# Replicator
+
+Replicators skapar kopior av sig själva och förökar sig i minnet. De motverkar bombers då bombers inte kan förstöra replicatorn tillräckligt snabbt.
+
+# Dwarf scout
+
+En dwarf scout är en vanlig bomber som skyddar sig mot andra bombers genom att se om någon ändrar i minnet i dess närhet. Om så är fallet så kommer den att hoppa till en ny plats i minnet och ta med sig sina processer.
+

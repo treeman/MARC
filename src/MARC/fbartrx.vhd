@@ -83,7 +83,7 @@ begin
       rbg <= "0000000000";
     elsif rising_edge(clk) then
       if rbg = 889 then
-	rbg <= "0000000000";
+    rbg <= "0000000000";
       elsif (rbs="11" and rbc="000") then
         rbg <= "0000000000";
       elsif (rxd='0' and rbs="00") or (rbs/="00") then

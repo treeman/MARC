@@ -165,33 +165,8 @@ sub parse {
         # Don't parse a full comment line
         next if !$code;
 
-        # Match up a line of redcode
-        if ($code =~ /^(?:
-                        ([A-Z0-9]{0,8})?      # Label, not necessary
-                        [A-Z0-9]*             # Only catch first 8 chars
-                        \s+
-                    )?
-                    ([A-Z0-9]+)              # Mnemonic
-                    (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
-                    \s+
-                    ([^,]+)                  # A operand
-                    \s*,\s*                  # , delimited
-                    ([^,]+)                  # B operand
-                    /xi)
-        {
-            my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
-
-            # Log label
-            if ($label) {
-                $labels{$label} = $codeline;
-                say "L: $label = $codeline" if $debug;
-            }
-            $codeline++;
-
-            push (@code, $code);
-        }
         # Match a constant
-        elsif ($code =~ /^
+        if ($code =~ /^
                         ([A-Z0-9]{0,8})        # Label necessary
                         [A-Z0-9]*              # Only catch first 8 chars
                         \s+
@@ -200,6 +175,35 @@ sub parse {
                         ([-+*\/()A-Z0-9\s+]+)    # Definition
                         /xi)
         {
+            push (@code, $code);
+        }
+        # Match up a line of redcode
+        elsif ($code =~ /^(?:
+                        ([A-Z0-9]{0,8})?      # Label, not necessary
+                        [A-Z0-9]*             # Only catch first 8 chars
+                        \s+
+                    )?
+                    ([A-Z0-9]+)              # Mnemonic
+                    (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
+                    \s+
+                    ([^,]+)                  # A operand
+                    (?:                      # B op not mandatory
+                        \s*,\s*              # , delimited
+                        ([^,]+)              # B operand
+                    )?
+                    /xi)
+        {
+            my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
+
+            $b_op = "0" if !$b_op;
+
+            # Log label
+            if ($label) {
+                $labels{$label} = $codeline;
+                say "L: $label = $codeline" if $debug;
+            }
+            $codeline++;
+
             push (@code, $code);
         }
         # Match end
@@ -230,8 +234,28 @@ sub parse {
 
     for my $code (@code) {
 
+        # Match a constant
+        if ($code =~ /^
+                        ([A-Z0-9]{0,8})        # Label necessary
+                        [A-Z0-9]*              # Only catch first 8 chars
+                        \s+
+                        equ                    # Constant instr mnemonic
+                        \s+
+                        ([-+*\/()A-Z0-9\s+]+)    # Definition
+                        /xi)
+        {
+            my ($label, $def) = ($1, $2);
+
+            # Evaluate
+            my $value = evaluate $def, $codeline;
+
+            # And insert
+            $constants{$label} = $value;
+
+            say "C: $label = $def ($value)" if $debug;
+        }
         # Match up a line of redcode
-        if ($code =~ /^(?:
+        elsif ($code =~ /^(?:
                         ([A-Z0-9]{0,8})?      # Label, not necessary
                         [A-Z0-9]*             # Only catch first 8 chars
                         \s+
@@ -240,11 +264,15 @@ sub parse {
                     (?:\.[A-Z0-9]+)?         # Throw away postfix mod if there is any
                     \s+
                     ([^,]+)                  # A operand
-                    \s*,\s*                  # , delimited
-                    ([^,]+)                  # B operand
+                    (?:                      # B op not mandatory
+                        \s*,\s*              # , delimited
+                        ([^,]+)              # B operand
+                    )?
                     /xi)
         {
             my ($label, $instr, $a_op, $b_op) = ($1, $2, $3, $4);
+
+            $b_op = "0" if !$b_op;
 
             $codeline++;
 
@@ -297,7 +325,10 @@ sub parse {
                 SPL => '1010',
             );
 
-            die "Instr '$instr' does not exist!" if !exists $instr_codes{uc($instr)};
+            if (!exists $instr_codes{uc($instr)}) {
+                say "Code: $code";
+                die "Instr '$instr' does not exist!";
+            }
 
             my $instr_code = $instr_codes{uc($instr)};
 
@@ -326,31 +357,12 @@ sub parse {
 
             $bin_output .= "$op_bin$a_op_bin$b_op_bin";
         }
-        # Match a constant
-        elsif ($code =~ /^
-                        ([A-Z0-9]{0,8})        # Label necessary
-                        [A-Z0-9]*              # Only catch first 8 chars
-                        \s+
-                        equ                    # Constant instr mnemonic
-                        \s+
-                        ([-+*\/()A-Z0-9\s+]+)    # Definition
-                        /xi)
-        {
-            my ($label, $def) = ($1, $2);
-
-            # Evaluate
-            my $value = evaluate $def, $codeline;
-
-            # And insert
-            $constants{$label} = $value;
-
-            say "C: $label = $def ($value)" if $debug;
-        }
         # Match end
         elsif ($code =~ /^\s*end/) {
             last;
         }
         else {
+            say "Couldn't match: $code";
             die "Syntax error.";
         }
     }

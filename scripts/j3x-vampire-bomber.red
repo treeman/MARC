@@ -1,3 +1,7 @@
+;name Vampire bomber
+;author Jesper Tingvall
+;description Same as vampire but splits in start to cage, making this DAT 0 0 and JMP at the same time per default.
+
         SPL VAMP, 0
         JMP CAGE1, 0
         DAT 0,0
