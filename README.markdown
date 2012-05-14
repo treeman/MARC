@@ -1,14 +1,14 @@
 ﻿
 Todo
 ====
-* Rapport!
-    * Huvudblockschema  
-        Med inritad ALU, mikrominne, primärminne, buss ??
-    * VGA blockschema
-    * FIFO blockschema
-    * fbart + inmatning
+* Rapport!  
+    * Kontrollera formatering av latex genererad pdf
+    * Kontrollera source code filer
+    * Kontrollera referenser till figurer och annat
+    * Kontrollera ordningen på de olika delarna, och även source/warriors etc.
 
-* PWN:er-point!
+* PWN:er-point!  
+    Kontrollera!
 
 Schema
 ------
