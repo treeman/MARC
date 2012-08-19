@@ -1,62 +1,38 @@
-﻿
-Todo
-====
+﻿MARC - Memory Array Redcode Computer
+====================================
 
-* Redovisa! MWahaha!
+This is our project for TSEA43 at Linköpings University.
 
-Schema
-------
+We made an implementation in VHDL of the [Core Wars 88 standard (pdf)][corewars88] running on a FPGA board. Core Wars is basically a computer game where two programs compete and try to destroy each other. Read [the wiki][corewarswiki] for more info.
 
-## v12
-- bestämma projekt  
-    DONE
-- skriva en kravspec (KS)  
-    DONE
-- Olle godkänner KS  
-    DONE
-- pdf -> Olle senast fredag 1700  
-    DONE
+The processor is a microprogrammed processor with a Redcode assembler for it.
 
-## v13
-- skriva designskiss (DS)  
-    DONE
-- träffa handledaren  
-    DONE
-- handledaren godkänner DS  
-    DONE
-- pdf -> Olle senast fredag 1700  
-    DONE
-- delta i en lab till  
-    DONE
+![](http://raw.github.com/treeman/Digital-konstruktion/master/Report%20&%20presentation/huvudblockschema.png)  
+*Main block schema for processor*
 
-## v14-15
-- Påsk + omtentaP  
-    DONE
 
-## v16
-- skriva VHDL, 1:a byggveckan  
-    DONE
+Scripts
+-------
 
-## v17
-- skriva VHDL, 2:a byggveckan
-- milstolpe  
-    DONE
+* `assembler` Assemble redcode warriors for our architecture.
+* `sender` Hacky script to send a binary file to FPGA through usb.
+* `control_codes` Easy way to make microcode.
 
-## v18
-- skriva VHDL, 3:e byggveckan  
-    DONE
 
-## v19
-- skriva VHDL, 4:e byggveckan  
-    DONE
-- strax före redovisningen finns beslutspunkt 2, där vi kollar att ert bygge uppfyller kravspecen  
-    DONE?
+Warriors
+--------
 
-## v20
-- Redovisning
-- demonstrera apparaten
-- hålla en muntlig presentation
-- skriva en teknisk rapport
-    DONE
-- lämna tillbaka alla komponenter
+Check out `*.red` in scripts for our warriors.
+
+
+Authors
+-------
+
+* Jesper Tingvall
+* Jizhi Li
+* Jonas Hietala
+
+----
+
+Apologies for any disorganization.
 
