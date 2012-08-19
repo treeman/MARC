@@ -7,7 +7,7 @@ We made an implementation in VHDL of the [Core Wars 88 standard (pdf)][corewars8
 
 The processor is a microprogrammed processor with a Redcode assembler for it.
 
-<img src="https://raw.github.com/treeman/Digital-konstruktion/master/Report%20&%20presentation/huvudblockschema.png" width="600" /><br />
+<img src="https://raw.github.com/treeman/Digital-konstruktion/master/Report%20%26%20presentation/huvudblockschema.png" width="600" /><br />
 *Main block schema for processor*
 
 
